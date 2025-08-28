@@ -28,6 +28,11 @@ export default function Home() {
 		router.push(`/names?type=${encodeURIComponent(picked)}`);
 	}, [picked, router]);
 
+	// Prefetch the names route for the currently selected type for instant navigation
+	useEffect(() => {
+		router.prefetch(`/names?type=${encodeURIComponent(picked)}`);
+	}, [picked, router]);
+
 	useEffect(() => {
 		// Add a global keydown handler so arrow keys always work,
 		// even when the wheel isn't focused. Ignore when typing in inputs.

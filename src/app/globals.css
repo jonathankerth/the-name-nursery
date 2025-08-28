@@ -16,6 +16,9 @@ body {
   overflow-x: hidden;
 }
 
+/* ensure the app wrapper covers the viewport so transition background is visible */
+#app-root { min-height: 100vh; }
+
 body {
   color: var(--foreground);
   background: var(--background);

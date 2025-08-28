@@ -21,10 +21,18 @@
 	/* reduce gap so the alphabet column takes less left/right space */
 	gap: 36px;
 	white-space: nowrap;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	padding: 0 12px; /* give space so arrows aren't flush with screen edges */
 }
 .phrase {
 	font-size: 1.6rem;
 	font-weight: 700;
+}
+.selectedType {
+	text-decoration: underline;
+	font-weight: 800;
+	padding: 0 6px;
 }
 .wheelColumn {
 	display: flex;
@@ -72,17 +80,43 @@
 	cursor: pointer;
 }
 
+.backTriangle {
+	background: none;
+	border: none;
+	padding: 6px 8px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+
+.backTriangle svg { display: block; }
+
 .wheelColumn:focus {
 	outline: none;
 }
 
 @media (max-width: 600px) {
+	/* compact layout so everything fits on narrow viewports without horizontal scroll */
+	.sentenceForm {
+		gap: 8px;
+		padding: 0 8px;
+		white-space: nowrap;
+		overflow-x: visible;
+	}
+
 	.phrase {
-		font-size: 1rem;
+		font-size: 0.95rem;
 	}
+
 	.wheelCenter {
-		font-size: 1.6rem;
+		font-size: 1.4rem;
 	}
-	/* tighten the wheel horizontal footprint on small screens by using padding */
-	.wheelColumn { padding: 0 6px; }
+
+	.wheelFaded { font-size: 0.9rem; }
+
+	/* reduce wheel footprint and triangle sizes */
+	.wheelColumn { padding: 0 4px; }
+	.backTriangle { padding: 2px; margin-right: 6px; }
+	.triangleBtn { padding: 4px; margin-left: 6px; }
+
+	.backTriangle svg, .triangleBtn svg { width: 22px; height: 22px; }
 }

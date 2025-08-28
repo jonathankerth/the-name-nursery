@@ -28,6 +28,9 @@ export default function NamesClient() {
 
 	const wheelColor = darken(pageColors[type] || "#ffffff", 0.22);
 
+	// header-like darker color for emphasis
+	const headerColor = darken(pageColors[type] || "#ffffff", 0.35);
+
 	const alphabet = useMemo(
 		() => Array.from({ length: 26 }).map((_, i) => String.fromCharCode(65 + i)),
 		[]
@@ -98,6 +101,12 @@ export default function NamesClient() {
 				)}`);
 		};
 
+		// prefetch results route for the selected letter to make navigation instantaneous
+		useEffect(() => {
+			const letter = alphabet[index];
+			router.prefetch(`/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(letter)}`);
+		}, [index, type, router, alphabet]);
+
 		const submit = (e: React.FormEvent) => {
 			e.preventDefault();
 			doSubmit();
@@ -124,9 +133,30 @@ export default function NamesClient() {
 								}
 							}}
 						>
-					<span className={styles.phrase}>{`A ${
-						type.charAt(0).toUpperCase() + type.slice(1)
-					} name that starts with`}</span>
+					<button
+						className={styles.backTriangle}
+						type="button"
+						aria-label="Back"
+						onClick={() => {
+							router.back();
+						}}
+					>
+						<svg
+							width="36"
+							height="36"
+							viewBox="0 0 32 32"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+						</svg>
+					</button>
+
+					<span className={styles.phrase}>
+						A <span className={styles.selectedType} style={{ color: headerColor }}>{
+							type.charAt(0).toUpperCase() + type.slice(1)
+						}</span> name that starts with
+					</span>
 
 					<div
 						ref={wheelRef}
@@ -164,6 +194,8 @@ export default function NamesClient() {
 							<polygon points="8,4 28,16 8,28" fill={wheelColor} />
 						</svg>
 					</button>
+
+
 				</form>
 			</main>
 		</div>
