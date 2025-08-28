@@ -21,7 +21,10 @@ export default function NamesClient() {
 		const apply = () => {
 			try {
 				if (document.documentElement) {
-					document.documentElement.style.setProperty("--background", pageColors[type] || "#ffffff");
+					document.documentElement.style.setProperty(
+						"--background",
+						pageColors[type] || "#ffffff"
+					);
 				}
 			} catch {
 				// noop
@@ -61,10 +64,16 @@ export default function NamesClient() {
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
 
-	const wheelColor = useMemo(() => darken(pageColors[type] || "#ffffff", 0.22), [type]);
+	const wheelColor = useMemo(
+		() => darken(pageColors[type] || "#ffffff", 0.22),
+		[type]
+	);
 
 	// header-like darker color for emphasis
-	const headerColor = useMemo(() => darken(pageColors[type] || "#ffffff", 0.35), [type]);
+	const headerColor = useMemo(
+		() => darken(pageColors[type] || "#ffffff", 0.35),
+		[type]
+	);
 
 	const alphabet = useMemo(
 		() => Array.from({ length: 26 }).map((_, i) => String.fromCharCode(65 + i)),

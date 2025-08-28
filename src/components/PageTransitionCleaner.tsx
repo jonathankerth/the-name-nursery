@@ -13,14 +13,16 @@ export default function PageTransitionCleaner(): null {
 		// handle cases where computed background is transparent (rgba(0,0,0,0) or 'transparent')
 		if (!bg || bg === "transparent" || bg.startsWith("rgba(0, 0, 0, 0")) {
 			const docStyle = getComputedStyle(document.documentElement);
-			bg = (docStyle.getPropertyValue("--background") || "#ffffff").trim() || "#ffffff";
+			bg =
+				(docStyle.getPropertyValue("--background") || "#ffffff").trim() ||
+				"#ffffff";
 		}
-				root.style.background = bg;
-				// hold a neutral background briefly while the next page paints to avoid
-				// a black flash on first navigation. We set 300ms which is usually enough
-				// for the next page to render its background on modern devices.
-				const t = setTimeout(() => (root.style.background = "transparent"), 300);
-				return () => clearTimeout(t);
+		root.style.background = bg;
+		// hold a neutral background briefly while the next page paints to avoid
+		// a black flash on first navigation. We set 300ms which is usually enough
+		// for the next page to render its background on modern devices.
+		const t = setTimeout(() => (root.style.background = "transparent"), 300);
+		return () => clearTimeout(t);
 	}, [pathname]);
 
 	return null;

@@ -26,13 +26,19 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html
-			lang="en"
-			style={{ background: "var(--background)" }}
-		>
+		<html lang="en" style={{ background: "var(--background)" }}>
 			<head>
-				<link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
-				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+				<link rel="icon" href="/favicon.ico" sizes="any" />
+				<link
+					rel="preconnect"
+					href="https://fonts.googleapis.com"
+					crossOrigin="anonymous"
+				/>
+				<link
+					rel="preconnect"
+					href="https://fonts.gstatic.com"
+					crossOrigin="anonymous"
+				/>
 			</head>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable}`}

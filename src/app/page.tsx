@@ -28,12 +28,12 @@ export default function Home() {
 
 	const doSubmit = useCallback(() => {
 		// update the CSS custom property used by the layout so the app-root
- 		// background changes immediately and avoids a brief black flash.
- 		const colorMap: Record<string, string> = {
- 			baby: "#EFD9AA",
- 			boy: "#B7E9F0",
- 			girl: "#EDD5EB",
- 		};
+		// background changes immediately and avoids a brief black flash.
+		const colorMap: Record<string, string> = {
+			baby: "#EFD9AA",
+			boy: "#B7E9F0",
+			girl: "#EDD5EB",
+		};
 		const bg = colorMap[picked] || "#ffffff";
 		try {
 			if (document.documentElement) {
