@@ -1,0 +1,53 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ffffff; /* page text white */
+}
+.centerMain {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px 80px 20px;
+  min-height: calc(100vh - 120px); /* leave room for header */
+}
+.sentenceForm {
+  display: flex;
+  align-items: center;
+  gap: 72px;
+  white-space: nowrap;
+}
+.phrase {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.wheelColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  min-width: 120px;
+}
+.wheelFaded {
+  opacity: 0.85;
+  font-size: 1.2rem;
+}
+.wheelCenter {
+  font-size: 2.6rem;
+  font-weight: 900;
+}
+.triangleBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.wheelColumn:focus { outline: none; }
+
+@media (max-width: 600px) {
+  .phrase { font-size: 1rem; }
+  .wheelCenter { font-size: 1.6rem; }
+}

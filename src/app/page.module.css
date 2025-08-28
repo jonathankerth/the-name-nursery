@@ -1,19 +1,28 @@
+.centerMain {
+	width: 100%;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px 80px 20px;
+	min-height: calc(100vh - 120px); /* leave room for header */
+}
 .page {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
 	font-family: system-ui, sans-serif;
 	background: #f8fafc;
-	color: #222;
+	color: #ffffff;
 }
 
 .header {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 32px 0 16px 0;
-	background: #e0e7ef;
-	border-bottom: 1px solid #d1d5db;
+	padding: 20px 0 8px 0;
+	background: transparent;
+	border-bottom: none;
 }
 
 .title {
@@ -105,6 +114,101 @@
 	border-top: 1px solid #d1d5db;
 	font-size: 1rem;
 	color: #555;
+}
+
+.centerForm {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	background: #fff;
+	border-radius: 16px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+	padding: 32px 32px;
+	min-width: 320px;
+	max-width: 600px;
+	width: auto;
+	gap: 32px;
+}
+.centerRow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 24px;
+}
+
+/* Sentence layout: A [wheel] Name (submit) */
+.sentenceForm {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	gap: 48px;
+	background: transparent;
+	border-radius: 0;
+	box-shadow: none;
+	padding: 48px 56px;
+	min-width: 480px;
+	max-width: 1000px;
+	white-space: nowrap;
+}
+
+.wheelColumn {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 18px;
+	min-width: 180px;
+}
+
+.fixedA {
+	font-size: 2.4rem;
+	font-weight: 800;
+	margin-right: 8px;
+}
+
+.fixedName {
+	font-size: 2.4rem;
+	font-weight: 800;
+	margin-left: 8px;
+}
+
+.wheelOptionSelected {
+	font-size: 1.9rem;
+	font-weight: 700;
+	transition: transform 0.28s ease, opacity 0.28s ease;
+	background: transparent;
+	box-shadow: none;
+}
+
+.wheelOptionFaded {
+	font-size: 1rem;
+	font-weight: 500;
+	opacity: 0.5;
+}
+
+.triangleBtn {
+	background: none;
+	border: none;
+	padding: 6px 8px;
+	margin-left: 12px;
+	cursor: pointer;
+}
+
+.wheelColumn { cursor: grab; }
+
+@media (max-width: 800px) {
+	.sentenceForm {
+		padding: 24px 20px;
+		gap: 20px;
+		min-width: 320px;
+		flex-wrap: nowrap;
+	}
+	.fixedA, .fixedName {
+		font-size: 1.6rem;
+	}
+	.wheelColumn { gap: 10px; min-width: 120px; }
 }
 
 @media (max-width: 600px) {
