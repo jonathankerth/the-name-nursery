@@ -11,20 +11,42 @@ const pageColors: Record<string, string> = {
 	girl: "#EDD5EB",
 };
 
-export default function NamesClient({ initialType }: { initialType?: string } = {}) {
+export default function NamesClient() {
 	const searchParams = useSearchParams();
-	const type = (initialType || (searchParams?.get("type") || "baby")) as string;
+	const type = (searchParams?.get("type") || "baby") as string;
 
-	// Ensure the document background matches the selected type on mount so
-	// direct navigations to /names show the right background immediately.
+	// Ensure the document background matches the selected type on mount.
+	// Defer the write to idle time to avoid blocking the main render.
 	useEffect(() => {
-		try {
-			if (document.documentElement) {
-				document.documentElement.style.setProperty("--background", pageColors[type] || "#ffffff");
+		const apply = () => {
+			try {
+				if (document.documentElement) {
+					document.documentElement.style.setProperty("--background", pageColors[type] || "#ffffff");
+				}
+			} catch {
+				// noop
 			}
-		} catch {
-			// noop
-		}
+		};
+
+		// typed helpers for idle callbacks (avoid 'any' lint)
+		const rid = (cb: () => void) => {
+			const w = window as unknown as {
+				requestIdleCallback?: (fn: () => void) => number;
+			};
+			return w.requestIdleCallback ? w.requestIdleCallback(cb) : undefined;
+		};
+		const cancelRid = (id?: number) => {
+			const w = window as unknown as {
+				cancelIdleCallback?: (id: number) => void;
+			};
+			if (id !== undefined && w.cancelIdleCallback) w.cancelIdleCallback(id);
+		};
+
+		const id = rid(apply);
+		if (id !== undefined) return () => cancelRid(id);
+
+		const t = setTimeout(apply, 0);
+		return () => clearTimeout(t);
 	}, [type]);
 
 	const darken = (hex: string, amount = 0.22) => {
@@ -39,10 +61,10 @@ export default function NamesClient({ initialType }: { initialType?: string } = 
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
 
-	const wheelColor = darken(pageColors[type] || "#ffffff", 0.22);
+	const wheelColor = useMemo(() => darken(pageColors[type] || "#ffffff", 0.22), [type]);
 
 	// header-like darker color for emphasis
-	const headerColor = darken(pageColors[type] || "#ffffff", 0.35);
+	const headerColor = useMemo(() => darken(pageColors[type] || "#ffffff", 0.35), [type]);
 
 	const alphabet = useMemo(
 		() => Array.from({ length: 26 }).map((_, i) => String.fromCharCode(65 + i)),
@@ -53,6 +75,7 @@ export default function NamesClient({ initialType }: { initialType?: string } = 
 	const touchStartRef = useRef<number | null>(null);
 	const wheelRef = useRef<HTMLDivElement | null>(null);
 
+	// autofocus the wheel on mount so keyboard controls are ready
 	useEffect(() => {
 		if (wheelRef.current) wheelRef.current.focus();
 	}, []);

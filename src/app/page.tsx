@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Header from "../components/Header";
-import NamesClient from "./names/NamesClient";
+// NamesShell removed to reduce overlay-induced re-renders
 
 export default function Home() {
 	const [picked, setPicked] = useState<"baby" | "girl" | "boy">("baby");
@@ -24,7 +24,7 @@ export default function Home() {
 	const wheelRef = useRef<HTMLDivElement | null>(null);
 
 	const router = useRouter();
-	const [showInlineNames, setShowInlineNames] = useState(false);
+	// No inline overlay; rely on prefetch + client navigation for instant feel
 
 	const doSubmit = useCallback(() => {
 		// update the CSS custom property used by the layout so the app-root
@@ -42,8 +42,6 @@ export default function Home() {
 		} catch {
 			// noop in non-browser contexts
 		}
-		// show the names UI inline immediately to avoid any visible routing delay
-		setShowInlineNames(true);
 		router.push(`/names?type=${encodeURIComponent(picked)}`);
 	}, [picked, router]);
 
@@ -165,8 +163,7 @@ export default function Home() {
 			className={styles.page}
 			style={{ background: pageColors[picked] || undefined }}
 		>
-			{!showInlineNames ? <Header type={picked} /> : null}
-			{showInlineNames ? <NamesClient initialType={picked} /> : null}
+			<Header type={picked} />
 			<main className={styles.centerMain}>
 				<form
 					className={styles.sentenceForm}

@@ -1,9 +1,12 @@
-"use client";
+import React, { Suspense } from "react";
 import NamesClient from "./NamesClient";
 
 export default function NamesPage() {
-	// Render the interactive client component directly. Keeping this route
-	// fully client-side avoids server-side suspense/await overhead and makes
-	// client navigation feel instant (no server roundtrip to await searchParams).
-	return <NamesClient />;
+	// Wrap the client component in Suspense so client-only hooks like
+	// useSearchParams() are safely handled during server rendering/prerender.
+	return (
+		<Suspense fallback={<div style={{ display: "none" }} />}>
+			<NamesClient />
+		</Suspense>
+	);
 }
