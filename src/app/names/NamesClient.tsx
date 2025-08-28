@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Header, { Gender } from "../../components/Header";
 import styles from "./names.module.css";
 
@@ -89,11 +89,13 @@ export default function NamesClient() {
 		touchStartRef.current = null;
 	};
 
+		const router = useRouter();
+
 		const doSubmit = () => {
-			const letter = alphabet[index];
-			window.location.href = `/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(
-				letter
-			)}`;
+				const letter = alphabet[index];
+				router.push(`/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(
+					letter
+				)}`);
 		};
 
 		const submit = (e: React.FormEvent) => {

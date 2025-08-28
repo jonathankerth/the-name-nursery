@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Header from "../components/Header";
 
@@ -21,9 +22,11 @@ export default function Home() {
 	const touchStartRef = useRef<number | null>(null);
 	const wheelRef = useRef<HTMLDivElement | null>(null);
 
+	const router = useRouter();
+
 	const doSubmit = useCallback(() => {
-		window.location.href = `/names?type=${picked}`;
-	}, [picked]);
+		router.push(`/names?type=${encodeURIComponent(picked)}`);
+	}, [picked, router]);
 
 	useEffect(() => {
 		// Add a global keydown handler so arrow keys always work,
