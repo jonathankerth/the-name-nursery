@@ -250,7 +250,8 @@
 		-webkit-overflow-scrolling: touch;
 	}
 
-	.fixedA, .fixedName {
+	.fixedA,
+	.fixedName {
 		font-size: 1.6rem;
 		margin: 0 6px;
 	}
@@ -260,14 +261,20 @@
 		gap: 8px;
 	}
 
-	.wheelOptionSelected { font-size: 1.9rem; }
+	.wheelOptionSelected {
+		font-size: 1.9rem;
+	}
 
-	.wheelOptionFaded { font-size: 1rem; }
+	.wheelOptionFaded {
+		font-size: 1rem;
+	}
 
 	.triangleBtn {
 		padding: 8px;
 		margin-left: 6px;
 	}
 
-	.centerMain { padding: 18px 10px 64px 10px; }
+	.centerMain {
+		padding: 18px 10px 64px 10px;
+	}
 }

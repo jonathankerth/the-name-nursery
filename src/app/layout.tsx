@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import FloatingRestart from "../components/FloatingRestart";
-import PageTransitionCleaner from "../components/PageTransitionCleaner";
+import FloatingRestart from "@/components/FloatingRestart";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -25,14 +24,32 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
-			<body className={`${geistSans.variable} ${geistMono.variable}`}>
-				<div id="app-root">
-					<PageTransitionCleaner />
-					{children}
-					<FloatingRestart />
-				</div>
-			</body>
-		</html>
+				<html
+					lang="en"
+					// set the initial css variable so page scripts can flip it before navigation
+					style={{ background: "var(--background)", /* fallback while CSS loads */ }}
+				>
+					<body
+						className={`${geistSans.variable} ${geistMono.variable}`}
+						style={{ background: "var(--background)" }}
+					>
+						{/* Inline styles ensure an immediate CSS custom property is available before global CSS loads */}
+						<style
+							dangerouslySetInnerHTML={{
+								__html: `
+									:root { --background: #ffffff; }
+									#app-root { background: var(--background); }
+									@media (prefers-color-scheme: dark) {
+										:root { --background: #0a0a0a; }
+									}
+								`,
+							}}
+						/>
+					<div id="app-root">
+						{children}
+						<FloatingRestart />
+					</div>
+				</body>
+			</html>
 	);
 }

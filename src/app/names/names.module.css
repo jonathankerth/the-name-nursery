@@ -52,9 +52,9 @@
 		align-items: center;
 	}
 	.wheelColumn {
-			/* control horizontal space with padding instead of min-width */
-			gap: 10px;
-			padding: 0 6px;
+		/* control horizontal space with padding instead of min-width */
+		gap: 10px;
+		padding: 0 6px;
 	}
 	.wheelFaded {
 		font-size: 1.1rem;
@@ -88,7 +88,9 @@
 	cursor: pointer;
 }
 
-.backTriangle svg { display: block; }
+.backTriangle svg {
+	display: block;
+}
 
 .wheelColumn:focus {
 	outline: none;
@@ -111,12 +113,26 @@
 		font-size: 1.4rem;
 	}
 
-	.wheelFaded { font-size: 0.9rem; }
+	.wheelFaded {
+		font-size: 0.9rem;
+	}
 
 	/* reduce wheel footprint and triangle sizes */
-	.wheelColumn { padding: 0 4px; }
-	.backTriangle { padding: 2px; margin-right: 6px; }
-	.triangleBtn { padding: 4px; margin-left: 6px; }
+	.wheelColumn {
+		padding: 0 4px;
+	}
+	.backTriangle {
+		padding: 2px;
+		margin-right: 6px;
+	}
+	.triangleBtn {
+		padding: 4px;
+		margin-left: 6px;
+	}
 
-	.backTriangle svg, .triangleBtn svg { width: 22px; height: 22px; }
+	.backTriangle svg,
+	.triangleBtn svg {
+		width: 22px;
+		height: 22px;
+	}
 }

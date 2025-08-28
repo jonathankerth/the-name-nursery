@@ -1,18 +1,31 @@
 "use client";
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+
 import Header, { Gender } from "../../components/Header";
 import styles from "./names.module.css";
 
-export default function NamesClient() {
-	const searchParams = useSearchParams();
-	const type = (searchParams?.get("type") || "baby") as string;
+const pageColors: Record<string, string> = {
+	baby: "#EFD9AA",
+	boy: "#B7E9F0",
+	girl: "#EDD5EB",
+};
 
-	const pageColors: Record<string, string> = {
-		baby: "#EFD9AA",
-		boy: "#B7E9F0",
-		girl: "#EDD5EB",
-	};
+export default function NamesClient({ initialType }: { initialType?: string } = {}) {
+	const searchParams = useSearchParams();
+	const type = (initialType || (searchParams?.get("type") || "baby")) as string;
+
+	// Ensure the document background matches the selected type on mount so
+	// direct navigations to /names show the right background immediately.
+	useEffect(() => {
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", pageColors[type] || "#ffffff");
+			}
+		} catch {
+			// noop
+		}
+	}, [type]);
 
 	const darken = (hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -92,25 +105,24 @@ export default function NamesClient() {
 		touchStartRef.current = null;
 	};
 
-		const router = useRouter();
+	const router = useRouter();
 
-		const doSubmit = () => {
-				const letter = alphabet[index];
-				router.push(`/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(
-					letter
-				)}`);
-		};
+	const doSubmit = () => {
+		const letter = alphabet[index];
+		router.push(
+			`/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(
+				letter
+			)}`
+		);
+	};
 
-		// prefetch results route for the selected letter to make navigation instantaneous
-		useEffect(() => {
-			const letter = alphabet[index];
-			router.prefetch(`/results?type=${encodeURIComponent(type)}&letter=${encodeURIComponent(letter)}`);
-		}, [index, type, router, alphabet]);
+	// don't prefetch here — prefetching can cause server-side evaluation in dev
+	// and we already prefetch from the Home page for the typical navigation path.
 
-		const submit = (e: React.FormEvent) => {
-			e.preventDefault();
-			doSubmit();
-		};
+	const submit = (e: React.FormEvent) => {
+		e.preventDefault();
+		doSubmit();
+	};
 
 	const top = alphabet[(index - 1 + alphabet.length) % alphabet.length];
 	const center = alphabet[index];
@@ -123,16 +135,16 @@ export default function NamesClient() {
 		>
 			<Header type={type as Gender} />
 			<main className={styles.centerMain}>
-						<form
-							className={styles.sentenceForm}
-							onSubmit={submit}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									e.preventDefault();
-									doSubmit();
-								}
-							}}
-						>
+				<form
+					className={styles.sentenceForm}
+					onSubmit={submit}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							e.preventDefault();
+							doSubmit();
+						}
+					}}
+				>
 					<button
 						className={styles.backTriangle}
 						type="button"
@@ -153,9 +165,14 @@ export default function NamesClient() {
 					</button>
 
 					<span className={styles.phrase}>
-						A <span className={styles.selectedType} style={{ color: headerColor }}>{
-							type.charAt(0).toUpperCase() + type.slice(1)
-						}</span> name that starts with
+						A{" "}
+						<span
+							className={styles.selectedType}
+							style={{ color: headerColor }}
+						>
+							{type.charAt(0).toUpperCase() + type.slice(1)}
+						</span>{" "}
+						name that starts with
 					</span>
 
 					<div
@@ -194,8 +211,6 @@ export default function NamesClient() {
 							<polygon points="8,4 28,16 8,28" fill={wheelColor} />
 						</svg>
 					</button>
-
-
 				</form>
 			</main>
 		</div>

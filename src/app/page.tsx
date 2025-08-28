@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Header from "../components/Header";
+import NamesClient from "./names/NamesClient";
 
 export default function Home() {
 	const [picked, setPicked] = useState<"baby" | "girl" | "boy">("baby");
@@ -23,15 +24,42 @@ export default function Home() {
 	const wheelRef = useRef<HTMLDivElement | null>(null);
 
 	const router = useRouter();
+	const [showInlineNames, setShowInlineNames] = useState(false);
 
 	const doSubmit = useCallback(() => {
+		// update the CSS custom property used by the layout so the app-root
+ 		// background changes immediately and avoids a brief black flash.
+ 		const colorMap: Record<string, string> = {
+ 			baby: "#EFD9AA",
+ 			boy: "#B7E9F0",
+ 			girl: "#EDD5EB",
+ 		};
+		const bg = colorMap[picked] || "#ffffff";
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", bg);
+			}
+		} catch {
+			// noop in non-browser contexts
+		}
+		// show the names UI inline immediately to avoid any visible routing delay
+		setShowInlineNames(true);
 		router.push(`/names?type=${encodeURIComponent(picked)}`);
 	}, [picked, router]);
 
-	// Prefetch the names route for the currently selected type for instant navigation
+	// prefetch the names page for the currently selected type so navigation
+	// home -> names is instantaneous. This is safe because `names/page.tsx`
+	// now defensively awaits searchParams and no longer injects a nested <head>.
 	useEffect(() => {
-		router.prefetch(`/names?type=${encodeURIComponent(picked)}`);
+		try {
+			router.prefetch(`/names?type=${encodeURIComponent(picked)}`);
+		} catch {
+			// noop in environments where prefetch isn't available
+		}
 	}, [picked, router]);
+
+	// intentionally avoid prefetching /names to prevent server-side prefetch
+	// evaluation which can trigger runtime errors during development.
 
 	useEffect(() => {
 		// Add a global keydown handler so arrow keys always work,
@@ -51,13 +79,13 @@ export default function Home() {
 					target.getAttribute("contenteditable") === "true";
 				if (tag === "INPUT" || tag === "TEXTAREA" || editable) return;
 			}
-			if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+			if (e.key === "ArrowDown" || e.key === "ArrowRight") {
 				e.preventDefault();
 				changeByLocal(1);
 			} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
 				e.preventDefault();
 				changeByLocal(-1);
-			} else if (e.key === 'Enter') {
+			} else if (e.key === "Enter") {
 				// Enter should submit from anywhere on the page (unless focused in an input)
 				e.preventDefault();
 				doSubmit();
@@ -132,14 +160,13 @@ export default function Home() {
 
 	const wheelColor = darken(pageColors[picked] || "#111827", 0.22);
 
-	
-
 	return (
 		<div
 			className={styles.page}
 			style={{ background: pageColors[picked] || undefined }}
 		>
-			<Header type={picked} />
+			{!showInlineNames ? <Header type={picked} /> : null}
+			{showInlineNames ? <NamesClient initialType={picked} /> : null}
 			<main className={styles.centerMain}>
 				<form
 					className={styles.sentenceForm}

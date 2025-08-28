@@ -1,21 +1,25 @@
 .overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* transparent overlay so transitions are visually seamless */
-  background: transparent;
-  z-index: 200;
-  opacity: 0;
-  transition: opacity 160ms ease;
-  pointer-events: none; /* avoid blocking clicks when hidden */
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	/* transparent overlay so transitions are visually seamless */
+	background: transparent;
+	z-index: 200;
+	opacity: 0;
+	transition: opacity 160ms ease;
+	pointer-events: none; /* avoid blocking clicks when hidden */
 }
 .overlay.show {
-  opacity: 1;
-  pointer-events: auto;
+	opacity: 1;
+	pointer-events: auto;
 }
 .spinner {
-  display: none; /* hide the spinner for seamless transitions */
+	display: none; /* hide the spinner for seamless transitions */
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}

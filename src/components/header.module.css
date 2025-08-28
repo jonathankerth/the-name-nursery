@@ -12,7 +12,7 @@
 		top: 0;
 		z-index: 50;
 		padding: 12px 0;
-		background: rgba(255,255,255,0.02);
+		background: rgba(255, 255, 255, 0.02);
 		backdrop-filter: blur(6px);
 	}
 	/* use a more specific selector so it wins over the later `.restart` rule */

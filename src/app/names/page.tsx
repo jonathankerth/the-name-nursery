@@ -1,7 +1,9 @@
-import React from "react";
+"use client";
 import NamesClient from "./NamesClient";
 
 export default function NamesPage() {
-	// render the client component directly to avoid showing any suspense fallback
+	// Render the interactive client component directly. Keeping this route
+	// fully client-side avoids server-side suspense/await overhead and makes
+	// client navigation feel instant (no server roundtrip to await searchParams).
 	return <NamesClient />;
 }
