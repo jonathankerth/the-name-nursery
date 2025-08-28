@@ -234,3 +234,40 @@
 		font-size: 2rem;
 	}
 }
+
+/* Mobile-specific adjustments to preserve desktop look but improve UX on small screens */
+@media (max-width: 600px) {
+	/* keep the sentence on a single horizontal line where possible
+	   reduce spacing and allow horizontal scrolling on very narrow viewports */
+	.sentenceForm {
+		flex-direction: row;
+		align-items: center;
+		gap: 12px;
+		padding: 12px 12px;
+		min-width: 0;
+		white-space: nowrap;
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.fixedA, .fixedName {
+		font-size: 1.6rem;
+		margin: 0 6px;
+	}
+
+	.wheelColumn {
+		min-width: 110px;
+		gap: 8px;
+	}
+
+	.wheelOptionSelected { font-size: 1.9rem; }
+
+	.wheelOptionFaded { font-size: 1rem; }
+
+	.triangleBtn {
+		padding: 8px;
+		margin-left: 6px;
+	}
+
+	.centerMain { padding: 18px 10px 64px 10px; }
+}

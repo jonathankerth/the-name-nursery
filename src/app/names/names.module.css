@@ -11,13 +11,15 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 40px 20px 80px 20px;
+	/* reduce horizontal padding to give more room for the alphabet */
+	padding: 40px 12px 80px 12px;
 	min-height: calc(100vh - 120px); /* leave room for header */
 }
 .sentenceForm {
 	display: flex;
 	align-items: center;
-	gap: 72px;
+	/* reduce gap so the alphabet column takes less left/right space */
+	gap: 36px;
 	white-space: nowrap;
 }
 .phrase {
@@ -28,8 +30,33 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 12px;
-	min-width: 120px;
+	.phrase {
+		font-size: 1rem;
+	}
+	.wheelCenter {
+		font-size: 1.6rem;
+	}
+	.sentenceForm {
+		flex-direction: column;
+		gap: 18px;
+		padding: 18px 12px;
+		white-space: normal;
+		align-items: center;
+	}
+	.wheelColumn {
+			/* control horizontal space with padding instead of min-width */
+			gap: 10px;
+			padding: 0 6px;
+	}
+	.wheelFaded {
+		font-size: 1.1rem;
+	}
+	.triangleBtn {
+		padding: 10px;
+	}
+	.centerMain {
+		padding: 24px 12px 56px 12px;
+	}
 }
 .wheelFaded {
 	opacity: 0.85;
@@ -56,4 +83,6 @@
 	.wheelCenter {
 		font-size: 1.6rem;
 	}
+	/* tighten the wheel horizontal footprint on small screens by using padding */
+	.wheelColumn { padding: 0 6px; }
 }
