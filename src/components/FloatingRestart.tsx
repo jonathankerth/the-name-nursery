@@ -1,23 +1,31 @@
 "use client";
 import React from "react";
-import { useRouter, usePathname } from "next/navigation";
 import styles from "./FloatingRestart.module.css";
 
-export default function FloatingRestart() {
-	const router = useRouter();
-	const pathname = usePathname();
-	// Intentionally avoid prefetch to prevent server-side prefetch evaluation
-	// which can trigger unexpected server rendering behavior during navigation.
+interface FloatingRestartProps {
+	show?: boolean;
+	onRestart?: () => void;
+}
 
-	// hide the floating restart on the alphabet (/names) page
-	if (pathname && pathname.startsWith("/names")) return null;
+export default function FloatingRestart({ show = true, onRestart }: FloatingRestartProps) {
+	// Don't render if show is false
+	if (!show) return null;
+
+	const handleRestart = () => {
+		if (onRestart) {
+			onRestart();
+		} else {
+			// Fallback to page refresh if no onRestart function provided
+			window.location.reload();
+		}
+	};
 
 	return (
 		<div className={styles.floating}>
 			<button
 				className={styles.btn}
 				aria-label="Restart"
-				onClick={() => router.push("/")}
+				onClick={handleRestart}
 			>
 				Restart
 			</button>

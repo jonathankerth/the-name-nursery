@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import FloatingRestart from "@/components/FloatingRestart";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -66,7 +65,6 @@ export default function RootLayout({
 				/>
 				<div id="app-root">
 					{children}
-					<FloatingRestart />
 				</div>
 			</body>
 		</html>

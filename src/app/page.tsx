@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import styles from "./page.module.css";
 import Header from "../components/Header";
+import FloatingRestart from "../components/FloatingRestart";
 
 type Step = "gender" | "letter" | "results";
 
@@ -41,6 +42,22 @@ export default function Home() {
 		boy: "#B7E9F0",
 		girl: "#EDD5EB",
 	}), []);
+
+	// Restart function to reset all data
+	const handleRestart = useCallback(() => {
+		setCurrentStep("gender");
+		setSelectedGender("baby");
+		setSelectedLetter("A");
+		setLetterIndex(0);
+		// Reset background to baby color
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", pageColors.baby);
+			}
+		} catch {
+			// noop in non-browser contexts
+		}
+	}, [pageColors.baby]);
 
 	const darken = (hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -136,16 +153,18 @@ export default function Home() {
 
 	const onGenderTouchStart = (e: React.TouchEvent) => {
 		touchStartRef.current = e.touches[0].clientY;
+		e.preventDefault(); // Prevent scrolling
 	};
 
 	const onGenderTouchEnd = (e: React.TouchEvent) => {
 		if (touchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - touchStartRef.current;
-		if (Math.abs(delta) > 30) {
+		if (Math.abs(delta) > 20) { // Reduced threshold for easier mobile interaction
 			changeGender(delta > 0 ? -1 : 1);
 		}
 		touchStartRef.current = null;
+		e.preventDefault();
 	};
 
 	// Letter wheel handlers
@@ -162,17 +181,19 @@ export default function Home() {
 
 	const onLetterTouchStart = (e: React.TouchEvent) => {
 		letterTouchStartRef.current = e.touches[0].clientY;
+		e.preventDefault(); // Prevent scrolling
 	};
 
 	const onLetterTouchEnd = (e: React.TouchEvent) => {
 		if (letterTouchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - letterTouchStartRef.current;
-		if (Math.abs(delta) > 30)
+		if (Math.abs(delta) > 20) // Reduced threshold for easier mobile interaction
 			setLetterIndex(
 				(i) => (i + (delta > 0 ? -1 : 1) + alphabet.length) % alphabet.length
 			);
 		letterTouchStartRef.current = null;
+		e.preventDefault();
 	};
 
 	// Wheel order for gender selection
@@ -276,35 +297,38 @@ export default function Home() {
 							</svg>
 						</button>
 
-						<span className={styles.phrase}>
-							A{" "}
-							<span
-								className={styles.selectedType}
-								style={{ color: headerColor }}
-							>
-								{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
-							</span>{" "}
-							name that starts with
-						</span>
+						<div className={styles.letterSelectionContent}>
+							<div className={styles.phraseContainer}>
+								<span className={styles.phrase}>
+									<span
+										className={styles.selectedType}
+										style={{ color: headerColor }}
+									>
+										{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
+									</span>{" "}
+									names starting with
+								</span>
+							</div>
 
-						<div
-							ref={letterWheelRef}
-							className={styles.wheelColumn}
-							tabIndex={0}
-							onWheel={onLetterWheel}
-							onTouchStart={onLetterTouchStart}
-							onTouchEnd={onLetterTouchEnd}
-							role="listbox"
-							aria-label="Select a starting letter"
-						>
-							<div className={styles.wheelFaded} style={{ color: wheelColor }}>
-								{topLetter}
-							</div>
-							<div className={styles.wheelCenter} style={{ color: wheelColor }}>
-								{centerLetter}
-							</div>
-							<div className={styles.wheelFaded} style={{ color: wheelColor }}>
-								{bottomLetter}
+							<div
+								ref={letterWheelRef}
+								className={styles.wheelColumn}
+								tabIndex={0}
+								onWheel={onLetterWheel}
+								onTouchStart={onLetterTouchStart}
+								onTouchEnd={onLetterTouchEnd}
+								role="listbox"
+								aria-label="Select a starting letter"
+							>
+								<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+									{topLetter}
+								</div>
+								<div className={styles.wheelCenter} style={{ color: wheelColor }}>
+									{centerLetter}
+								</div>
+								<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+									{bottomLetter}
+								</div>
 							</div>
 						</div>
 
@@ -353,6 +377,10 @@ export default function Home() {
 					</div>
 				)}
 			</main>
+			<FloatingRestart 
+				show={currentStep !== "gender"} 
+				onRestart={handleRestart} 
+			/>
 		</div>
 	);
 }
