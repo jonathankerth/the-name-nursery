@@ -1,12 +1,14 @@
 "use client";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Header from "../components/Header";
-// NamesShell removed to reduce overlay-induced re-renders
+
+type Step = "gender" | "letter" | "results";
 
 export default function Home() {
-	const [picked, setPicked] = useState<"baby" | "girl" | "boy">("baby");
+	const [currentStep, setCurrentStep] = useState<Step>("gender");
+	const [selectedGender, setSelectedGender] = useState<"baby" | "girl" | "boy">("baby");
+	const [selectedLetter, setSelectedLetter] = useState("A");
 
 	const options = useMemo(
 		() => [
@@ -17,132 +19,28 @@ export default function Home() {
 		[]
 	);
 
-	// Wheel effect logic
-	const selectedIndex = options.findIndex((opt) => opt.value === picked);
+	const alphabet = useMemo(
+		() => Array.from({ length: 26 }).map((_, i) => String.fromCharCode(65 + i)),
+		[]
+	);
+
+	// Wheel effect logic for gender selection
+	const selectedIndex = options.findIndex((opt) => opt.value === selectedGender);
 	const lastScrollRef = useRef<number>(0);
 	const touchStartRef = useRef<number | null>(null);
 	const wheelRef = useRef<HTMLDivElement | null>(null);
 
-	const router = useRouter();
-	// No inline overlay; rely on prefetch + client navigation for instant feel
+	// Letter selection state
+	const [letterIndex, setLetterIndex] = useState(0);
+	const letterScrollRef = useRef<number>(0);
+	const letterTouchStartRef = useRef<number | null>(null);
+	const letterWheelRef = useRef<HTMLDivElement | null>(null);
 
-	const doSubmit = useCallback(() => {
-		// update the CSS custom property used by the layout so the app-root
-		// background changes immediately and avoids a brief black flash.
-		const colorMap: Record<string, string> = {
-			baby: "#EFD9AA",
-			boy: "#B7E9F0",
-			girl: "#EDD5EB",
-		};
-		const bg = colorMap[picked] || "#ffffff";
-		try {
-			if (document.documentElement) {
-				document.documentElement.style.setProperty("--background", bg);
-			}
-		} catch {
-			// noop in non-browser contexts
-		}
-		router.push(`/names?type=${encodeURIComponent(picked)}`);
-	}, [picked, router]);
-
-	// prefetch the names page for the currently selected type so navigation
-	// home -> names is instantaneous. This is safe because `names/page.tsx`
-	// now defensively awaits searchParams and no longer injects a nested <head>.
-	useEffect(() => {
-		try {
-			router.prefetch(`/names?type=${encodeURIComponent(picked)}`);
-		} catch {
-			// noop in environments where prefetch isn't available
-		}
-	}, [picked, router]);
-
-	// intentionally avoid prefetching /names to prevent server-side prefetch
-	// evaluation which can trigger runtime errors during development.
-
-	useEffect(() => {
-		// Add a global keydown handler so arrow keys always work,
-		// even when the wheel isn't focused. Ignore when typing in inputs.
-		const changeByLocal = (delta: number) => {
-			const idx = options.findIndex((opt) => opt.value === picked);
-			const newIdx = (idx + delta + options.length) % options.length;
-			setPicked(options[newIdx].value as "baby" | "girl" | "boy");
-		};
-
-		const onGlobalKey = (e: KeyboardEvent) => {
-			const target = e.target as HTMLElement | null;
-			if (target) {
-				const tag = target.tagName;
-				const editable =
-					target.getAttribute &&
-					target.getAttribute("contenteditable") === "true";
-				if (tag === "INPUT" || tag === "TEXTAREA" || editable) return;
-			}
-			if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-				e.preventDefault();
-				changeByLocal(1);
-			} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-				e.preventDefault();
-				changeByLocal(-1);
-			} else if (e.key === "Enter") {
-				// Enter should submit from anywhere on the page (unless focused in an input)
-				e.preventDefault();
-				doSubmit();
-			}
-		};
-		window.addEventListener("keydown", onGlobalKey);
-		return () => window.removeEventListener("keydown", onGlobalKey);
-	}, [picked, options, doSubmit]);
-
-	const changeBy = (delta: number) => {
-		const idx = options.findIndex((opt) => opt.value === picked);
-		const newIdx = (idx + delta + options.length) % options.length;
-		setPicked(options[newIdx].value as "baby" | "girl" | "boy");
-	};
-
-	const onWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
-		const now = Date.now();
-		if (now - lastScrollRef.current < 150) return; // throttle
-		if (Math.abs(e.deltaY) < 5) return;
-		lastScrollRef.current = now;
-		changeBy(e.deltaY > 0 ? 1 : -1);
-	};
-
-	const onKeyDown = (e: React.KeyboardEvent) => {
-		if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-			e.preventDefault();
-			changeBy(1);
-		} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-			e.preventDefault();
-			changeBy(-1);
-		}
-	};
-
-	const onTouchStart = (e: React.TouchEvent) => {
-		touchStartRef.current = e.touches[0].clientY;
-	};
-
-	const onTouchEnd = (e: React.TouchEvent) => {
-		if (touchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - touchStartRef.current;
-		if (Math.abs(delta) > 30) {
-			changeBy(delta > 0 ? -1 : 1); // swipe up -> next
-		}
-		touchStartRef.current = null;
-	};
-	// Wheel order: [top, center, bottom]
-	const getWheelOrder = () => {
-		if (selectedIndex === 0) return [2, 0, 1]; // Baby selected
-		if (selectedIndex === 1) return [0, 1, 2]; // Girl selected
-		return [1, 2, 0]; // Boy selected
-	};
-
-	const pageColors: Record<string, string> = {
+	const pageColors = useMemo(() => ({
 		baby: "#EFD9AA",
 		boy: "#B7E9F0",
 		girl: "#EDD5EB",
-	};
+	}), []);
 
 	const darken = (hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -156,77 +54,304 @@ export default function Home() {
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
 
-	const wheelColor = darken(pageColors[picked] || "#111827", 0.22);
+	const wheelColor = darken(pageColors[selectedGender] || "#111827", 0.22);
+	const headerColor = darken(pageColors[selectedGender] || "#111827", 0.35);
+
+	// Update background color and selected letter when step changes
+	useEffect(() => {
+		const bg = pageColors[selectedGender] || "#ffffff";
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", bg);
+			}
+		} catch {
+			// noop in non-browser contexts
+		}
+		setSelectedLetter(alphabet[letterIndex]);
+	}, [selectedGender, letterIndex, alphabet, pageColors]);
+
+	const changeGender = useCallback((delta: number) => {
+		const idx = options.findIndex((opt) => opt.value === selectedGender);
+		const newIdx = (idx + delta + options.length) % options.length;
+		setSelectedGender(options[newIdx].value as "baby" | "girl" | "boy");
+	}, [selectedGender, options]);
+
+	// Keyboard handlers
+	useEffect(() => {
+		const onGlobalKey = (e: KeyboardEvent) => {
+			const target = e.target as HTMLElement | null;
+			if (target) {
+				const tag = target.tagName;
+				const editable =
+					target.getAttribute &&
+					target.getAttribute("contenteditable") === "true";
+				if (tag === "INPUT" || tag === "TEXTAREA" || editable) return;
+			}
+
+			if (currentStep === "gender") {
+				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+					e.preventDefault();
+					changeGender(1);
+				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+					e.preventDefault();
+					changeGender(-1);
+				} else if (e.key === "Enter") {
+					e.preventDefault();
+					setCurrentStep("letter");
+				}
+			} else if (currentStep === "letter") {
+				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+					e.preventDefault();
+					setLetterIndex((i) => (i + 1) % alphabet.length);
+				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+					e.preventDefault();
+					setLetterIndex((i) => (i - 1 + alphabet.length) % alphabet.length);
+				} else if (e.key === "Enter") {
+					e.preventDefault();
+					setCurrentStep("results");
+				} else if (e.key === "Escape" || e.key === "Backspace") {
+					e.preventDefault();
+					setCurrentStep("gender");
+				}
+			} else if (currentStep === "results") {
+				if (e.key === "Escape" || e.key === "Backspace") {
+					e.preventDefault();
+					setCurrentStep("letter");
+				}
+			}
+		};
+		window.addEventListener("keydown", onGlobalKey);
+		return () => window.removeEventListener("keydown", onGlobalKey);
+	}, [currentStep, alphabet.length, changeGender]);
+
+	// Gender wheel handlers
+	const onGenderWheel = (e: React.WheelEvent) => {
+		e.preventDefault();
+		const now = Date.now();
+		if (now - lastScrollRef.current < 150) return;
+		if (Math.abs(e.deltaY) < 5) return;
+		lastScrollRef.current = now;
+		changeGender(e.deltaY > 0 ? 1 : -1);
+	};
+
+	const onGenderTouchStart = (e: React.TouchEvent) => {
+		touchStartRef.current = e.touches[0].clientY;
+	};
+
+	const onGenderTouchEnd = (e: React.TouchEvent) => {
+		if (touchStartRef.current == null) return;
+		const endY = e.changedTouches[0].clientY;
+		const delta = endY - touchStartRef.current;
+		if (Math.abs(delta) > 30) {
+			changeGender(delta > 0 ? -1 : 1);
+		}
+		touchStartRef.current = null;
+	};
+
+	// Letter wheel handlers
+	const onLetterWheel = (e: React.WheelEvent) => {
+		e.preventDefault();
+		const now = Date.now();
+		if (now - letterScrollRef.current < 120) return;
+		if (Math.abs(e.deltaY) < 5) return;
+		letterScrollRef.current = now;
+		setLetterIndex(
+			(i) => (i + (e.deltaY > 0 ? 1 : -1) + alphabet.length) % alphabet.length
+		);
+	};
+
+	const onLetterTouchStart = (e: React.TouchEvent) => {
+		letterTouchStartRef.current = e.touches[0].clientY;
+	};
+
+	const onLetterTouchEnd = (e: React.TouchEvent) => {
+		if (letterTouchStartRef.current == null) return;
+		const endY = e.changedTouches[0].clientY;
+		const delta = endY - letterTouchStartRef.current;
+		if (Math.abs(delta) > 30)
+			setLetterIndex(
+				(i) => (i + (delta > 0 ? -1 : 1) + alphabet.length) % alphabet.length
+			);
+		letterTouchStartRef.current = null;
+	};
+
+	// Wheel order for gender selection
+	const getWheelOrder = () => {
+		if (selectedIndex === 0) return [2, 0, 1]; // Baby selected
+		if (selectedIndex === 1) return [0, 1, 2]; // Girl selected
+		return [1, 2, 0]; // Boy selected
+	};
+
+	// Letter wheel display
+	const topLetter = alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
+	const centerLetter = alphabet[letterIndex];
+	const bottomLetter = alphabet[(letterIndex + 1) % alphabet.length];
 
 	return (
 		<div
 			className={styles.page}
-			style={{ background: pageColors[picked] || undefined }}
+			style={{ background: pageColors[selectedGender] || undefined }}
 		>
-			<Header type={picked} />
+			<Header type={selectedGender} />
 			<main className={styles.centerMain}>
-				<form
-					className={styles.sentenceForm}
-					onSubmit={(e) => {
-						e.preventDefault();
-						doSubmit();
-					}}
-					onKeyDown={(e) => {
-						if (e.key === "Enter") {
+				{currentStep === "gender" && (
+					<form
+						className={styles.sentenceForm}
+						onSubmit={(e) => {
 							e.preventDefault();
-							doSubmit();
-						}
-					}}
-				>
-					<span className={styles.fixedA}>A</span>
-					<div
-						ref={wheelRef}
-						className={styles.wheelColumn}
-						onWheel={onWheel}
-						onKeyDown={onKeyDown}
-						onTouchStart={onTouchStart}
-						onTouchEnd={onTouchEnd}
-						tabIndex={0}
-						role="listbox"
-						aria-label="Name type selector"
+							setCurrentStep("letter");
+						}}
 					>
+						<span className={styles.fixedA}>A</span>
 						<div
-							className={styles.wheelOptionFaded}
-							style={{ color: wheelColor }}
+							ref={wheelRef}
+							className={styles.wheelColumn}
+							onWheel={onGenderWheel}
+							onTouchStart={onGenderTouchStart}
+							onTouchEnd={onGenderTouchEnd}
+							tabIndex={0}
+							role="listbox"
+							aria-label="Name type selector"
 						>
-							{options[getWheelOrder()[0]].label}
+							<div
+								className={styles.wheelOptionFaded}
+								style={{ color: wheelColor }}
+							>
+								{options[getWheelOrder()[0]].label}
+							</div>
+							<div
+								className={styles.wheelOptionSelected}
+								style={{ color: wheelColor }}
+							>
+								{options[getWheelOrder()[1]].label}
+							</div>
+							<div
+								className={styles.wheelOptionFaded}
+								style={{ color: wheelColor }}
+							>
+								{options[getWheelOrder()[2]].label}
+							</div>
 						</div>
-						<div
-							className={styles.wheelOptionSelected}
-							style={{ color: wheelColor }}
+						<span className={styles.fixedName}>Name</span>
+						<button
+							type="submit"
+							className={styles.triangleBtn}
+							aria-label="Continue to letter selection"
 						>
-							{options[getWheelOrder()[1]].label}
+							<svg
+								width="32"
+								height="32"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
+							</svg>
+						</button>
+					</form>
+				)}
+
+				{currentStep === "letter" && (
+					<form
+						className={styles.sentenceForm}
+						onSubmit={(e) => {
+							e.preventDefault();
+							setCurrentStep("results");
+						}}
+					>
+						<button
+							className={styles.backTriangle}
+							type="button"
+							aria-label="Back to gender selection"
+							onClick={() => setCurrentStep("gender")}
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+							</svg>
+						</button>
+
+						<span className={styles.phrase}>
+							A{" "}
+							<span
+								className={styles.selectedType}
+								style={{ color: headerColor }}
+							>
+								{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
+							</span>{" "}
+							name that starts with
+						</span>
+
+						<div
+							ref={letterWheelRef}
+							className={styles.wheelColumn}
+							tabIndex={0}
+							onWheel={onLetterWheel}
+							onTouchStart={onLetterTouchStart}
+							onTouchEnd={onLetterTouchEnd}
+							role="listbox"
+							aria-label="Select a starting letter"
+						>
+							<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+								{topLetter}
+							</div>
+							<div className={styles.wheelCenter} style={{ color: wheelColor }}>
+								{centerLetter}
+							</div>
+							<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+								{bottomLetter}
+							</div>
 						</div>
-						<div
-							className={styles.wheelOptionFaded}
-							style={{ color: wheelColor }}
+
+						<button
+							className={styles.triangleBtn}
+							aria-label="See results"
+							type="submit"
 						>
-							{options[getWheelOrder()[2]].label}
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
+							</svg>
+						</button>
+					</form>
+				)}
+
+				{currentStep === "results" && (
+					<div className={styles.resultsContainer}>
+						<button
+							className={styles.backTriangle}
+							type="button"
+							aria-label="Back to letter selection"
+							onClick={() => setCurrentStep("letter")}
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+							</svg>
+						</button>
+						<div className={styles.resultsCard}>
+							<h2>
+								{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)} names starting with {selectedLetter}
+							</h2>
+							<p>Coming soon! We&apos;re working on showing matching names — stay tuned.</p>
 						</div>
 					</div>
-					<span className={styles.fixedName}>Name</span>
-					<button
-						type="submit"
-						className={styles.triangleBtn}
-						disabled={!picked}
-						aria-label="Submit"
-					>
-						<svg
-							width="32"
-							height="32"
-							viewBox="0 0 32 32"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-						</svg>
-					</button>
-				</form>
+				)}
 			</main>
 		</div>
 	);
