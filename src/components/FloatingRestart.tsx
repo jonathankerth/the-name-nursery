@@ -7,7 +7,10 @@ interface FloatingRestartProps {
 	onRestart?: () => void;
 }
 
-export default function FloatingRestart({ show = true, onRestart }: FloatingRestartProps) {
+export default function FloatingRestart({
+	show = true,
+	onRestart,
+}: FloatingRestartProps) {
 	// Don't render if show is false
 	if (!show) return null;
 

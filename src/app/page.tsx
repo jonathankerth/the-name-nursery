@@ -8,7 +8,9 @@ type Step = "gender" | "letter" | "results";
 
 export default function Home() {
 	const [currentStep, setCurrentStep] = useState<Step>("gender");
-	const [selectedGender, setSelectedGender] = useState<"baby" | "girl" | "boy">("baby");
+	const [selectedGender, setSelectedGender] = useState<"baby" | "girl" | "boy">(
+		"baby"
+	);
 	const [selectedLetter, setSelectedLetter] = useState("A");
 
 	const options = useMemo(
@@ -26,7 +28,9 @@ export default function Home() {
 	);
 
 	// Wheel effect logic for gender selection
-	const selectedIndex = options.findIndex((opt) => opt.value === selectedGender);
+	const selectedIndex = options.findIndex(
+		(opt) => opt.value === selectedGender
+	);
 	const lastScrollRef = useRef<number>(0);
 	const touchStartRef = useRef<number | null>(null);
 	const wheelRef = useRef<HTMLDivElement | null>(null);
@@ -37,11 +41,14 @@ export default function Home() {
 	const letterTouchStartRef = useRef<number | null>(null);
 	const letterWheelRef = useRef<HTMLDivElement | null>(null);
 
-	const pageColors = useMemo(() => ({
-		baby: "#EFD9AA",
-		boy: "#B7E9F0",
-		girl: "#EDD5EB",
-	}), []);
+	const pageColors = useMemo(
+		() => ({
+			baby: "#EFD9AA",
+			boy: "#B7E9F0",
+			girl: "#EDD5EB",
+		}),
+		[]
+	);
 
 	// Restart function to reset all data
 	const handleRestart = useCallback(() => {
@@ -52,7 +59,10 @@ export default function Home() {
 		// Reset background to baby color
 		try {
 			if (document.documentElement) {
-				document.documentElement.style.setProperty("--background", pageColors.baby);
+				document.documentElement.style.setProperty(
+					"--background",
+					pageColors.baby
+				);
 			}
 		} catch {
 			// noop in non-browser contexts
@@ -87,11 +97,14 @@ export default function Home() {
 		setSelectedLetter(alphabet[letterIndex]);
 	}, [selectedGender, letterIndex, alphabet, pageColors]);
 
-	const changeGender = useCallback((delta: number) => {
-		const idx = options.findIndex((opt) => opt.value === selectedGender);
-		const newIdx = (idx + delta + options.length) % options.length;
-		setSelectedGender(options[newIdx].value as "baby" | "girl" | "boy");
-	}, [selectedGender, options]);
+	const changeGender = useCallback(
+		(delta: number) => {
+			const idx = options.findIndex((opt) => opt.value === selectedGender);
+			const newIdx = (idx + delta + options.length) % options.length;
+			setSelectedGender(options[newIdx].value as "baby" | "girl" | "boy");
+		},
+		[selectedGender, options]
+	);
 
 	// Keyboard handlers
 	useEffect(() => {
@@ -160,7 +173,8 @@ export default function Home() {
 		if (touchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - touchStartRef.current;
-		if (Math.abs(delta) > 20) { // Reduced threshold for easier mobile interaction
+		if (Math.abs(delta) > 20) {
+			// Reduced threshold for easier mobile interaction
 			changeGender(delta > 0 ? -1 : 1);
 		}
 		touchStartRef.current = null;
@@ -188,7 +202,8 @@ export default function Home() {
 		if (letterTouchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - letterTouchStartRef.current;
-		if (Math.abs(delta) > 20) // Reduced threshold for easier mobile interaction
+		if (Math.abs(delta) > 20)
+			// Reduced threshold for easier mobile interaction
 			setLetterIndex(
 				(i) => (i + (delta > 0 ? -1 : 1) + alphabet.length) % alphabet.length
 			);
@@ -204,7 +219,8 @@ export default function Home() {
 	};
 
 	// Letter wheel display
-	const topLetter = alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
+	const topLetter =
+		alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
 	const centerLetter = alphabet[letterIndex];
 	const bottomLetter = alphabet[(letterIndex + 1) % alphabet.length];
 
@@ -284,7 +300,11 @@ export default function Home() {
 							className={styles.backTriangle}
 							type="button"
 							aria-label="Back to gender selection"
-							onClick={() => setCurrentStep("gender")}
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								setCurrentStep("gender");
+							}}
 						>
 							<svg
 								width="36"
@@ -300,13 +320,17 @@ export default function Home() {
 						<div className={styles.letterSelectionContent}>
 							<div className={styles.phraseContainer}>
 								<span className={styles.phrase}>
-									<span
-										className={styles.selectedType}
-										style={{ color: headerColor }}
-									>
-										{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
-									</span>{" "}
-									names starting with
+									<span className={styles.firstLine}>
+										<span
+											className={styles.selectedType}
+											style={{ color: headerColor }}
+										>
+											{selectedGender.charAt(0).toUpperCase() +
+												selectedGender.slice(1)}
+										</span>{" "}
+										names
+									</span>
+									<span className={styles.secondLine}>starting with</span>
 								</span>
 							</div>
 
@@ -320,13 +344,22 @@ export default function Home() {
 								role="listbox"
 								aria-label="Select a starting letter"
 							>
-								<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+								<div
+									className={styles.wheelFaded}
+									style={{ color: wheelColor }}
+								>
 									{topLetter}
 								</div>
-								<div className={styles.wheelCenter} style={{ color: wheelColor }}>
+								<div
+									className={styles.wheelCenter}
+									style={{ color: wheelColor }}
+								>
 									{centerLetter}
 								</div>
-								<div className={styles.wheelFaded} style={{ color: wheelColor }}>
+								<div
+									className={styles.wheelFaded}
+									style={{ color: wheelColor }}
+								>
 									{bottomLetter}
 								</div>
 							</div>
@@ -356,7 +389,11 @@ export default function Home() {
 							className={styles.backTriangle}
 							type="button"
 							aria-label="Back to letter selection"
-							onClick={() => setCurrentStep("letter")}
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								setCurrentStep("letter");
+							}}
 						>
 							<svg
 								width="36"
@@ -370,16 +407,21 @@ export default function Home() {
 						</button>
 						<div className={styles.resultsCard}>
 							<h2>
-								{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)} names starting with {selectedLetter}
+								{selectedGender.charAt(0).toUpperCase() +
+									selectedGender.slice(1)}{" "}
+								names starting with {selectedLetter}
 							</h2>
-							<p>Coming soon! We&apos;re working on showing matching names — stay tuned.</p>
+							<p>
+								Coming soon! We&apos;re working on showing matching names — stay
+								tuned.
+							</p>
 						</div>
 					</div>
 				)}
 			</main>
-			<FloatingRestart 
-				show={currentStep !== "gender"} 
-				onRestart={handleRestart} 
+			<FloatingRestart
+				show={currentStep !== "gender"}
+				onRestart={handleRestart}
 			/>
 		</div>
 	);

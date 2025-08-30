@@ -63,9 +63,7 @@ export default function RootLayout({
 						`,
 					}}
 				/>
-				<div id="app-root">
-					{children}
-				</div>
+				<div id="app-root">{children}</div>
 			</body>
 		</html>
 	);
