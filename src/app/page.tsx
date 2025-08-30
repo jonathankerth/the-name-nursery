@@ -55,14 +55,9 @@ export default function Home() {
 
 	// Function to fetch name recommendations
 	const fetchNameRecommendations = useCallback(async () => {
-		console.log("Starting to fetch names for:", {
-			gender: selectedGender,
-			letter: selectedLetter,
-		});
 		setCurrentStep("loading");
 
 		try {
-			console.log("Making API call to /api/recommend-names");
 			const response = await fetch("/api/recommend-names", {
 				method: "POST",
 				headers: {
@@ -74,19 +69,15 @@ export default function Home() {
 				}),
 			});
 
-			console.log("API response status:", response.status);
-
 			if (!response.ok) {
 				throw new Error("Failed to fetch recommendations");
 			}
 
 			const data = await response.json();
-			console.log("API response data:", data);
 			setRecommendedNames(data.names || []);
 			setIsAIGenerated(!data.fallback);
 			setCurrentStep("results");
-		} catch (error) {
-			console.error("Error fetching names:", error);
+		} catch {
 			// Fallback to some default names
 			const fallbackNames =
 				selectedGender === "baby"

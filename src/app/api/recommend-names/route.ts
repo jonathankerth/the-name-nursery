@@ -7,7 +7,6 @@ const openai = new OpenAI({
 
 // Simple test endpoint
 export async function GET() {
-	console.log("GET endpoint called - API is working!");
 	return NextResponse.json({
 		message: "API is working",
 		hasApiKey: !!process.env.OPENAI_API_KEY,
@@ -16,13 +15,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-	console.log("=== API ROUTE CALLED ===");
-
 	try {
 		const requestData = await request.json();
 		const { gender, letter } = requestData;
-
-		console.log("Received request:", { gender, letter });
 
 		if (!gender || !letter) {
 			return NextResponse.json(
@@ -50,8 +45,6 @@ Requirements:
 
 Names:`;
 
-		console.log("Sending prompt to OpenAI:", prompt);
-
 		const completion = await openai.chat.completions.create({
 			model: process.env.OPENAI_MODEL || "gpt-4o-mini",
 			messages: [
@@ -63,8 +56,6 @@ Names:`;
 			max_tokens: 150,
 			temperature: 0.8,
 		});
-
-		console.log("OpenAI call successful!");
 
 		const response = completion.choices[0]?.message?.content?.trim();
 
@@ -81,16 +72,12 @@ Names:`;
 			.map((name) => name.replace(/^-\s*/, "")) // Remove bullet points if present
 			.slice(0, 10); // Ensure we only return 10 names
 
-		console.log("Final names being returned:", names);
-
 		return NextResponse.json({
 			names,
 			gender,
 			letter,
 		});
-	} catch (error) {
-		console.error("Error generating names:", error);
-
+	} catch {
 		return NextResponse.json(
 			{ error: "Failed to generate names. Please try again." },
 			{ status: 500 }
