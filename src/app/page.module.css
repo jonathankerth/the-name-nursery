@@ -4,7 +4,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 40px 20px 80px 20px;
+	padding: 20px 20px 80px 20px;
 	min-height: calc(100vh - 120px); /* leave room for header */
 }
 .page {
@@ -351,7 +351,7 @@
 /* Mobile-specific adjustments */
 @media (max-width: 600px) {
 	.centerMain {
-		padding: 16px 8px 80px 8px;
+		padding: 8px 8px 80px 8px;
 		min-height: calc(100vh - 100px);
 	}
 

@@ -2,9 +2,10 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import styles from "./page.module.css";
 import Header from "../components/Header";
-import FloatingRestart from "../components/FloatingRestart";
+import LoadingNames from "../components/LoadingNames";
+import NamesResults from "../components/NamesResults";
 
-type Step = "gender" | "letter" | "results";
+type Step = "gender" | "letter" | "loading" | "results";
 
 export default function Home() {
 	const [currentStep, setCurrentStep] = useState<Step>("gender");
@@ -12,6 +13,8 @@ export default function Home() {
 		"baby"
 	);
 	const [selectedLetter, setSelectedLetter] = useState("A");
+	const [recommendedNames, setRecommendedNames] = useState<string[]>([]);
+	const [isAIGenerated, setIsAIGenerated] = useState(false);
 
 	const options = useMemo(
 		() => [
@@ -50,24 +53,94 @@ export default function Home() {
 		[]
 	);
 
-	// Restart function to reset all data
-	const handleRestart = useCallback(() => {
-		setCurrentStep("gender");
-		setSelectedGender("baby");
-		setSelectedLetter("A");
-		setLetterIndex(0);
-		// Reset background to baby color
+	// Function to fetch name recommendations
+	const fetchNameRecommendations = useCallback(async () => {
+		console.log("Starting to fetch names for:", {
+			gender: selectedGender,
+			letter: selectedLetter,
+		});
+		setCurrentStep("loading");
+
 		try {
-			if (document.documentElement) {
-				document.documentElement.style.setProperty(
-					"--background",
-					pageColors.baby
-				);
+			console.log("Making API call to /api/recommend-names");
+			const response = await fetch("/api/recommend-names", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					gender: selectedGender,
+					letter: selectedLetter,
+				}),
+			});
+
+			console.log("API response status:", response.status);
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch recommendations");
 			}
-		} catch {
-			// noop in non-browser contexts
+
+			const data = await response.json();
+			console.log("API response data:", data);
+			setRecommendedNames(data.names || []);
+			setIsAIGenerated(!data.fallback);
+			setCurrentStep("results");
+		} catch (error) {
+			console.error("Error fetching names:", error);
+			// Fallback to some default names
+			const fallbackNames =
+				selectedGender === "baby"
+					? [
+							"Alex",
+							"Avery",
+							"Casey",
+							"Jordan",
+							"Morgan",
+							"Quinn",
+							"Riley",
+							"Sage",
+							"Taylor",
+							"River",
+					  ]
+					: selectedGender === "girl"
+					? [
+							"Ava",
+							"Alice",
+							"Anna",
+							"Amy",
+							"Aria",
+							"Aurora",
+							"Abigail",
+							"Addison",
+							"Aubrey",
+							"Andrea",
+					  ]
+					: [
+							"Alexander",
+							"Andrew",
+							"Anthony",
+							"Adrian",
+							"Aaron",
+							"Adam",
+							"Austin",
+							"Antonio",
+							"Abraham",
+							"Axel",
+					  ];
+
+			const filteredNames = fallbackNames.filter((name) =>
+				name.toLowerCase().startsWith(selectedLetter.toLowerCase())
+			);
+
+			setRecommendedNames(
+				filteredNames.length > 0
+					? filteredNames.slice(0, 10)
+					: fallbackNames.slice(0, 10)
+			);
+			setIsAIGenerated(false);
+			setCurrentStep("results");
 		}
-	}, [pageColors.baby]);
+	}, [selectedGender, selectedLetter]);
 
 	const darken = (hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -138,7 +211,7 @@ export default function Home() {
 					setLetterIndex((i) => (i - 1 + alphabet.length) % alphabet.length);
 				} else if (e.key === "Enter") {
 					e.preventDefault();
-					setCurrentStep("results");
+					fetchNameRecommendations();
 				} else if (e.key === "Escape" || e.key === "Backspace") {
 					e.preventDefault();
 					setCurrentStep("gender");
@@ -152,7 +225,7 @@ export default function Home() {
 		};
 		window.addEventListener("keydown", onGlobalKey);
 		return () => window.removeEventListener("keydown", onGlobalKey);
-	}, [currentStep, alphabet.length, changeGender]);
+	}, [currentStep, alphabet.length, changeGender, fetchNameRecommendations]);
 
 	// Gender wheel handlers
 	const onGenderWheel = (e: React.WheelEvent) => {
@@ -293,7 +366,7 @@ export default function Home() {
 						className={styles.sentenceForm}
 						onSubmit={(e) => {
 							e.preventDefault();
-							setCurrentStep("results");
+							fetchNameRecommendations();
 						}}
 					>
 						<button
@@ -383,46 +456,20 @@ export default function Home() {
 					</form>
 				)}
 
+				{currentStep === "loading" && (
+					<LoadingNames gender={selectedGender} letter={selectedLetter} />
+				)}
+
 				{currentStep === "results" && (
-					<div className={styles.resultsContainer}>
-						<button
-							className={styles.backTriangle}
-							type="button"
-							aria-label="Back to letter selection"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								setCurrentStep("letter");
-							}}
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
-							</svg>
-						</button>
-						<div className={styles.resultsCard}>
-							<h2>
-								{selectedGender.charAt(0).toUpperCase() +
-									selectedGender.slice(1)}{" "}
-								names starting with {selectedLetter}
-							</h2>
-							<p>
-								Coming soon! We&apos;re working on showing matching names — stay
-								tuned.
-							</p>
-						</div>
-					</div>
+					<NamesResults
+						names={recommendedNames}
+						gender={selectedGender}
+						letter={selectedLetter}
+						onBack={() => setCurrentStep("letter")}
+						isAIGenerated={isAIGenerated}
+					/>
 				)}
 			</main>
-			<FloatingRestart
-				show={currentStep !== "gender"}
-				onRestart={handleRestart}
-			/>
 		</div>
 	);
 }

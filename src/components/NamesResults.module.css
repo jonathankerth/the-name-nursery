@@ -1,0 +1,184 @@
+.container {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	padding: 1rem 2rem 2rem 2rem;
+	position: relative;
+}
+
+.backButton {
+	position: absolute;
+	top: 2rem;
+	left: 2rem;
+	background: none;
+	border: none;
+	color: rgba(255, 255, 255, 0.8);
+	cursor: pointer;
+	padding: 0.5rem;
+	border-radius: 0.5rem;
+	transition: all 0.2s ease;
+	z-index: 10;
+	display: none; /* Hide the back button */
+}
+
+.backButton:hover {
+	color: #ffffff;
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	max-width: 800px;
+	margin: 0 auto;
+	width: 100%;
+	padding-top: 2rem;
+}
+
+.header {
+	text-align: center;
+	margin-bottom: 2.5rem;
+}
+
+.title {
+	font-size: 2.2rem;
+	font-weight: 700;
+	color: #ffffff;
+	margin-bottom: 0.5rem;
+	line-height: 1.2;
+}
+
+.subtitle {
+	font-size: 1.1rem;
+	color: #111827;
+	margin: 0;
+}
+
+.namesGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+	width: 100%;
+	margin-bottom: 2.5rem;
+}
+
+.nameCard {
+	background: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(10px);
+	border-radius: 12px;
+	padding: 1.5rem 1rem;
+	text-align: center;
+	transition: all 0.3s ease;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.nameCard:hover {
+	background: rgba(0, 0, 0, 0.65);
+	transform: translateY(-2px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.nameName {
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: #ffffff;
+}
+
+.actions {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+}
+
+.actionButton {
+	background: rgba(0, 0, 0, 0.4);
+	color: #ffffff;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	padding: 0.75rem 1.5rem;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	backdrop-filter: blur(10px);
+}
+
+.actionButton:hover {
+	background: rgba(0, 0, 0, 0.6);
+	transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+	.container {
+		padding: 0.5rem 1rem 1rem 1rem;
+	}
+
+	.content {
+		padding-top: 1rem;
+	}
+
+	.backButton {
+		top: 1rem;
+		left: 1rem;
+	}
+
+	.title {
+		font-size: 1.8rem;
+	}
+
+	.subtitle {
+		font-size: 1rem;
+	}
+
+	.namesGrid {
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 0.8rem;
+	}
+
+	.nameCard {
+		padding: 1.2rem 0.8rem;
+	}
+
+	.nameName {
+		font-size: 1.2rem;
+	}
+
+	.actions {
+		flex-direction: column;
+		width: 100%;
+		max-width: 300px;
+	}
+
+	.actionButton {
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.container {
+		padding: 0.25rem 0.5rem 0.5rem 0.5rem;
+	}
+
+	.content {
+		padding-top: 0.5rem;
+	}
+
+	.title {
+		font-size: 1.5rem;
+	}
+
+	.namesGrid {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.6rem;
+	}
+
+	.nameCard {
+		padding: 1rem 0.6rem;
+	}
+
+	.nameName {
+		font-size: 1.1rem;
+	}
+}
