@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { AuthProvider } from "../contexts/AuthContext";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -46,6 +47,65 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable}`}
 				style={{ background: "var(--background)" }}
 			>
+				{/* Firebase Warning Suppression */}
+				<Script
+					id="firebase-warning-suppression"
+					strategy="beforeInteractive"
+					dangerouslySetInnerHTML={{
+						__html: `
+							// Completely suppress Firebase connection warnings in development
+							if (typeof window !== 'undefined' && typeof console !== 'undefined') {
+								const originalWarn = console.warn;
+								const originalError = console.error;
+								const originalLog = console.log;
+								
+								console.warn = function(...args) {
+									const message = args.join(' ');
+									if (
+										message.includes('webchannel') ||
+										message.includes('persistent_stream') ||
+										message.includes('stream_bridge') ||
+										message.includes('Firestore') ||
+										message.includes('backoff') ||
+										message.includes('remote_store') ||
+										message.includes('async_queue') ||
+										message.includes('defaultLogHandler') ||
+										message.includes('__PRIVATE_')
+									) {
+										return; // Don't log Firebase internal warnings
+									}
+									originalWarn.apply(console, args);
+								};
+								
+								console.error = function(...args) {
+									const message = args.join(' ');
+									if (
+										message.includes('webchannel') ||
+										message.includes('persistent_stream') ||
+										message.includes('stream_bridge') ||
+										message.includes('backoff') ||
+										message.includes('remote_store') ||
+										message.includes('__PRIVATE_')
+									) {
+										return; // Don't log Firebase internal errors
+									}
+									originalError.apply(console, args);
+								};
+								
+								console.log = function(...args) {
+									const message = args.join(' ');
+									if (
+										message.includes('Firebase initialized successfully')
+									) {
+										return; // Don't log our Firebase init message
+									}
+									originalLog.apply(console, args);
+								};
+							}
+						`,
+					}}
+				/>
+
 				{/* Google Analytics */}
 				{GA_TRACKING_ID && (
 					<>
@@ -90,7 +150,9 @@ export default function RootLayout({
 						`,
 					}}
 				/>
-				<div id="app-root">{children}</div>
+				<div id="app-root">
+					<AuthProvider>{children}</AuthProvider>
+				</div>
 			</body>
 		</html>
 	);

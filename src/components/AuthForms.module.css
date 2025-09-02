@@ -1,0 +1,865 @@
+/* Auth Container */
+.authContainer {
+	background: white;
+	border-radius: 12px;
+	padding: 0;
+	max-width: 400px;
+	width: 90vw;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+	position: relative;
+}
+
+.authHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 24px;
+	border-bottom: 1px solid #eee;
+	background: #f9f9f9;
+	border-radius: 12px 12px 0 0;
+}
+
+.authHeader h2 {
+	margin: 0;
+	color: #333;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #666;
+	line-height: 1;
+	padding: 0;
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+	color: #333;
+}
+
+/* Error Message */
+.errorMessage {
+	background: #fee;
+	color: #c53030;
+	padding: 10px 16px;
+	margin: 16px 20px;
+	border-radius: 6px;
+	border: 1px solid #fed7d7;
+	font-size: 0.85rem;
+}
+
+/* Success Message */
+.successMessage {
+	background: #f0fff4;
+	color: #22543d;
+	padding: 10px 16px;
+	margin: 16px 20px;
+	border-radius: 6px;
+	border: 1px solid #9ae6b4;
+	font-size: 0.85rem;
+}
+
+/* Auth Methods */
+.authMethods {
+	padding: 20px;
+}
+
+/* Google Button */
+.googleButton {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px 16px;
+	border: 1px solid #d1d5db;
+	background: white;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	color: #374151;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 16px;
+}
+
+.googleButton:hover:not(:disabled) {
+	border-color: #9ca3af;
+	background: #f9fafb;
+}
+
+.googleButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.googleIcon {
+	width: 18px;
+	height: 18px;
+}
+
+/* Divider */
+.divider {
+	display: flex;
+	align-items: center;
+	margin: 16px 0;
+	text-align: center;
+}
+
+.divider::before,
+.divider::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: #e5e7eb;
+}
+
+.divider span {
+	padding: 0 12px;
+	color: #6b7280;
+	font-size: 0.85rem;
+	background: white;
+}
+
+/* Email Form */
+.emailForm {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.formGroup label {
+	font-weight: 500;
+	color: #374151;
+	font-size: 0.85rem;
+}
+
+.formGroup input {
+	padding: 10px 12px;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	transition: border-color 0.2s ease;
+	background: white;
+}
+
+.formGroup input:focus {
+	outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.formGroup input:disabled {
+	background: #f9fafb;
+	color: #9ca3af;
+	cursor: not-allowed;
+}
+
+.formGroup input::placeholder {
+	color: #9ca3af;
+}
+
+/* Password Container */
+.passwordContainer {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.passwordContainer input {
+	padding-right: 40px;
+}
+
+.passwordToggle {
+	position: absolute;
+	right: 10px;
+	background: none;
+	border: none;
+	font-size: 1rem;
+	cursor: pointer;
+	color: #6b7280;
+	padding: 4px;
+	border-radius: 4px;
+	transition: color 0.2s ease;
+}
+
+.passwordToggle:hover:not(:disabled) {
+	color: #374151;
+}
+
+.passwordToggle:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Submit Button */
+.submitButton {
+	padding: 10px 16px;
+	background: #2563eb;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s ease;
+	margin-top: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+	background: #1e40af;
+}
+
+.submitButton:disabled {
+	background: #9ca3af;
+	cursor: not-allowed;
+}
+
+/* Forgot Password Button */
+.forgotPasswordButton {
+	background: none;
+	border: none;
+	color: #2563eb;
+	font-size: 0.85rem;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 6px 0;
+	margin-top: 6px;
+	align-self: flex-start;
+	transition: color 0.2s ease;
+}
+
+.forgotPasswordButton:hover:not(:disabled) {
+	color: #1e40af;
+}
+
+.forgotPasswordButton:disabled {
+	color: #9ca3af;
+	cursor: not-allowed;
+}
+
+/* Email Link Button */
+.emailLinkButton {
+	width: 100%;
+	padding: 10px 16px;
+	background: #ecfdf5;
+	color: #065f46;
+	border: 1px solid #a7f3d0;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 16px;
+}
+
+.emailLinkButton:hover:not(:disabled) {
+	background: #d1fae5;
+	border-color: #6ee7b7;
+}
+
+.emailLinkButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Back Button */
+.backButton {
+	width: 100%;
+	padding: 8px 16px;
+	background: transparent;
+	color: #2563eb;
+	border: 1px solid #2563eb;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-top: 8px;
+}
+
+.backButton:hover:not(:disabled) {
+	background: #2563eb;
+	color: white;
+}
+
+.backButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Email Link Sent Message */
+.emailLinkSent {
+	text-align: center;
+	padding: 20px 16px;
+	background: #f0fff4;
+	border: 1px solid #86efac;
+	border-radius: 6px;
+	margin-bottom: 16px;
+}
+
+.emailLinkSent h3 {
+	margin: 0 0 8px 0;
+	color: #065f46;
+	font-size: 1rem;
+}
+
+.emailLinkSent p {
+	margin: 6px 0;
+	color: #047857;
+	line-height: 1.4;
+	font-size: 0.9rem;
+}
+
+.emailLinkSent p:first-of-type {
+	font-weight: 500;
+}
+
+/* Toggle Mode */
+.toggleMode {
+	margin-top: 16px;
+	text-align: center;
+	padding-top: 16px;
+	border-top: 1px solid #e5e7eb;
+}
+
+.toggleMode span {
+	color: #6b7280;
+	font-size: 0.85rem;
+	margin-right: 6px;
+}
+
+.toggleButton {
+	background: none;
+	border: none;
+	color: #2563eb;
+	font-weight: 500;
+	cursor: pointer;
+	font-size: 0.85rem;
+	text-decoration: underline;
+	transition: color 0.2s ease;
+}
+
+.toggleButton:hover:not(:disabled) {
+	color: #1e40af;
+}
+
+.toggleButton:disabled {
+	color: #9ca3af;
+	cursor: not-allowed;
+}
+
+/* Error Message */
+.errorMessage {
+	background: #fee;
+	color: #c53030;
+	padding: 12px 16px;
+	margin: 16px 24px;
+	border-radius: 8px;
+	border: 1px solid #fed7d7;
+	font-size: 0.9rem;
+	line-height: 1.4;
+}
+
+/* Auth Methods */
+.authMethods {
+	padding: 24px;
+}
+
+/* Google Button */
+.googleButton {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 12px 16px;
+	border: 2px solid #e2e8f0;
+	background: white;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	color: #374151;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 20px;
+}
+
+.googleButton:hover:not(:disabled) {
+	border-color: #cbd5e0;
+	background: #f7fafc;
+}
+
+.googleButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.googleIcon {
+	width: 20px;
+	height: 20px;
+}
+
+/* Divider */
+.divider {
+	display: flex;
+	align-items: center;
+	margin: 24px 0;
+	text-align: center;
+}
+
+.divider::before,
+.divider::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: #e2e8f0;
+}
+
+.divider span {
+	padding: 0 16px;
+	color: #718096;
+	font-size: 0.9rem;
+	background: white;
+}
+
+/* Email Form */
+.emailForm {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.formGroup label {
+	font-weight: 500;
+	color: #374151;
+	font-size: 0.9rem;
+}
+
+.formGroup input {
+	padding: 12px 16px;
+	border: 2px solid #e2e8f0;
+	border-radius: 8px;
+	font-size: 1rem;
+	transition: all 0.2s ease;
+	background: white;
+}
+
+.formGroup input:focus {
+	outline: none;
+	border-color: #4299e1;
+	box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.formGroup input:disabled {
+	background: #f7fafc;
+	color: #a0aec0;
+	cursor: not-allowed;
+}
+
+.formGroup input::placeholder {
+	color: #a0aec0;
+}
+
+/* Submit Button */
+.submitButton {
+	padding: 12px 16px;
+	background: #4299e1;
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-top: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+	background: #3182ce;
+}
+
+.submitButton:disabled {
+	background: #a0aec0;
+	cursor: not-allowed;
+}
+
+/* Success Message */
+.successMessage {
+	background: #f0fff4;
+	color: #22543d;
+	padding: 12px 16px;
+	margin: 16px 24px;
+	border-radius: 8px;
+	border: 1px solid #9ae6b4;
+	font-size: 0.9rem;
+	line-height: 1.4;
+}
+
+/* Password Container */
+.passwordContainer {
+	position: relative;
+	display: flex;
+	align-items: center;
+}
+
+.passwordContainer input {
+	padding-right: 50px;
+}
+
+.passwordToggle {
+	position: absolute;
+	right: 12px;
+	background: none;
+	border: none;
+	font-size: 1.2rem;
+	cursor: pointer;
+	color: #666;
+	padding: 4px;
+	border-radius: 4px;
+	transition: all 0.2s ease;
+}
+
+.passwordToggle:hover:not(:disabled) {
+	background: rgba(0, 0, 0, 0.05);
+	color: #333;
+}
+
+.passwordToggle:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Forgot Password Button */
+.forgotPasswordButton {
+	background: none;
+	border: none;
+	color: #4299e1;
+	font-size: 0.9rem;
+	cursor: pointer;
+	text-decoration: underline;
+	padding: 8px 0;
+	margin-top: 8px;
+	align-self: flex-start;
+	transition: color 0.2s ease;
+}
+
+.forgotPasswordButton:hover:not(:disabled) {
+	color: #3182ce;
+}
+
+.forgotPasswordButton:disabled {
+	color: #a0aec0;
+	cursor: not-allowed;
+}
+
+/* Email Link Button */
+.emailLinkButton {
+	width: 100%;
+	padding: 12px 16px;
+	background: #e6fffa;
+	color: #234e52;
+	border: 2px solid #81e6d9;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 20px;
+}
+
+.emailLinkButton:hover:not(:disabled) {
+	background: #b2f5ea;
+	border-color: #4fd1c7;
+}
+
+.emailLinkButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Back Button */
+.backButton {
+	width: 100%;
+	padding: 10px 16px;
+	background: transparent;
+	color: #4299e1;
+	border: 2px solid #4299e1;
+	border-radius: 8px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-top: 12px;
+}
+
+.backButton:hover:not(:disabled) {
+	background: #4299e1;
+	color: white;
+}
+
+.backButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Email Link Sent Message */
+.emailLinkSent {
+	text-align: center;
+	padding: 24px 16px;
+	background: #f0fff4;
+	border: 2px solid #9ae6b4;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+.emailLinkSent h3 {
+	margin: 0 0 12px 0;
+	color: #22543d;
+	font-size: 1.2rem;
+}
+
+.emailLinkSent p {
+	margin: 8px 0;
+	color: #276749;
+	line-height: 1.5;
+}
+
+.emailLinkSent p:first-of-type {
+	font-weight: 500;
+}
+
+/* Toggle Mode */
+.toggleMode {
+	margin-top: 24px;
+	text-align: center;
+	padding-top: 20px;
+	border-top: 1px solid #e2e8f0;
+}
+
+.toggleMode span {
+	color: #718096;
+	font-size: 0.9rem;
+	margin-right: 8px;
+}
+
+.toggleButton {
+	background: none;
+	border: none;
+	color: #4299e1;
+	font-weight: 500;
+	cursor: pointer;
+	font-size: 0.9rem;
+	text-decoration: underline;
+	transition: color 0.2s ease;
+}
+
+.toggleButton:hover:not(:disabled) {
+	color: #3182ce;
+}
+
+.toggleButton:disabled {
+	color: #a0aec0;
+	cursor: not-allowed;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.authContainer {
+		background: #1a1a1a;
+		color: white;
+	}
+
+	.authHeader {
+		background: #2a2a2a;
+		border-bottom-color: #333;
+	}
+
+	.authHeader h2 {
+		color: white;
+	}
+
+	.closeButton {
+		color: #ccc;
+	}
+
+	.closeButton:hover {
+		color: white;
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	.errorMessage {
+		background: #2d1b1b;
+		color: #fc8181;
+		border-color: #742a2a;
+	}
+
+	.successMessage {
+		background: #1a2e1e;
+		color: #9ae6b4;
+		border-color: #38a169;
+	}
+
+	.passwordToggle {
+		color: #ccc;
+	}
+
+	.passwordToggle:hover:not(:disabled) {
+		background: rgba(255, 255, 255, 0.1);
+		color: white;
+	}
+
+	.forgotPasswordButton {
+		color: #81e6d9;
+	}
+
+	.forgotPasswordButton:hover:not(:disabled) {
+		color: #4fd1c7;
+	}
+
+	.googleButton {
+		background: #2a2a2a;
+		border-color: #444;
+		color: white;
+	}
+
+	.googleButton:hover:not(:disabled) {
+		border-color: #555;
+		background: #333;
+	}
+
+	.divider::before,
+	.divider::after {
+		background: #444;
+	}
+
+	.divider span {
+		background: #1a1a1a;
+		color: #ccc;
+	}
+
+	.formGroup label {
+		color: white;
+	}
+
+	.formGroup input {
+		background: #2a2a2a;
+		border-color: #444;
+		color: white;
+	}
+
+	.formGroup input:focus {
+		border-color: #4299e1;
+		box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+	}
+
+	.formGroup input:disabled {
+		background: #333;
+		color: #666;
+	}
+
+	.formGroup input::placeholder {
+		color: #666;
+	}
+
+	.toggleMode {
+		border-top-color: #333;
+	}
+
+	.toggleMode span {
+		color: #ccc;
+	}
+
+	.emailLinkButton {
+		background: #234e52;
+		color: #81e6d9;
+		border-color: #4fd1c7;
+	}
+
+	.emailLinkButton:hover:not(:disabled) {
+		background: #2c5f63;
+		border-color: #81e6d9;
+	}
+
+	.backButton {
+		color: #81e6d9;
+		border-color: #81e6d9;
+	}
+
+	.backButton:hover:not(:disabled) {
+		background: #81e6d9;
+		color: #1a1a1a;
+	}
+
+	.emailLinkSent {
+		background: #1a2e1e;
+		border-color: #38a169;
+	}
+
+	.emailLinkSent h3 {
+		color: #9ae6b4;
+	}
+
+	.emailLinkSent p {
+		color: #68d391;
+	}
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+	.authContainer {
+		width: 95vw;
+		max-height: 85vh;
+	}
+
+	.authHeader {
+		padding: 20px 20px 12px 20px;
+	}
+
+	.authHeader h2 {
+		font-size: 1.3rem;
+	}
+
+	.authMethods {
+		padding: 20px;
+	}
+
+	.googleButton {
+		padding: 14px 16px;
+		font-size: 0.95rem;
+	}
+
+	.formGroup input {
+		padding: 14px 16px;
+		font-size: 16px; /* Prevent zoom on iOS */
+	}
+
+	.submitButton {
+		padding: 14px 16px;
+		font-size: 1rem;
+	}
+}

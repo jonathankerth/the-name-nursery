@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { addLikedName, removeLikedName, isNameLiked } from "../lib/likedNames";
 import styles from "./NamesResults.module.css";
 
 interface NamesResultsProps {
@@ -16,6 +18,73 @@ export default function NamesResults({
 	onBack,
 	isAIGenerated = true,
 }: NamesResultsProps) {
+	const { user } = useAuth();
+	const [likedNames, setLikedNames] = useState<Set<string>>(new Set());
+	const [loadingLikes, setLoadingLikes] = useState<Set<string>>(new Set());
+
+	// Load liked status for all names when component mounts
+	useEffect(() => {
+		if (!user) return;
+
+		const checkLikedStatus = async () => {
+			const likedSet = new Set<string>();
+
+			for (const name of names) {
+				const liked = await isNameLiked(user.uid, name);
+				if (liked) {
+					likedSet.add(name);
+				}
+			}
+
+			setLikedNames(likedSet);
+		};
+
+		checkLikedStatus();
+	}, [user, names]);
+
+	const handleLikeToggle = async (name: string) => {
+		if (!user) {
+			// Could show a sign-in prompt here
+			return;
+		}
+
+		setLoadingLikes((prev) => new Set(prev).add(name));
+
+		try {
+			const isLiked = likedNames.has(name);
+
+			if (isLiked) {
+				const success = await removeLikedName(user.uid, name);
+				if (success) {
+					setLikedNames((prev) => {
+						const newSet = new Set(prev);
+						newSet.delete(name);
+						return newSet;
+					});
+				}
+			} else {
+				const success = await addLikedName(
+					user.uid,
+					name,
+					gender,
+					letter,
+					isAIGenerated
+				);
+				if (success) {
+					setLikedNames((prev) => new Set(prev).add(name));
+				}
+			}
+		} catch (error) {
+			console.error("Error toggling like:", error);
+		} finally {
+			setLoadingLikes((prev) => {
+				const newSet = new Set(prev);
+				newSet.delete(name);
+				return newSet;
+			});
+		}
+	};
+
 	// Calculate the same header color used in the Header component
 	const pageColors = {
 		baby: "#EFD9AA",
@@ -75,6 +144,28 @@ export default function NamesResults({
 					{names.map((name, index) => (
 						<div key={index} className={styles.nameCard}>
 							<span className={styles.nameName}>{name}</span>
+							{user && (
+								<button
+									className={`${styles.likeButton} ${
+										likedNames.has(name) ? styles.liked : ""
+									}`}
+									onClick={() => handleLikeToggle(name)}
+									disabled={loadingLikes.has(name)}
+									aria-label={
+										likedNames.has(name)
+											? `Remove ${name} from favorites`
+											: `Add ${name} to favorites`
+									}
+								>
+									{loadingLikes.has(name) ? (
+										<span className={styles.spinner}>⟳</span>
+									) : likedNames.has(name) ? (
+										"❤️"
+									) : (
+										"🤍"
+									)}
+								</button>
+							)}
 						</div>
 					))}
 				</div>

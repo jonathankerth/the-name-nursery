@@ -1,0 +1,724 @@
+/* Profile Container */
+.profileContainer {
+	background: white;
+	border-radius: 12px;
+	max-width: 480px;
+	width: 90vw;
+	max-height: 90vh;
+	overflow-y: auto;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+	position: relative;
+}
+
+.profileHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 24px;
+	border-bottom: 1px solid #eee;
+	background: #f9f9f9;
+	border-radius: 12px 12px 0 0;
+}
+
+.profileHeader h2 {
+	margin: 0;
+	color: #333;
+	font-size: 1.2rem;
+	font-weight: 600;
+}
+
+.closeButton {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	color: #666;
+	line-height: 1;
+	padding: 0;
+	width: 28px;
+	height: 28px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
+	transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+	color: #333;
+}
+
+/* Messages */
+.errorMessage {
+	background: #fee;
+	color: #c53030;
+	padding: 10px 16px;
+	margin: 16px 20px;
+	border-radius: 6px;
+	border: 1px solid #fed7d7;
+	font-size: 0.85rem;
+}
+
+.successMessage {
+	background: #f0fff4;
+	color: #22543d;
+	padding: 10px 16px;
+	margin: 16px 20px;
+	border-radius: 6px;
+	border: 1px solid #9ae6b4;
+	font-size: 0.85rem;
+}
+
+/* Tab Navigation */
+.tabNavigation {
+	display: flex;
+	border-bottom: 1px solid #eee;
+	background: white;
+}
+
+.tabButton {
+	flex: 1;
+	padding: 12px 8px;
+	background: none;
+	border: none;
+	font-size: 0.85rem;
+	font-weight: 500;
+	color: #666;
+	cursor: pointer;
+	border-bottom: 2px solid transparent;
+	transition: all 0.2s ease;
+}
+
+.tabButton:hover {
+	background: #f5f5f5;
+	color: #2563eb;
+}
+
+.tabButton.active {
+	color: #2563eb;
+	border-bottom-color: #2563eb;
+	background: #f8fafc;
+}
+
+/* Tab Content */
+.tabContent {
+	padding: 20px;
+}
+
+/* Profile Form */
+.profileForm {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.avatarSection {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	padding: 16px;
+	background: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #e9ecef;
+}
+
+.currentAvatar {
+	flex-shrink: 0;
+}
+
+.avatarImage {
+	border-radius: 50%;
+	object-fit: cover;
+	border: 2px solid #e2e8f0;
+}
+
+.avatarControls {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.avatarLabel {
+	background: #2563eb;
+	color: white;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	cursor: pointer;
+	text-align: center;
+	transition: background 0.2s ease;
+	border: none;
+}
+
+.avatarLabel:hover {
+	background: #1e40af;
+}
+
+.avatarInput {
+	display: none;
+}
+
+.cancelAvatar {
+	background: #dc2626;
+	color: white;
+	padding: 6px 12px;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.cancelAvatar:hover {
+	background: #b91c1c;
+}
+
+/* Form Groups */
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.formGroup label {
+	font-weight: 500;
+	color: #374151;
+	font-size: 0.85rem;
+}
+
+.formGroup input {
+	padding: 10px 12px;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	transition: border-color 0.2s ease;
+	background: white;
+}
+
+.formGroup input:focus {
+	outline: none;
+	border-color: #2563eb;
+	box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.formGroup input:disabled {
+	background: #f9fafb;
+	color: #9ca3af;
+	cursor: not-allowed;
+}
+
+/* Email Info */
+.emailInfo {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	background: #f9fafb;
+	border: 1px solid #d1d5db;
+	border-radius: 6px;
+	font-size: 0.9rem;
+}
+
+.verifyButton {
+	background: #dc2626;
+	color: white;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.verifyButton:hover:not(:disabled) {
+	background: #b91c1c;
+}
+
+.verifyButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.verifiedBadge {
+	color: #059669;
+	font-weight: 500;
+	font-size: 0.8rem;
+}
+
+/* Password Strength */
+.passwordStrength {
+	margin-top: 6px;
+}
+
+.strengthBar {
+	width: 100%;
+	height: 4px;
+	background: #e5e7eb;
+	border-radius: 2px;
+	overflow: hidden;
+	margin-bottom: 4px;
+}
+
+.strengthFill {
+	height: 100%;
+	transition: all 0.3s ease;
+}
+
+.strengthText {
+	font-size: 0.75rem;
+	font-weight: 500;
+}
+
+/* Security Section */
+.securitySection {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.passwordForm {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.passwordForm h3 {
+	margin: 0;
+	color: #374151;
+	font-size: 1rem;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+/* Danger Zone */
+.dangerZone {
+	padding: 16px;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 6px;
+}
+
+.dangerZone h3 {
+	margin: 0 0 8px 0;
+	color: #dc2626;
+	font-size: 0.95rem;
+}
+
+.dangerZone p {
+	margin: 0 0 12px 0;
+	color: #7f1d1d;
+	font-size: 0.85rem;
+	line-height: 1.4;
+}
+
+.dangerButton {
+	background: #dc2626;
+	color: white;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 0.85rem;
+	font-weight: 500;
+	border: none;
+	cursor: pointer;
+	transition: background 0.2s ease;
+}
+
+.dangerButton:hover:not(:disabled) {
+	background: #b91c1c;
+}
+
+.dangerButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+/* Submit Buttons */
+.submitButton {
+	padding: 10px 16px;
+	background: #2563eb;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	font-size: 0.9rem;
+	font-weight: 500;
+	cursor: pointer;
+	transition: background 0.2s ease;
+	align-self: flex-start;
+}
+
+.submitButton:hover:not(:disabled) {
+	background: #1e40af;
+}
+
+.submitButton:disabled {
+	background: #9ca3af;
+	cursor: not-allowed;
+}
+
+/* Liked Names Section */
+.likedNamesSection h3 {
+	margin: 0 0 16px 0;
+	color: #374151;
+	font-size: 1rem;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+.likedNamesHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.likedNamesHeader h3 {
+	margin: 0;
+	color: #374151;
+	font-size: 1rem;
+	border-bottom: 1px solid #e5e7eb;
+	padding-bottom: 8px;
+}
+
+.filterButtons {
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+}
+
+.filterButton {
+	padding: 6px 12px;
+	border: 1px solid #d1d5db;
+	background: white;
+	border-radius: 20px;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: #6b7280;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.filterButton:hover {
+	border-color: #2563eb;
+	color: #2563eb;
+}
+
+.filterButton.active {
+	background: #2563eb;
+	border-color: #2563eb;
+	color: white;
+}
+
+.loading {
+	text-align: center;
+	padding: 30px;
+	color: #6b7280;
+	font-style: italic;
+	font-size: 0.9rem;
+}
+
+.likedNamesList {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.likedNameItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background: #f8f9fa;
+	border-radius: 6px;
+	border: 1px solid #e9ecef;
+	transition: background 0.2s ease;
+}
+
+.likedNameItem:hover {
+	background: #f1f3f4;
+}
+
+.nameInfo {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.nameText {
+	font-weight: 600;
+	font-size: 0.95rem;
+	color: #374151;
+}
+
+.nameDetails {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.nameGender {
+	font-size: 0.8rem;
+	color: #6b7280;
+	text-transform: capitalize;
+}
+
+.nameLetter {
+	font-size: 0.75rem;
+	color: #9ca3af;
+	background: #f3f4f6;
+	padding: 2px 6px;
+	border-radius: 4px;
+}
+
+.aiGenerated {
+	font-size: 0.75rem;
+	color: #059669;
+	background: #ecfdf5;
+	padding: 2px 6px;
+	border-radius: 4px;
+	font-weight: 500;
+}
+
+.removeButton {
+	background: none;
+	border: none;
+	padding: 6px;
+	cursor: pointer;
+	border-radius: 4px;
+	transition: background 0.2s ease;
+	font-size: 1rem;
+}
+
+.removeButton:hover {
+	background: #fee2e2;
+}
+
+.emptyState {
+	text-align: center;
+	padding: 30px 16px;
+	color: #6b7280;
+}
+
+.emptyState p {
+	margin: 6px 0;
+	line-height: 1.4;
+	font-size: 0.9rem;
+}
+
+.emptyState p:first-child {
+	font-weight: 500;
+	color: #374151;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+	.profileContainer {
+		background: #1a1a1a;
+		color: white;
+	}
+
+	.profileHeader {
+		background: #2a2a2a;
+		border-bottom-color: #374151;
+	}
+
+	.profileHeader h2 {
+		color: white;
+	}
+
+	.closeButton {
+		color: #d1d5db;
+	}
+
+	.closeButton:hover {
+		color: white;
+	}
+
+	.errorMessage {
+		background: #2d1b1b;
+		color: #fca5a5;
+		border-color: #7f1d1d;
+	}
+
+	.successMessage {
+		background: #1a2e1e;
+		color: #86efac;
+		border-color: #166534;
+	}
+
+	.tabNavigation {
+		background: #1a1a1a;
+		border-bottom-color: #374151;
+	}
+
+	.tabButton {
+		color: #d1d5db;
+	}
+
+	.tabButton:hover {
+		background: #2a2a2a;
+		color: #60a5fa;
+	}
+
+	.tabButton.active {
+		color: #60a5fa;
+		border-bottom-color: #60a5fa;
+		background: #1e293b;
+	}
+
+	.avatarSection {
+		background: #2a2a2a;
+		border-color: #374151;
+	}
+
+	.avatarImage {
+		border-color: #374151;
+	}
+
+	.formGroup label {
+		color: white;
+	}
+
+	.formGroup input {
+		background: #2a2a2a;
+		border-color: #374151;
+		color: white;
+	}
+
+	.formGroup input:focus {
+		border-color: #60a5fa;
+		box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+	}
+
+	.formGroup input:disabled {
+		background: #374151;
+		color: #9ca3af;
+	}
+
+	.emailInfo {
+		background: #2a2a2a;
+		border-color: #374151;
+	}
+
+	.verifiedBadge {
+		color: #86efac;
+	}
+
+	.strengthBar {
+		background: #374151;
+	}
+
+	.passwordForm h3,
+	.likedNamesSection h3 {
+		color: white;
+		border-bottom-color: #374151;
+	}
+
+	.dangerZone {
+		background: #2d1b1b;
+		border-color: #7f1d1d;
+	}
+
+	.dangerZone h3 {
+		color: #fca5a5;
+	}
+
+	.dangerZone p {
+		color: #e5e7eb;
+	}
+
+	.likedNameItem {
+		background: #2a2a2a;
+		border-color: #374151;
+	}
+
+	.likedNameItem:hover {
+		background: #374151;
+	}
+
+	.nameText {
+		color: white;
+	}
+
+	.nameGender {
+		color: #d1d5db;
+	}
+
+	.removeButton:hover {
+		background: #2d1b1b;
+	}
+
+	.emptyState {
+		color: #d1d5db;
+	}
+
+	.emptyState p:first-child {
+		color: white;
+	}
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+	.profileContainer {
+		width: 95vw;
+		max-height: 85vh;
+	}
+
+	.profileHeader {
+		padding: 16px 20px;
+	}
+
+	.profileHeader h2 {
+		font-size: 1.1rem;
+	}
+
+	.tabContent {
+		padding: 16px;
+	}
+
+	.tabButton {
+		padding: 10px 6px;
+		font-size: 0.8rem;
+	}
+
+	.avatarSection {
+		flex-direction: column;
+		text-align: center;
+		gap: 12px;
+	}
+
+	.avatarControls {
+		align-items: center;
+	}
+
+	.emailInfo {
+		flex-direction: column;
+		gap: 8px;
+		align-items: flex-start;
+	}
+
+	.likedNameItem {
+		padding: 10px;
+	}
+
+	.nameText {
+		font-size: 0.9rem;
+	}
+}
+
+/* Smooth transitions */
+.tabContent > * {
+	animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
