@@ -93,13 +93,13 @@ export const removeLikedNameById = async (documentId: string) => {
 		return true;
 	} catch (error) {
 		console.error("Error removing liked name by ID:", error);
-		
+
 		// Check if it's a permissions error
 		const firebaseError = error as { code?: string; message?: string };
 		if (firebaseError.code === "permission-denied") {
 			console.error("Permission denied: Check Firestore security rules");
 		}
-		
+
 		return false;
 	}
 };

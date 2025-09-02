@@ -13,7 +13,9 @@ const HamburgerMenu = () => {
 	const [isOpen, setIsOpen] = useState(false);
 	const [showAuthForms, setShowAuthForms] = useState(false);
 	const [showProfile, setShowProfile] = useState(false);
-	const [profileInitialTab, setProfileInitialTab] = useState<"profile" | "security" | "liked">("profile");
+	const [profileInitialTab, setProfileInitialTab] = useState<
+		"profile" | "security" | "liked"
+	>("profile");
 	const { user, loading } = useAuth();
 
 	const handleSignOut = async () => {
@@ -112,7 +114,10 @@ const HamburgerMenu = () => {
 										</div>
 									</div>
 
-									<button className={styles.menuItem} onClick={() => openProfile("profile")}>
+									<button
+										className={styles.menuItem}
+										onClick={() => openProfile("profile")}
+									>
 										👤 My Profile
 									</button>
 
@@ -151,7 +156,10 @@ const HamburgerMenu = () => {
 				<>
 					<div className={styles.modalOverlay} onClick={closeProfile}></div>
 					<div className={styles.modalContainer}>
-						<UserProfile onClose={closeProfile} initialTab={profileInitialTab} />
+						<UserProfile
+							onClose={closeProfile}
+							initialTab={profileInitialTab}
+						/>
 					</div>
 				</>
 			)}

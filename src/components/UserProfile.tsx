@@ -18,10 +18,10 @@ import {
 import Image from "next/image";
 import styles from "./UserProfile.module.css";
 
-const UserProfile = ({ 
-	onClose, 
-	initialTab = "profile" 
-}: { 
+const UserProfile = ({
+	onClose,
+	initialTab = "profile",
+}: {
 	onClose: () => void;
 	initialTab?: "profile" | "security" | "liked";
 }) => {
@@ -221,7 +221,8 @@ const UserProfile = ({
 		} catch (error) {
 			console.error("Error removing liked name:", error);
 		}
-	};	const handleDeleteAccount = async () => {
+	};
+	const handleDeleteAccount = async () => {
 		if (!user) return;
 
 		const confirmed = window.confirm(
