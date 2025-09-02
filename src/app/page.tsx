@@ -4,6 +4,11 @@ import styles from "./page.module.css";
 import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
 import NamesResults from "../components/NamesResults";
+import {
+	trackNameSearch,
+	trackNameView,
+	trackStepProgression,
+} from "../lib/gtag";
 
 type Step = "gender" | "letter" | "loading" | "results";
 
@@ -56,6 +61,8 @@ export default function Home() {
 	// Function to fetch name recommendations
 	const fetchNameRecommendations = useCallback(async () => {
 		setCurrentStep("loading");
+		trackStepProgression("letter", "loading");
+		trackNameSearch(selectedGender, selectedLetter);
 
 		try {
 			const response = await fetch("/api/recommend-names", {
@@ -77,6 +84,8 @@ export default function Home() {
 			setRecommendedNames(data.names || []);
 			setIsAIGenerated(!data.fallback);
 			setCurrentStep("results");
+			trackStepProgression("loading", "results");
+			trackNameView(selectedGender, selectedLetter, !data.fallback);
 		} catch {
 			// Fallback to some default names
 			const fallbackNames =
@@ -130,6 +139,8 @@ export default function Home() {
 			);
 			setIsAIGenerated(false);
 			setCurrentStep("results");
+			trackStepProgression("loading", "results");
+			trackNameView(selectedGender, selectedLetter, false);
 		}
 	}, [selectedGender, selectedLetter]);
 
@@ -300,6 +311,7 @@ export default function Home() {
 						className={styles.sentenceForm}
 						onSubmit={(e) => {
 							e.preventDefault();
+							trackStepProgression("gender", "letter");
 							setCurrentStep("letter");
 						}}
 					>
@@ -367,6 +379,7 @@ export default function Home() {
 							onClick={(e) => {
 								e.preventDefault();
 								e.stopPropagation();
+								trackStepProgression("letter", "gender");
 								setCurrentStep("gender");
 							}}
 						>
