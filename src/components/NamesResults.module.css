@@ -86,6 +86,23 @@
 	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
 
+.nameCardUnauth {
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.nameCardUnauth:hover {
+	background: rgba(0, 0, 0, 0.7);
+	transform: translateY(-3px);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+.nameCardUnauth:active {
+	transform: translateY(-1px);
+	background: rgba(0, 0, 0, 0.8);
+}
+
 .nameName {
 	font-size: 1.4rem;
 	font-weight: 600;
@@ -170,6 +187,143 @@
 	transform: translateY(-1px);
 }
 
+/* Tooltip styles */
+.tooltip {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 99999;
+	pointer-events: auto;
+	background: rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(2px);
+}
+
+.tooltipContent {
+	background: rgba(0, 0, 0, 0.95);
+	color: white;
+	padding: 1.5rem 2rem;
+	border-radius: 16px;
+	font-size: 1rem;
+	text-align: center;
+	min-width: 320px;
+	max-width: 400px;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+	border: 2px solid rgba(255, 255, 255, 0.4);
+	backdrop-filter: blur(20px);
+	animation: tooltipFadeIn 0.3s ease;
+	position: relative;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.tooltipContent:hover {
+	border-color: rgba(255, 255, 255, 0.6);
+	box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
+}
+
+.tooltipContent strong {
+	display: block;
+	margin-bottom: 0.75rem;
+	color: #ffd700;
+	font-size: 1.2rem;
+	font-weight: 700;
+}
+
+.tooltipContent p {
+	margin: 0;
+	font-size: 0.95rem;
+	opacity: 0.95;
+	line-height: 1.5;
+}
+
+.tooltipClose {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background: none;
+	border: none;
+	color: rgba(255, 255, 255, 0.4);
+	font-size: 1.5rem;
+	line-height: 1;
+	cursor: pointer;
+	padding: 0.25rem;
+	border-radius: 50%;
+	width: 2rem;
+	height: 2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+}
+
+.tooltipClose:hover {
+	color: rgba(255, 255, 255, 0.7);
+	background: rgba(255, 255, 255, 0.1);
+}
+
+@keyframes tooltipFadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+/* Modal styles */
+.modalOverlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.8);
+	backdrop-filter: blur(8px);
+	z-index: 10000;
+	animation: fadeIn 0.2s ease;
+}
+
+.modalContainer {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10001;
+	animation: modalSlideIn 0.3s ease;
+	max-width: 90vw;
+	max-height: 90vh;
+	overflow: auto;
+	width: 100%;
+	max-width: 500px;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes modalSlideIn {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -60%);
+	}
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%);
+	}
+}
+
 @media (max-width: 768px) {
 	.container {
 		padding: 0.5rem 1rem 1rem 1rem;
@@ -214,6 +368,21 @@
 	.actionButton {
 		width: 100%;
 	}
+
+	.tooltipContent {
+		max-width: 320px;
+		min-width: 280px;
+		padding: 1.3rem 1.8rem;
+		font-size: 0.95rem;
+	}
+
+	.tooltipContent strong {
+		font-size: 1.1rem;
+	}
+
+	.tooltipContent p {
+		font-size: 0.9rem;
+	}
 }
 
 @media (max-width: 480px) {
@@ -240,5 +409,40 @@
 
 	.nameName {
 		font-size: 1.1rem;
+	}
+
+	.tooltipContent {
+		max-width: 280px;
+		min-width: 250px;
+		padding: 1.2rem 1.6rem;
+		font-size: 0.9rem;
+	}
+
+	.tooltipContent strong {
+		font-size: 1rem;
+	}
+
+	.tooltipContent p {
+		font-size: 0.85rem;
+	}
+}
+
+/* Mobile touch-specific styles */
+@media (hover: none) and (pointer: coarse) {
+	.nameCardUnauth:hover {
+		background: rgba(0, 0, 0, 0.5);
+		transform: none;
+		box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+	}
+
+	.nameCardUnauth:active {
+		background: rgba(0, 0, 0, 0.8);
+		transform: scale(0.98);
+	}
+
+	.tooltipContent {
+		max-width: 300px;
+		min-width: 260px;
+		padding: 1.3rem 1.5rem;
 	}
 }

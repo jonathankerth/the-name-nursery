@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { addLikedName, removeLikedName, isNameLiked } from "../lib/likedNames";
+import AuthForms from "./AuthForms";
 import styles from "./NamesResults.module.css";
 
 interface NamesResultsProps {
@@ -21,6 +22,10 @@ export default function NamesResults({
 	const { user } = useAuth();
 	const [likedNames, setLikedNames] = useState<Set<string>>(new Set());
 	const [loadingLikes, setLoadingLikes] = useState<Set<string>>(new Set());
+	const [showAuthModal, setShowAuthModal] = useState(false);
+	const [hoveredName, setHoveredName] = useState<string | null>(null);
+	const [isMobile, setIsMobile] = useState(false);
+	const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	// Load liked status for all names when component mounts
 	useEffect(() => {
@@ -42,9 +47,30 @@ export default function NamesResults({
 		checkLikedStatus();
 	}, [user, names]);
 
+	// Check if device is mobile
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
+		};
+
+		checkMobile();
+		window.addEventListener("resize", checkMobile);
+
+		return () => window.removeEventListener("resize", checkMobile);
+	}, []);
+
+	// Cleanup timeout on unmount
+	useEffect(() => {
+		return () => {
+			if (tooltipTimeoutRef.current) {
+				clearTimeout(tooltipTimeoutRef.current);
+			}
+		};
+	}, []);
+
 	const handleLikeToggle = async (name: string) => {
 		if (!user) {
-			// Could show a sign-in prompt here
+			setShowAuthModal(true);
 			return;
 		}
 
@@ -83,6 +109,54 @@ export default function NamesResults({
 				return newSet;
 			});
 		}
+	};
+
+	const handleAuthSuccess = () => {
+		setShowAuthModal(false);
+		// Reload liked status after successful auth
+		window.location.reload();
+	};
+
+	const handleNameClick = () => {
+		if (!user) {
+			if (isMobile) {
+				// On mobile - show tooltip with click-to-signin
+				setHoveredName("mobile-tooltip");
+				// Clear any existing timeout
+				if (tooltipTimeoutRef.current) {
+					clearTimeout(tooltipTimeoutRef.current);
+				}
+				// Set new timeout
+				tooltipTimeoutRef.current = setTimeout(
+					() => setHoveredName(null),
+					15000
+				);
+			} else {
+				// Desktop - show modal immediately
+				setShowAuthModal(true);
+			}
+		}
+	};
+
+	const handleNameHover = (name: string, isHovering: boolean) => {
+		if (!user && !isMobile) {
+			setHoveredName(isHovering ? name : null);
+		}
+	};
+
+	const handleCloseTooltip = () => {
+		// Clear any existing timeout when manually closing
+		if (tooltipTimeoutRef.current) {
+			clearTimeout(tooltipTimeoutRef.current);
+			tooltipTimeoutRef.current = null;
+		}
+		setHoveredName(null);
+	};
+
+	const handleTooltipClick = () => {
+		// Clicking anywhere on tooltip (except close button) opens auth modal
+		handleCloseTooltip();
+		setShowAuthModal(true);
 	};
 
 	// Calculate the same header color used in the Header component
@@ -142,14 +216,25 @@ export default function NamesResults({
 
 				<div className={styles.namesGrid}>
 					{names.map((name, index) => (
-						<div key={index} className={styles.nameCard}>
+						<div
+							key={index}
+							className={`${styles.nameCard} ${
+								!user ? styles.nameCardUnauth : ""
+							}`}
+							onClick={handleNameClick}
+							onMouseEnter={() => handleNameHover(name, true)}
+							onMouseLeave={() => handleNameHover(name, false)}
+						>
 							<span className={styles.nameName}>{name}</span>
 							{user && (
 								<button
 									className={`${styles.likeButton} ${
 										likedNames.has(name) ? styles.liked : ""
 									}`}
-									onClick={() => handleLikeToggle(name)}
+									onClick={(e) => {
+										e.stopPropagation();
+										handleLikeToggle(name);
+									}}
 									disabled={loadingLikes.has(name)}
 									aria-label={
 										likedNames.has(name)
@@ -170,6 +255,40 @@ export default function NamesResults({
 					))}
 				</div>
 
+				{/* Global tooltip - renders above everything */}
+				{!user && hoveredName && (
+					<div className={styles.tooltip} onClick={handleCloseTooltip}>
+						<div className={styles.tooltipContent} onClick={handleTooltipClick}>
+							<button
+								className={styles.tooltipClose}
+								onClick={(e) => {
+									e.stopPropagation();
+									handleCloseTooltip();
+								}}
+								aria-label="Close tooltip"
+							>
+								×
+							</button>
+							<strong>Sign in to save names!</strong>
+							<p>
+								Create an account to save your favorite names and unlock more
+								features
+							</p>
+							{isMobile && (
+								<p
+									style={{
+										marginTop: "0.5rem",
+										fontSize: "0.8rem",
+										opacity: 0.8,
+									}}
+								>
+									Tap here to sign in
+								</p>
+							)}
+						</div>
+					</div>
+				)}
+
 				<div className={styles.actions}>
 					<button
 						className={styles.actionButton}
@@ -179,6 +298,22 @@ export default function NamesResults({
 					</button>
 				</div>
 			</div>
+
+			{/* Auth Modal for unauthenticated users */}
+			{showAuthModal && (
+				<>
+					<div
+						className={styles.modalOverlay}
+						onClick={() => setShowAuthModal(false)}
+					></div>
+					<div className={styles.modalContainer}>
+						<AuthForms
+							onClose={() => setShowAuthModal(false)}
+							onSuccess={handleAuthSuccess}
+						/>
+					</div>
+				</>
+			)}
 		</div>
 	);
 }
