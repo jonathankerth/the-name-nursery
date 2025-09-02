@@ -32,12 +32,11 @@ export const addLikedName = async (
 	try {
 		// Check if user is authenticated
 		if (!userId) {
-			console.error("User not authenticated");
 			return false;
 		}
 
 		const likedNamesRef = collection(db, "likedNames");
-		const docRef = await addDoc(likedNamesRef, {
+		await addDoc(likedNamesRef, {
 			userId,
 			name,
 			gender,
@@ -46,17 +45,8 @@ export const addLikedName = async (
 			likedAt: serverTimestamp(),
 		});
 
-		console.log("Successfully added liked name:", docRef.id);
 		return true;
-	} catch (error) {
-		console.error("Error adding liked name:", error);
-
-		// Check if it's a permissions error
-		const firebaseError = error as { code?: string; message?: string };
-		if (firebaseError.code === "permission-denied") {
-			console.error("Permission denied: Check Firestore security rules");
-		}
-
+	} catch {
 		return false;
 	}
 };
@@ -78,8 +68,7 @@ export const removeLikedName = async (userId: string, name: string) => {
 		await Promise.all(deletePromises);
 
 		return true;
-	} catch (error) {
-		console.error("Error removing liked name:", error);
+	} catch {
 		return false;
 	}
 };
@@ -89,17 +78,8 @@ export const removeLikedNameById = async (documentId: string) => {
 	try {
 		const docRef = doc(db, "likedNames", documentId);
 		await deleteDoc(docRef);
-		console.log("Successfully removed liked name:", documentId);
 		return true;
-	} catch (error) {
-		console.error("Error removing liked name by ID:", error);
-
-		// Check if it's a permissions error
-		const firebaseError = error as { code?: string; message?: string };
-		if (firebaseError.code === "permission-denied") {
-			console.error("Permission denied: Check Firestore security rules");
-		}
-
+	} catch {
 		return false;
 	}
 };
@@ -111,7 +91,6 @@ export const getUserLikedNames = async (
 	try {
 		// Check if user is authenticated
 		if (!userId) {
-			console.error("User not authenticated");
 			return [];
 		}
 
@@ -128,17 +107,8 @@ export const getUserLikedNames = async (
 				} as LikedName)
 		);
 
-		console.log(`Found ${likedNames.length} liked names for user`);
 		return likedNames;
-	} catch (error) {
-		console.error("Error getting liked names:", error);
-
-		// Check if it's a permissions error
-		const firebaseError = error as { code?: string; message?: string };
-		if (firebaseError.code === "permission-denied") {
-			console.error("Permission denied: Check Firestore security rules");
-		}
-
+	} catch {
 		return [];
 	}
 };
@@ -158,8 +128,7 @@ export const isNameLiked = async (
 
 		const querySnapshot = await getDocs(q);
 		return !querySnapshot.empty;
-	} catch (error) {
-		console.error("Error checking if name is liked:", error);
+	} catch {
 		return false;
 	}
 };

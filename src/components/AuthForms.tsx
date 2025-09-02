@@ -46,8 +46,7 @@ const AuthForms = ({ onClose, onSuccess }: AuthFormsProps) => {
 						window.localStorage.removeItem("emailForSignIn");
 						onSuccess();
 					})
-					.catch((error) => {
-						console.error("Error signing in with email link:", error);
+					.catch(() => {
 						setError("Failed to sign in with email link");
 					});
 			}

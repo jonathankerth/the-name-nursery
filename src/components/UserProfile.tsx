@@ -57,8 +57,8 @@ const UserProfile = ({
 			setLoadingLikedNames(true);
 			const names = await getUserLikedNames(user.uid);
 			setLikedNames(names);
-		} catch (error) {
-			console.error("Error loading liked names:", error);
+		} catch {
+			// Handle error silently
 		} finally {
 			setLoadingLikedNames(false);
 		}
@@ -218,8 +218,8 @@ const UserProfile = ({
 			setLikedNames((prevNames) =>
 				prevNames.filter((name) => name.id !== nameId)
 			);
-		} catch (error) {
-			console.error("Error removing liked name:", error);
+		} catch {
+			// Handle error silently
 		}
 	};
 	const handleDeleteAccount = async () => {

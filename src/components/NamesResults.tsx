@@ -74,8 +74,8 @@ export default function NamesResults({
 					setLikedNames((prev) => new Set(prev).add(name));
 				}
 			}
-		} catch (error) {
-			console.error("Error toggling like:", error);
+		} catch {
+			// Handle error silently
 		} finally {
 			setLoadingLikes((prev) => {
 				const newSet = new Set(prev);

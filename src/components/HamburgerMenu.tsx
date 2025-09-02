@@ -22,8 +22,8 @@ const HamburgerMenu = () => {
 		try {
 			await signOut(auth);
 			setIsOpen(false);
-		} catch (error) {
-			console.error("Error signing out:", error);
+		} catch {
+			// Handle error silently
 		}
 	};
 
