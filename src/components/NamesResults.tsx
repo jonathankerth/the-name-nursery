@@ -22,7 +22,7 @@ export default function NamesResults({
 	const { user } = useAuth();
 	const [likedNames, setLikedNames] = useState<Set<string>>(new Set());
 	const [loadingLikes, setLoadingLikes] = useState<Set<string>>(new Set());
-	const [flippedCard, setFlippedCard] = useState<string | null>(null);
+	const [flippedCard, setFlippedCard] = useState<number | null>(null);
 	const [showAuthForms, setShowAuthForms] = useState(false);
 
 	// Load liked status for all names when component mounts
@@ -47,8 +47,6 @@ export default function NamesResults({
 
 	const handleLikeToggle = async (name: string) => {
 		if (!user) {
-			// Toggle flip for this specific card to show sign-up form
-			setFlippedCard(flippedCard === name ? null : name);
 			return;
 		}
 
@@ -89,10 +87,10 @@ export default function NamesResults({
 		}
 	};
 
-	const handleNameClick = (name: string) => {
+	const handleNameClick = (index: number) => {
 		if (!user) {
 			// Toggle flip for this specific card
-			setFlippedCard(flippedCard === name ? null : name);
+			setFlippedCard(flippedCard === index ? null : index);
 		}
 	};
 
@@ -173,10 +171,10 @@ export default function NamesResults({
 							key={index}
 							className={`${styles.nameCard} ${
 								!user ? styles.nameCardUnauth : ""
-							} ${flippedCard === name ? styles.nameCardFlipped : ""}`}
-							onClick={() => handleNameClick(name)}
+							} ${flippedCard === index ? styles.nameCardFlipped : ""}`}
+							onClick={() => handleNameClick(index)}
 						>
-							{flippedCard === name ? (
+							{flippedCard === index ? (
 								// Flipped side - sign up message
 								<div className={styles.cardFlipContent}>
 									<div className={styles.signUpMessage}>
