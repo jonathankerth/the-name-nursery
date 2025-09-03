@@ -63,6 +63,17 @@ const AuthForms = ({ onClose, onSuccess }: AuthFormsProps) => {
 			const actionCodeSettings = {
 				url: window.location.origin,
 				handleCodeInApp: true,
+				// Add iOS and Android app package names if you have mobile apps
+				iOS: {
+					bundleId: "com.thenamenursery.app", // Replace with your actual bundle ID
+				},
+				android: {
+					packageName: "com.thenamenursery.app", // Replace with your actual package name
+					installApp: false,
+					minimumVersion: "1.0.0",
+				},
+				// This makes the email more legitimate-looking
+				dynamicLinkDomain: undefined, // You can set up a custom dynamic link domain
 			};
 
 			await sendSignInLinkToEmail(auth, email, actionCodeSettings);
