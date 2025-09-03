@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { signInWithPopup, sendPasswordResetEmail } from "firebase/auth";
 import {
 	auth,
@@ -8,8 +8,6 @@ import {
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
 	sendSignInLinkToEmail,
-	isSignInWithEmailLink,
-	signInWithEmailLink,
 } from "../lib/firebase";
 import styles from "./AuthForms.module.css";
 
@@ -32,26 +30,6 @@ const AuthForms = ({ onClose, onSuccess }: AuthFormsProps) => {
 	const [resetEmailSent, setResetEmailSent] = useState(false);
 	const [passwordVisible, setPasswordVisible] = useState(false);
 	const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-
-	// Check if user is signing in via email link
-	useEffect(() => {
-		if (isSignInWithEmailLink(auth, window.location.href)) {
-			let email = window.localStorage.getItem("emailForSignIn");
-			if (!email) {
-				email = window.prompt("Please provide your email for confirmation");
-			}
-			if (email) {
-				signInWithEmailLink(auth, email, window.location.href)
-					.then(() => {
-						window.localStorage.removeItem("emailForSignIn");
-						onSuccess();
-					})
-					.catch(() => {
-						setError("Failed to sign in with email link");
-					});
-			}
-		}
-	}, [onSuccess]);
 
 	const handleGoogleSignIn = async () => {
 		try {
