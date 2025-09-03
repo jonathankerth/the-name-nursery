@@ -68,6 +68,17 @@ export default function NamesResults({
 		};
 	}, []);
 
+	// Clear tooltip when modal opens to prevent conflicts
+	useEffect(() => {
+		if (showAuthModal && hoveredName) {
+			setHoveredName(null);
+			if (tooltipTimeoutRef.current) {
+				clearTimeout(tooltipTimeoutRef.current);
+				tooltipTimeoutRef.current = null;
+			}
+		}
+	}, [showAuthModal, hoveredName]);
+
 	const handleLikeToggle = async (name: string) => {
 		if (!user) {
 			setShowAuthModal(true);
@@ -113,8 +124,14 @@ export default function NamesResults({
 
 	const handleAuthSuccess = () => {
 		setShowAuthModal(false);
-		// Reload liked status after successful auth
-		window.location.reload();
+		setHoveredName(null);
+		// Clear any timeouts
+		if (tooltipTimeoutRef.current) {
+			clearTimeout(tooltipTimeoutRef.current);
+			tooltipTimeoutRef.current = null;
+		}
+		// The user state will update naturally through the auth context
+		// No need to reload the page
 	};
 
 	const handleNameClick = () => {
@@ -140,7 +157,19 @@ export default function NamesResults({
 
 	const handleNameHover = (name: string, isHovering: boolean) => {
 		if (!user && !isMobile) {
-			setHoveredName(isHovering ? name : null);
+			if (isHovering) {
+				// Clear any existing timeout when hovering over a new name
+				if (tooltipTimeoutRef.current) {
+					clearTimeout(tooltipTimeoutRef.current);
+					tooltipTimeoutRef.current = null;
+				}
+				setHoveredName(name);
+			} else {
+				// Add a small delay before hiding tooltip to allow moving between buttons
+				tooltipTimeoutRef.current = setTimeout(() => {
+					setHoveredName(null);
+				}, 100);
+			}
 		}
 	};
 
@@ -155,7 +184,12 @@ export default function NamesResults({
 
 	const handleTooltipClick = () => {
 		// Clicking anywhere on tooltip (except close button) opens auth modal
-		handleCloseTooltip();
+		setHoveredName(null);
+		// Clear any existing timeout
+		if (tooltipTimeoutRef.current) {
+			clearTimeout(tooltipTimeoutRef.current);
+			tooltipTimeoutRef.current = null;
+		}
 		setShowAuthModal(true);
 	};
 
@@ -255,9 +289,25 @@ export default function NamesResults({
 					))}
 				</div>
 
-				{/* Global tooltip - renders above everything */}
-				{!user && hoveredName && (
-					<div className={styles.tooltip} onClick={handleCloseTooltip}>
+				{/* Global tooltip - only show when modal is not open */}
+				{!user && hoveredName && !showAuthModal && (
+					<div
+						className={styles.tooltip}
+						onClick={handleCloseTooltip}
+						onMouseEnter={() => {
+							// Clear timeout when hovering over tooltip
+							if (tooltipTimeoutRef.current) {
+								clearTimeout(tooltipTimeoutRef.current);
+								tooltipTimeoutRef.current = null;
+							}
+						}}
+						onMouseLeave={() => {
+							// Add delay when leaving tooltip
+							tooltipTimeoutRef.current = setTimeout(() => {
+								setHoveredName(null);
+							}, 100);
+						}}
+					>
 						<div className={styles.tooltipContent} onClick={handleTooltipClick}>
 							<button
 								className={styles.tooltipClose}
