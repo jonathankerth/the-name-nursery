@@ -103,6 +103,79 @@
 	background: rgba(0, 0, 0, 0.8);
 }
 
+.nameCardFlipped {
+	background: rgba(0, 0, 0, 0.8) !important;
+	border-color: rgba(255, 255, 255, 0.5) !important;
+	transform: translateY(-2px) !important;
+}
+
+.cardFlipContent {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.signUpMessage {
+	text-align: center;
+	color: white;
+	padding: 0.5rem;
+}
+
+.signUpMessage h3 {
+	margin: 0 0 0.75rem 0;
+	font-size: 1.2rem;
+	font-weight: 600;
+	color: #ffd700;
+}
+
+.signUpMessage p {
+	margin: 0 0 1rem 0;
+	font-size: 0.9rem;
+	opacity: 0.9;
+	line-height: 1.4;
+}
+
+.signUpButton {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border: none;
+	padding: 0.6rem 1.2rem;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin-bottom: 0.75rem;
+	width: 100%;
+	max-width: 150px;
+}
+
+.signUpButton:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.signUpMessage .backButton {
+	background: none;
+	color: rgba(255, 255, 255, 0.7);
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	padding: 0.4rem 0.8rem;
+	border-radius: 6px;
+	font-size: 0.8rem;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	position: static;
+	display: inline-block;
+	margin-top: 0.25rem;
+}
+
+.signUpMessage .backButton:hover {
+	background: rgba(255, 255, 255, 0.1);
+	color: rgba(255, 255, 255, 0.9);
+}
+
 .nameName {
 	font-size: 1.4rem;
 	font-weight: 600;
@@ -282,21 +355,53 @@
 	background: rgba(0, 0, 0, 0.8);
 	backdrop-filter: blur(8px);
 	z-index: 9000;
-	animation: fadeIn 0.2s ease;
+	/* Force no animations */
+	animation: none !important;
+	transition: none !important;
+}
+
+.modalOverlayVisible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.modalOverlayHidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
 }
 
 .modalContainer {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	position: fixed !important;
+	top: 50% !important;
+	left: 50% !important;
+	transform: translate(-50%, -50%) !important;
 	z-index: 9001;
-	animation: modalSlideIn 0.3s ease;
-	max-width: 90vw;
-	max-height: 90vh;
-	overflow: auto;
-	width: 100%;
-	max-width: 500px;
+	/* Remove size constraints that could cause shifts */
+	width: auto !important;
+	height: auto !important;
+	max-width: none !important;
+	max-height: none !important;
+	overflow: visible !important;
+	/* Ensure proper centering on all devices */
+	margin: 0;
+	padding: 0;
+	/* Force no animations */
+	animation: none !important;
+	transition: none !important;
+}
+
+.modalContainerVisible {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+.modalContainerHidden {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
 }
 
 @keyframes fadeIn {
@@ -308,29 +413,18 @@
 	}
 }
 
-@keyframes modalSlideIn {
-	from {
-		opacity: 0;
-		transform: translate(-50%, -60%) scale(0.95);
-	}
-	to {
-		opacity: 1;
-		transform: translate(-50%, -50%) scale(1);
-	}
-}
-
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
 	.modalContainer {
-		animation: fadeIn 0.1s ease;
+		animation: none;
 	}
 
 	.modalOverlay {
-		animation: fadeIn 0.1s ease;
+		animation: none;
 	}
 
 	.tooltipContent {
-		animation: fadeIn 0.1s ease;
+		animation: none;
 	}
 }
 

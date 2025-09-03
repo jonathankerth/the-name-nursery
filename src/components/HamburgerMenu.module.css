@@ -214,6 +214,9 @@
 	z-index: 1002;
 	max-width: 90vw;
 	max-height: 90vh;
+	/* Ensure proper centering on all devices */
+	margin: 0;
+	padding: 0;
 }
 
 /* Dark mode support */

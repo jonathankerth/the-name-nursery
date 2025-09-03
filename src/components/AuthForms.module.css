@@ -42,7 +42,6 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-	transition: color 0.2s ease;
 }
 
 .closeButton:hover {
@@ -91,7 +90,6 @@
 	font-weight: 500;
 	color: #374151;
 	cursor: pointer;
-	transition: all 0.2s ease;
 	margin-bottom: 16px;
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { addLikedName, removeLikedName, isNameLiked } from "../lib/likedNames";
 import AuthForms from "./AuthForms";
@@ -22,10 +22,8 @@ export default function NamesResults({
 	const { user } = useAuth();
 	const [likedNames, setLikedNames] = useState<Set<string>>(new Set());
 	const [loadingLikes, setLoadingLikes] = useState<Set<string>>(new Set());
-	const [showAuthModal, setShowAuthModal] = useState(false);
-	const [hoveredName, setHoveredName] = useState<string | null>(null);
-	const [isMobile, setIsMobile] = useState(false);
-	const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const [flippedCard, setFlippedCard] = useState<string | null>(null);
+	const [showAuthForms, setShowAuthForms] = useState(false);
 
 	// Load liked status for all names when component mounts
 	useEffect(() => {
@@ -47,41 +45,10 @@ export default function NamesResults({
 		checkLikedStatus();
 	}, [user, names]);
 
-	// Check if device is mobile
-	useEffect(() => {
-		const checkMobile = () => {
-			setIsMobile(window.innerWidth <= 768 || "ontouchstart" in window);
-		};
-
-		checkMobile();
-		window.addEventListener("resize", checkMobile);
-
-		return () => window.removeEventListener("resize", checkMobile);
-	}, []);
-
-	// Cleanup timeout on unmount
-	useEffect(() => {
-		return () => {
-			if (tooltipTimeoutRef.current) {
-				clearTimeout(tooltipTimeoutRef.current);
-			}
-		};
-	}, []);
-
-	// Clear tooltip when modal opens to prevent conflicts
-	useEffect(() => {
-		if (showAuthModal && hoveredName) {
-			setHoveredName(null);
-			if (tooltipTimeoutRef.current) {
-				clearTimeout(tooltipTimeoutRef.current);
-				tooltipTimeoutRef.current = null;
-			}
-		}
-	}, [showAuthModal, hoveredName]);
-
 	const handleLikeToggle = async (name: string) => {
 		if (!user) {
-			setShowAuthModal(true);
+			// Toggle flip for this specific card to show sign-up form
+			setFlippedCard(flippedCard === name ? null : name);
 			return;
 		}
 
@@ -122,100 +89,52 @@ export default function NamesResults({
 		}
 	};
 
-	const handleAuthSuccess = () => {
-		setShowAuthModal(false);
-		setHoveredName(null);
-		// Clear any timeouts
-		if (tooltipTimeoutRef.current) {
-			clearTimeout(tooltipTimeoutRef.current);
-			tooltipTimeoutRef.current = null;
-		}
-		// The user state will update naturally through the auth context
-		// No need to reload the page
-	};
-
-	const handleNameClick = () => {
+	const handleNameClick = (name: string) => {
 		if (!user) {
-			if (isMobile) {
-				// On mobile - show tooltip with click-to-signin
-				setHoveredName("mobile-tooltip");
-				// Clear any existing timeout
-				if (tooltipTimeoutRef.current) {
-					clearTimeout(tooltipTimeoutRef.current);
-				}
-				// Set new timeout
-				tooltipTimeoutRef.current = setTimeout(
-					() => setHoveredName(null),
-					15000
-				);
-			} else {
-				// Desktop - show modal immediately
-				setShowAuthModal(true);
-			}
+			// Toggle flip for this specific card
+			setFlippedCard(flippedCard === name ? null : name);
 		}
 	};
 
-	const handleNameHover = (name: string, isHovering: boolean) => {
-		if (!user && !isMobile) {
-			if (isHovering) {
-				// Clear any existing timeout when hovering over a new name
-				if (tooltipTimeoutRef.current) {
-					clearTimeout(tooltipTimeoutRef.current);
-					tooltipTimeoutRef.current = null;
-				}
-				setHoveredName(name);
-			} else {
-				// Add a small delay before hiding tooltip to allow moving between buttons
-				tooltipTimeoutRef.current = setTimeout(() => {
-					setHoveredName(null);
-				}, 100);
-			}
-		}
+	const openAuthForms = () => {
+		setShowAuthForms(true);
+		setFlippedCard(null); // Close any flipped cards
 	};
 
-	const handleCloseTooltip = () => {
-		// Clear any existing timeout when manually closing
-		if (tooltipTimeoutRef.current) {
-			clearTimeout(tooltipTimeoutRef.current);
-			tooltipTimeoutRef.current = null;
-		}
-		setHoveredName(null);
+	const closeAuthForms = () => {
+		setShowAuthForms(false);
 	};
 
-	const handleTooltipClick = () => {
-		// Clicking anywhere on tooltip (except close button) opens auth modal
-		setHoveredName(null);
-		// Clear any existing timeout
-		if (tooltipTimeoutRef.current) {
-			clearTimeout(tooltipTimeoutRef.current);
-			tooltipTimeoutRef.current = null;
-		}
-		setShowAuthModal(true);
+	const handleAuthSuccess = () => {
+		setShowAuthForms(false);
+		setFlippedCard(null); // Close any flipped cards
 	};
 
-	// Calculate the same header color used in the Header component
-	const pageColors = {
-		baby: "#EFD9AA",
-		boy: "#B7E9F0",
-		girl: "#EDD5EB",
-	};
+	const headerColor = (() => {
+		// Calculate the same header color used in the Header component
+		const pageColors = {
+			baby: "#EFD9AA",
+			boy: "#B7E9F0",
+			girl: "#EDD5EB",
+		};
 
-	const darken = (hex: string, amount = 0.22) => {
-		const c = hex.replace("#", "");
-		const r = parseInt(c.substring(0, 2), 16);
-		const g = parseInt(c.substring(2, 4), 16);
-		const b = parseInt(c.substring(4, 6), 16);
-		const dr = Math.max(0, Math.round(r * (1 - amount)));
-		const dg = Math.max(0, Math.round(g * (1 - amount)));
-		const db = Math.max(0, Math.round(b * (1 - amount)));
-		const toHex = (v: number) => v.toString(16).padStart(2, "0");
-		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
-	};
+		const darken = (hex: string, amount = 0.22) => {
+			const c = hex.replace("#", "");
+			const r = parseInt(c.substring(0, 2), 16);
+			const g = parseInt(c.substring(2, 4), 16);
+			const b = parseInt(c.substring(4, 6), 16);
+			const dr = Math.max(0, Math.round(r * (1 - amount)));
+			const dg = Math.max(0, Math.round(g * (1 - amount)));
+			const db = Math.max(0, Math.round(b * (1 - amount)));
+			const toHex = (v: number) => v.toString(16).padStart(2, "0");
+			return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
+		};
 
-	const headerColor = darken(
-		pageColors[gender as keyof typeof pageColors] || "#111827",
-		0.22
-	);
+		return darken(
+			pageColors[gender as keyof typeof pageColors] || "#111827",
+			0.22
+		);
+	})();
 	return (
 		<div className={styles.container}>
 			<button
@@ -254,90 +173,69 @@ export default function NamesResults({
 							key={index}
 							className={`${styles.nameCard} ${
 								!user ? styles.nameCardUnauth : ""
-							}`}
-							onClick={handleNameClick}
-							onMouseEnter={() => handleNameHover(name, true)}
-							onMouseLeave={() => handleNameHover(name, false)}
+							} ${flippedCard === name ? styles.nameCardFlipped : ""}`}
+							onClick={() => handleNameClick(name)}
 						>
-							<span className={styles.nameName}>{name}</span>
-							{user && (
-								<button
-									className={`${styles.likeButton} ${
-										likedNames.has(name) ? styles.liked : ""
-									}`}
-									onClick={(e) => {
-										e.stopPropagation();
-										handleLikeToggle(name);
-									}}
-									disabled={loadingLikes.has(name)}
-									aria-label={
-										likedNames.has(name)
-											? `Remove ${name} from favorites`
-											: `Add ${name} to favorites`
-									}
-								>
-									{loadingLikes.has(name) ? (
-										<span className={styles.spinner}>⟳</span>
-									) : likedNames.has(name) ? (
-										"❤️"
-									) : (
-										"🤍"
+							{flippedCard === name ? (
+								// Flipped side - sign up message
+								<div className={styles.cardFlipContent}>
+									<div className={styles.signUpMessage}>
+										<h3>💖 Save Your Favorites!</h3>
+										<p>Sign in to save baby names you love</p>
+										<button
+											className={styles.signUpButton}
+											onClick={(e) => {
+												e.stopPropagation();
+												openAuthForms();
+											}}
+										>
+											Sign Up Free
+										</button>
+										<button
+											className={styles.backButton}
+											onClick={(e) => {
+												e.stopPropagation();
+												setFlippedCard(null);
+											}}
+										>
+											← Back
+										</button>
+									</div>
+								</div>
+							) : (
+								// Normal side - name and like button
+								<>
+									<span className={styles.nameName}>{name}</span>
+									{user && (
+										<button
+											className={`${styles.likeButton} ${
+												likedNames.has(name) ? styles.liked : ""
+											}`}
+											onClick={(e) => {
+												e.stopPropagation();
+												handleLikeToggle(name);
+											}}
+											disabled={loadingLikes.has(name)}
+											aria-label={
+												likedNames.has(name)
+													? `Remove ${name} from favorites`
+													: `Add ${name} to favorites`
+											}
+										>
+											{loadingLikes.has(name) ? (
+												<span className={styles.spinner}>⟳</span>
+											) : likedNames.has(name) ? (
+												"❤️"
+											) : (
+												"🤍"
+											)}
+										</button>
 									)}
-								</button>
+								</>
 							)}
 						</div>
 					))}
 				</div>
-
-				{/* Global tooltip - only show when modal is not open */}
-				{!user && hoveredName && !showAuthModal && (
-					<div
-						className={styles.tooltip}
-						onClick={handleCloseTooltip}
-						onMouseEnter={() => {
-							// Clear timeout when hovering over tooltip
-							if (tooltipTimeoutRef.current) {
-								clearTimeout(tooltipTimeoutRef.current);
-								tooltipTimeoutRef.current = null;
-							}
-						}}
-						onMouseLeave={() => {
-							// Add delay when leaving tooltip
-							tooltipTimeoutRef.current = setTimeout(() => {
-								setHoveredName(null);
-							}, 100);
-						}}
-					>
-						<div className={styles.tooltipContent} onClick={handleTooltipClick}>
-							<button
-								className={styles.tooltipClose}
-								onClick={(e) => {
-									e.stopPropagation();
-									handleCloseTooltip();
-								}}
-								aria-label="Close tooltip"
-							>
-								×
-							</button>
-							<strong>Sign in to save names!</strong>
-							<p>
-								Create an account to save your favorite names and unlock more
-								features
-							</p>
-							{isMobile && (
-								<p
-									style={{
-										marginTop: "0.5rem",
-										fontSize: "0.8rem",
-										opacity: 0.8,
-									}}
-								>
-									Tap here to sign in
-								</p>
-							)}
-						</div>
-					</div>
-				)}
 
 				<div className={styles.actions}>
 					<button
@@ -349,18 +247,12 @@ export default function NamesResults({
 				</div>
 			</div>
 
-			{/* Auth Modal for unauthenticated users */}
-			{showAuthModal && (
+			{/* Auth Forms Modal */}
+			{showAuthForms && (
 				<>
-					<div
-						className={styles.modalOverlay}
-						onClick={() => setShowAuthModal(false)}
-					></div>
+					<div className={styles.modalOverlay} onClick={closeAuthForms}></div>
 					<div className={styles.modalContainer}>
-						<AuthForms
-							onClose={() => setShowAuthModal(false)}
-							onSuccess={handleAuthSuccess}
-						/>
+						<AuthForms onClose={closeAuthForms} onSuccess={handleAuthSuccess} />
 					</div>
 				</>
 			)}

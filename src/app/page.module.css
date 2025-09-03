@@ -187,7 +187,7 @@
 }
 
 .wheelOptionSelected {
-	font-size: 1.9rem;
+	font-size: 2.4rem;
 	font-weight: 700;
 	transition: transform 0.28s ease, opacity 0.28s ease;
 	background: transparent;
@@ -195,7 +195,7 @@
 }
 
 .wheelOptionFaded {
-	font-size: 1rem;
+	font-size: 1.3rem;
 	font-weight: 500;
 	opacity: 0.5;
 }
@@ -294,7 +294,7 @@
 	}
 
 	.wheelOptionSelected {
-		font-size: 1.7rem;
+		font-size: 2.2rem;
 	}
 
 	.phrase {
@@ -312,7 +312,7 @@
 	}
 
 	.letterSelectionContent {
-		gap: 0px;
+		gap: 12px;
 		width: 100%;
 		flex-direction: row !important;
 		justify-content: center;
@@ -356,35 +356,37 @@
 	}
 
 	.sentenceForm {
-		flex-direction: column;
+		flex-direction: row;
 		align-items: center;
-		gap: 20px;
-		padding: 20px 20px;
+		justify-content: center;
+		gap: 12px;
+		padding: 20px 8px;
 		min-width: 0;
 		width: 100%;
 		box-sizing: border-box;
 		position: relative;
+		white-space: nowrap;
 	}
 
 	.fixedA,
 	.fixedName {
-		font-size: 1.8rem;
-		margin: 0 2px;
+		font-size: 1.5rem;
+		margin: 0 1px;
 		flex-shrink: 0;
 	}
 
 	.wheelColumn {
-		min-width: 120px;
+		min-width: 100px;
 		gap: 0px;
 		flex-shrink: 0;
 	}
 
 	.wheelOptionSelected {
-		font-size: 1.6rem;
+		font-size: 1.8rem;
 	}
 
 	.wheelOptionFaded {
-		font-size: 0.9rem;
+		font-size: 1.1rem;
 	}
 
 	.triangleBtn {
@@ -419,35 +421,36 @@
 	}
 
 	.phrase {
-		font-size: 1.2rem;
-		line-height: 1;
+		font-size: 1.2rem !important;
+		line-height: 1.2 !important;
 		text-align: center;
-		white-space: normal;
+		white-space: normal !important;
 		padding: 0;
-		display: flex;
-		flex-direction: column;
+		display: flex !important;
+		flex-direction: column !important;
 		align-items: center;
 		gap: 0px;
+		max-width: 140px;
 	}
 
 	.firstLine,
 	.secondLine {
-		display: block;
-		white-space: normal;
+		display: block !important;
+		white-space: nowrap;
 	}
 
 	.firstLine::after {
-		content: none;
+		content: "";
 	}
 
 	.letterSelectionContent {
-		gap: 0px;
+		gap: 12px;
 		width: 100%;
 		max-width: 300px;
 		margin: 0 auto;
 		padding: 0; /* Remove padding, let buttons float outside */
 		box-sizing: border-box;
-		flex-direction: column !important;
+		flex-direction: row !important;
 		justify-content: center;
 		align-items: center;
 		white-space: normal;
@@ -457,6 +460,8 @@
 	.phraseContainer {
 		width: auto;
 		flex-shrink: 0;
+		text-align: center;
+		max-width: 140px;
 	}
 	.resultsContainer {
 		flex-direction: column;
@@ -488,50 +493,51 @@
 /* Extra small mobile screens */
 @media (max-width: 400px) {
 	.sentenceForm {
-		gap: 16px;
-		padding: 16px 8px;
+		gap: 8px;
+		padding: 16px 4px;
 	}
 
 	.fixedA,
 	.fixedName {
-		font-size: 1.6rem;
+		font-size: 1.3rem;
 	}
 
 	.wheelColumn {
-		min-width: 100px;
+		min-width: 80px;
 		gap: 0px;
 	}
 
 	.wheelOptionSelected {
-		font-size: 1.4rem;
+		font-size: 1.6rem;
 	}
 
 	.wheelOptionFaded {
-		font-size: 0.8rem;
+		font-size: 1rem;
 	}
 
 	.phrase {
-		font-size: 1.1rem;
-		max-width: none;
+		font-size: 1.1rem !important;
+		max-width: 120px;
 		padding: 0;
-		white-space: normal;
-		display: flex;
-		flex-direction: column;
+		white-space: normal !important;
+		display: flex !important;
+		flex-direction: column !important;
 		align-items: center;
 		gap: 0px;
+		line-height: 1.2 !important;
 	}
 
 	.firstLine,
 	.secondLine {
-		display: block;
-		white-space: normal;
+		display: block !important;
+		white-space: nowrap;
 	}
 
 	.letterSelectionContent {
 		padding: 0 55px;
-		max-width: 280px;
-		gap: 0px;
-		flex-direction: column !important;
+		max-width: 320px;
+		gap: 12px;
+		flex-direction: row !important;
 		justify-content: center;
 		align-items: center;
 		display: flex !important;
@@ -627,13 +633,13 @@
 }
 
 .wheelCenter {
-	font-size: 1.9rem;
+	font-size: 2.4rem;
 	font-weight: 700;
 	transition: transform 0.28s ease, opacity 0.28s ease;
 }
 
 .wheelFaded {
-	font-size: 1rem;
+	font-size: 1.3rem;
 	font-weight: 500;
 	opacity: 0.5;
 }
