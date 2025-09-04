@@ -971,12 +971,19 @@ export default function Home() {
 
 						<div className={styles.multiStepContent}>
 							<div className={styles.topRow} style={{ color: headerColor }}>
-								<span className={styles.selectedType}>
-									{selectedGender.charAt(0).toUpperCase() +
-										selectedGender.slice(1)}
-								</span>{" "}
-								names starting with {selectedLetter} for a baby who&apos;s{" "}
-								{selectedPersonality} & inspired by {selectedInspiration}
+								<div className={styles.twoRowText}>
+									<div className={styles.firstRow}>
+										<span className={styles.selectedType}>
+											{selectedGender.charAt(0).toUpperCase() +
+												selectedGender.slice(1)}
+										</span>{" "}
+										names starting with {selectedLetter}
+									</div>
+									<div className={styles.secondRow}>
+										for a baby who&apos;s {selectedPersonality} & inspired by{" "}
+										{selectedInspiration}
+									</div>
+								</div>
 							</div>
 
 							<div className={styles.letterSelectionContent}>

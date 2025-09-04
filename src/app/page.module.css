@@ -722,6 +722,29 @@
 	box-sizing: border-box;
 }
 
+.twoRowText {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.3rem;
+}
+
+.firstRow,
+.secondRow {
+	text-align: center;
+	line-height: 1.2;
+}
+
+.firstRow {
+	font-weight: 700;
+	font-size: 1.6rem;
+}
+
+.secondRow {
+	font-weight: 500;
+	font-size: 1.4rem;
+}
+
 .wheelRow {
 	display: flex;
 	flex-direction: row;
@@ -801,10 +824,33 @@
 		font-weight: 600;
 		line-height: 1.3;
 		margin-bottom: 1rem;
-		text-align: left;
+		text-align: center;
 		padding: 0 20px;
 		white-space: normal;
 		word-wrap: break-word;
+	}
+
+	.twoRowText {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+	}
+
+	.firstRow,
+	.secondRow {
+		text-align: center;
+		line-height: 1.2;
+	}
+
+	.firstRow {
+		font-weight: 700;
+		font-size: 1.15rem;
+	}
+
+	.secondRow {
+		font-weight: 500;
+		font-size: 1.05rem;
 	}
 
 	.wheelRow {
