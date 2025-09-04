@@ -8,6 +8,9 @@ interface NamesResultsProps {
 	names: string[];
 	gender: string;
 	letter: string;
+	personality: string;
+	inspiration: string;
+	origin: string;
 	onBack: () => void;
 	isAIGenerated?: boolean;
 }
@@ -16,6 +19,9 @@ export default function NamesResults({
 	names,
 	gender,
 	letter,
+	personality,
+	inspiration,
+	origin,
 	onBack,
 	isAIGenerated = true,
 }: NamesResultsProps) {
@@ -158,6 +164,10 @@ export default function NamesResults({
 						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting
 						with {letter}
 					</h1>
+					<p className={styles.subtitle} style={{ color: headerColor }}>
+						For a {personality} baby inspired by {inspiration} with {origin}{" "}
+						origin
+					</p>
 					{isAIGenerated && (
 						<p className={styles.subtitle} style={{ color: headerColor }}>
 							✨ AI-curated recommendations just for you

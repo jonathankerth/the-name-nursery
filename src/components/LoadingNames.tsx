@@ -4,9 +4,18 @@ import styles from "./LoadingNames.module.css";
 interface LoadingNamesProps {
 	gender: string;
 	letter: string;
+	personality: string;
+	inspiration: string;
+	origin: string;
 }
 
-export default function LoadingNames({ gender, letter }: LoadingNamesProps) {
+export default function LoadingNames({
+	gender,
+	letter,
+	personality,
+	inspiration,
+	origin,
+}: LoadingNamesProps) {
 	return (
 		<div className={styles.container}>
 			<div className={styles.content}>
@@ -17,7 +26,8 @@ export default function LoadingNames({ gender, letter }: LoadingNamesProps) {
 					Finding perfect {gender} names starting with {letter}...
 				</h2>
 				<p className={styles.subtitle}>
-					Our AI is curating personalized recommendations just for you
+					For a {personality} baby inspired by {inspiration} with {origin}{" "}
+					origin
 				</p>
 			</div>
 		</div>

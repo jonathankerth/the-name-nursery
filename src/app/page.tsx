@@ -11,7 +11,14 @@ import {
 	trackStepProgression,
 } from "../lib/gtag";
 
-type Step = "gender" | "letter" | "loading" | "results";
+type Step =
+	| "gender"
+	| "letter"
+	| "personality"
+	| "inspiration"
+	| "origin"
+	| "loading"
+	| "results";
 
 export default function Home() {
 	const [currentStep, setCurrentStep] = useState<Step>("gender");
@@ -19,6 +26,9 @@ export default function Home() {
 		"baby"
 	);
 	const [selectedLetter, setSelectedLetter] = useState("A");
+	const [selectedPersonality, setSelectedPersonality] = useState("strong");
+	const [selectedInspiration, setSelectedInspiration] = useState("nature");
+	const [selectedOrigin, setSelectedOrigin] = useState("Celtic");
 	const [recommendedNames, setRecommendedNames] = useState<string[]>([]);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
 
@@ -36,6 +46,45 @@ export default function Home() {
 		[]
 	);
 
+	const personalityOptions = useMemo(
+		() => [
+			{ label: "strong", value: "strong" },
+			{ label: "gentle", value: "gentle" },
+			{ label: "modern", value: "modern" },
+			{ label: "classic", value: "classic" },
+			{ label: "unique", value: "unique" },
+			{ label: "elegant", value: "elegant" },
+			{ label: "playful", value: "playful" },
+		],
+		[]
+	);
+
+	const inspirationOptions = useMemo(
+		() => [
+			{ label: "nature", value: "nature" },
+			{ label: "virtues", value: "virtues" },
+			{ label: "flowers", value: "flowers" },
+			{ label: "gemstones", value: "gemstones" },
+			{ label: "colors", value: "colors" },
+			{ label: "seasons", value: "seasons" },
+			{ label: "stars", value: "stars" },
+		],
+		[]
+	);
+
+	const originOptions = useMemo(
+		() => [
+			{ label: "Celtic", value: "Celtic" },
+			{ label: "Latin", value: "Latin" },
+			{ label: "Hebrew", value: "Hebrew" },
+			{ label: "Greek", value: "Greek" },
+			{ label: "Norse", value: "Norse" },
+			{ label: "Arabic", value: "Arabic" },
+			{ label: "Sanskrit", value: "Sanskrit" },
+		],
+		[]
+	);
+
 	// Wheel effect logic for gender selection
 	const selectedIndex = options.findIndex(
 		(opt) => opt.value === selectedGender
@@ -50,6 +99,24 @@ export default function Home() {
 	const letterTouchStartRef = useRef<number | null>(null);
 	const letterWheelRef = useRef<HTMLDivElement | null>(null);
 
+	// Personality selection state
+	const [personalityIndex, setPersonalityIndex] = useState(0);
+	const personalityScrollRef = useRef<number>(0);
+	const personalityTouchStartRef = useRef<number | null>(null);
+	const personalityWheelRef = useRef<HTMLDivElement | null>(null);
+
+	// Inspiration selection state
+	const [inspirationIndex, setInspirationIndex] = useState(0);
+	const inspirationScrollRef = useRef<number>(0);
+	const inspirationTouchStartRef = useRef<number | null>(null);
+	const inspirationWheelRef = useRef<HTMLDivElement | null>(null);
+
+	// Origin selection state
+	const [originIndex, setOriginIndex] = useState(0);
+	const originScrollRef = useRef<number>(0);
+	const originTouchStartRef = useRef<number | null>(null);
+	const originWheelRef = useRef<HTMLDivElement | null>(null);
+
 	const pageColors = useMemo(
 		() => ({
 			baby: "#EFD9AA",
@@ -62,7 +129,7 @@ export default function Home() {
 	// Function to fetch name recommendations
 	const fetchNameRecommendations = useCallback(async () => {
 		setCurrentStep("loading");
-		trackStepProgression("letter", "loading");
+		trackStepProgression("origin", "loading");
 		trackNameSearch(selectedGender, selectedLetter);
 
 		try {
@@ -74,6 +141,9 @@ export default function Home() {
 				body: JSON.stringify({
 					gender: selectedGender,
 					letter: selectedLetter,
+					personality: selectedPersonality,
+					inspiration: selectedInspiration,
+					origin: selectedOrigin,
 				}),
 			});
 
@@ -143,7 +213,13 @@ export default function Home() {
 			trackStepProgression("loading", "results");
 			trackNameView(selectedGender, selectedLetter, false);
 		}
-	}, [selectedGender, selectedLetter]);
+	}, [
+		selectedGender,
+		selectedLetter,
+		selectedPersonality,
+		selectedInspiration,
+		selectedOrigin,
+	]);
 
 	const darken = (hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -214,21 +290,82 @@ export default function Home() {
 					setLetterIndex((i) => (i - 1 + alphabet.length) % alphabet.length);
 				} else if (e.key === "Enter") {
 					e.preventDefault();
-					fetchNameRecommendations();
+					trackStepProgression("letter", "personality");
+					setCurrentStep("personality");
 				} else if (e.key === "Escape" || e.key === "Backspace") {
 					e.preventDefault();
 					setCurrentStep("gender");
 				}
+			} else if (currentStep === "personality") {
+				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+					e.preventDefault();
+					setPersonalityIndex((i) => (i + 1) % personalityOptions.length);
+				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+					e.preventDefault();
+					setPersonalityIndex(
+						(i) =>
+							(i - 1 + personalityOptions.length) % personalityOptions.length
+					);
+				} else if (e.key === "Enter") {
+					e.preventDefault();
+					trackStepProgression("personality", "inspiration");
+					setCurrentStep("inspiration");
+				} else if (e.key === "Escape" || e.key === "Backspace") {
+					e.preventDefault();
+					setCurrentStep("letter");
+				}
+			} else if (currentStep === "inspiration") {
+				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+					e.preventDefault();
+					setInspirationIndex((i) => (i + 1) % inspirationOptions.length);
+				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+					e.preventDefault();
+					setInspirationIndex(
+						(i) =>
+							(i - 1 + inspirationOptions.length) % inspirationOptions.length
+					);
+				} else if (e.key === "Enter") {
+					e.preventDefault();
+					trackStepProgression("inspiration", "origin");
+					setCurrentStep("origin");
+				} else if (e.key === "Escape" || e.key === "Backspace") {
+					e.preventDefault();
+					setCurrentStep("personality");
+				}
+			} else if (currentStep === "origin") {
+				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+					e.preventDefault();
+					setOriginIndex((i) => (i + 1) % originOptions.length);
+				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+					e.preventDefault();
+					setOriginIndex(
+						(i) => (i - 1 + originOptions.length) % originOptions.length
+					);
+				} else if (e.key === "Enter") {
+					e.preventDefault();
+					fetchNameRecommendations();
+				} else if (e.key === "Escape" || e.key === "Backspace") {
+					e.preventDefault();
+					setCurrentStep("inspiration");
+				}
 			} else if (currentStep === "results") {
 				if (e.key === "Escape" || e.key === "Backspace") {
 					e.preventDefault();
-					setCurrentStep("letter");
+					setCurrentStep("origin");
 				}
 			}
 		};
 		window.addEventListener("keydown", onGlobalKey);
 		return () => window.removeEventListener("keydown", onGlobalKey);
-	}, [currentStep, alphabet.length, changeGender, fetchNameRecommendations]);
+	}, [
+		currentStep,
+		alphabet.length,
+		personalityOptions.length,
+		inspirationOptions.length,
+		originOptions.length,
+		changeGender,
+		fetchNameRecommendations,
+	]);
 
 	// Gender wheel handlers
 	const onGenderWheel = (e: React.WheelEvent) => {
@@ -287,6 +424,104 @@ export default function Home() {
 		e.preventDefault();
 	};
 
+	// Personality wheel handlers
+	const onPersonalityWheel = (e: React.WheelEvent) => {
+		e.preventDefault();
+		const now = Date.now();
+		if (now - personalityScrollRef.current < 120) return;
+		if (Math.abs(e.deltaY) < 5) return;
+		personalityScrollRef.current = now;
+		setPersonalityIndex(
+			(i) =>
+				(i + (e.deltaY > 0 ? 1 : -1) + personalityOptions.length) %
+				personalityOptions.length
+		);
+	};
+
+	const onPersonalityTouchStart = (e: React.TouchEvent) => {
+		personalityTouchStartRef.current = e.touches[0].clientY;
+		e.preventDefault();
+	};
+
+	const onPersonalityTouchEnd = (e: React.TouchEvent) => {
+		if (personalityTouchStartRef.current == null) return;
+		const endY = e.changedTouches[0].clientY;
+		const delta = endY - personalityTouchStartRef.current;
+		if (Math.abs(delta) > 20)
+			setPersonalityIndex(
+				(i) =>
+					(i + (delta > 0 ? -1 : 1) + personalityOptions.length) %
+					personalityOptions.length
+			);
+		personalityTouchStartRef.current = null;
+		e.preventDefault();
+	};
+
+	const onInspirationWheel = (e: React.WheelEvent) => {
+		e.preventDefault();
+		const now = Date.now();
+		if (now - inspirationScrollRef.current < 120) return;
+		if (Math.abs(e.deltaY) < 5) return;
+		inspirationScrollRef.current = now;
+		setInspirationIndex(
+			(i) =>
+				(i + (e.deltaY > 0 ? 1 : -1) + inspirationOptions.length) %
+				inspirationOptions.length
+		);
+	};
+
+	const onInspirationTouchStart = (e: React.TouchEvent) => {
+		inspirationTouchStartRef.current = e.touches[0].clientY;
+		e.preventDefault();
+	};
+
+	const onInspirationTouchEnd = (e: React.TouchEvent) => {
+		if (inspirationTouchStartRef.current == null) return;
+		const endY = e.changedTouches[0].clientY;
+		const delta = endY - inspirationTouchStartRef.current;
+		if (Math.abs(delta) > 20)
+			setInspirationIndex(
+				(i) =>
+					(i + (delta > 0 ? -1 : 1) + inspirationOptions.length) %
+					inspirationOptions.length
+			);
+		inspirationTouchStartRef.current = null;
+		e.preventDefault();
+	};
+
+	// Inspiration wheel handlers
+	const onOriginWheel = (e: React.WheelEvent) => {
+		e.preventDefault();
+		const now = Date.now();
+		if (now - originScrollRef.current < 120) return;
+		if (Math.abs(e.deltaY) < 5) return;
+		originScrollRef.current = now;
+		setOriginIndex(
+			(i) =>
+				(i + (e.deltaY > 0 ? 1 : -1) + originOptions.length) %
+				originOptions.length
+		);
+	};
+
+	const onOriginTouchStart = (e: React.TouchEvent) => {
+		originTouchStartRef.current = e.touches[0].clientY;
+		e.preventDefault();
+	};
+
+	const onOriginTouchEnd = (e: React.TouchEvent) => {
+		if (originTouchStartRef.current == null) return;
+		const endY = e.changedTouches[0].clientY;
+		const delta = endY - originTouchStartRef.current;
+		if (Math.abs(delta) > 20)
+			setOriginIndex(
+				(i) =>
+					(i + (delta > 0 ? -1 : 1) + originOptions.length) %
+					originOptions.length
+			);
+		originTouchStartRef.current = null;
+		e.preventDefault();
+	};
+
 	// Wheel order for gender selection
 	const getWheelOrder = () => {
 		if (selectedIndex === 0) return [2, 0, 1]; // Baby selected
@@ -299,6 +534,51 @@ export default function Home() {
 		alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
 	const centerLetter = alphabet[letterIndex];
 	const bottomLetter = alphabet[(letterIndex + 1) % alphabet.length];
+
+	// Update selected values when wheel indices change
+	useEffect(() => {
+		setSelectedLetter(alphabet[letterIndex]);
+	}, [letterIndex, alphabet]);
+
+	useEffect(() => {
+		setSelectedPersonality(personalityOptions[personalityIndex].value);
+	}, [personalityIndex, personalityOptions]);
+
+	useEffect(() => {
+		setSelectedInspiration(inspirationOptions[inspirationIndex].value);
+	}, [inspirationIndex, inspirationOptions]);
+
+	useEffect(() => {
+		setSelectedOrigin(originOptions[originIndex].value);
+	}, [originIndex, originOptions]);
+
+	// Personality wheel display
+	const topPersonality =
+		personalityOptions[
+			(personalityIndex - 1 + personalityOptions.length) %
+				personalityOptions.length
+		];
+	const centerPersonality = personalityOptions[personalityIndex];
+	const bottomPersonality =
+		personalityOptions[(personalityIndex + 1) % personalityOptions.length];
+
+	// Inspiration wheel display
+	const topInspiration =
+		inspirationOptions[
+			(inspirationIndex - 1 + inspirationOptions.length) %
+				inspirationOptions.length
+		];
+	const centerInspiration = inspirationOptions[inspirationIndex];
+	const bottomInspiration =
+		inspirationOptions[(inspirationIndex + 1) % inspirationOptions.length];
+
+	// Origin wheel display
+	const topOrigin =
+		originOptions[
+			(originIndex - 1 + originOptions.length) % originOptions.length
+		];
+	const centerOrigin = originOptions[originIndex];
+	const bottomOrigin = originOptions[(originIndex + 1) % originOptions.length];
 
 	return (
 		<div
@@ -371,7 +651,8 @@ export default function Home() {
 						className={styles.sentenceForm}
 						onSubmit={(e) => {
 							e.preventDefault();
-							fetchNameRecommendations();
+							trackStepProgression("letter", "personality");
+							setCurrentStep("personality");
 						}}
 					>
 						<button
@@ -462,8 +743,312 @@ export default function Home() {
 					</form>
 				)}
 
+				{currentStep === "personality" && (
+					<form
+						className={styles.sentenceForm}
+						onSubmit={(e) => {
+							e.preventDefault();
+							trackStepProgression("personality", "inspiration");
+							setCurrentStep("inspiration");
+						}}
+					>
+						<button
+							className={styles.backTriangle}
+							type="button"
+							aria-label="Back to letter selection"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								trackStepProgression("personality", "letter");
+								setCurrentStep("letter");
+							}}
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+							</svg>
+						</button>
+
+						<div className={styles.multiStepContent}>
+							<div className={styles.topRow} style={{ color: headerColor }}>
+								<span className={styles.selectedType}>
+									{selectedGender.charAt(0).toUpperCase() +
+										selectedGender.slice(1)}
+								</span>{" "}
+								names starting with {selectedLetter} for a baby
+							</div>
+
+							<div className={styles.letterSelectionContent}>
+								<div className={styles.phraseContainer}>
+									<span className={styles.phrase}>
+										<span className={styles.firstLine}>who is</span>
+									</span>
+								</div>
+
+								<div
+									ref={personalityWheelRef}
+									className={styles.wheelColumn}
+									tabIndex={0}
+									onWheel={onPersonalityWheel}
+									onTouchStart={onPersonalityTouchStart}
+									onTouchEnd={onPersonalityTouchEnd}
+									role="listbox"
+									aria-label="Select a personality trait"
+								>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{topPersonality.label}
+									</div>
+									<div
+										className={styles.wheelCenter}
+										style={{ color: wheelColor }}
+									>
+										{centerPersonality.label}
+									</div>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{bottomPersonality.label}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<button
+							className={styles.triangleBtn}
+							aria-label="Continue to inspiration"
+							type="submit"
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
+							</svg>
+						</button>
+					</form>
+				)}
+
+				{currentStep === "inspiration" && (
+					<form
+						className={styles.sentenceForm}
+						onSubmit={(e) => {
+							e.preventDefault();
+							trackStepProgression("inspiration", "origin");
+							setCurrentStep("origin");
+						}}
+					>
+						<button
+							className={styles.backTriangle}
+							type="button"
+							aria-label="Back to personality selection"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								trackStepProgression("inspiration", "personality");
+								setCurrentStep("personality");
+							}}
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+							</svg>
+						</button>
+
+						<div className={styles.multiStepContent}>
+							<div className={styles.topRow} style={{ color: headerColor }}>
+								<span className={styles.selectedType}>
+									{selectedGender.charAt(0).toUpperCase() +
+										selectedGender.slice(1)}
+								</span>{" "}
+								names starting with {selectedLetter} for a baby who is{" "}
+								{selectedPersonality}
+							</div>
+
+							<div className={styles.letterSelectionContent}>
+								<div className={styles.phraseContainer}>
+									<span className={styles.phrase}>
+										<span className={styles.firstLine}>& inspired</span>
+										<span className={styles.secondLine}>by</span>
+									</span>
+								</div>
+
+								<div
+									ref={inspirationWheelRef}
+									className={styles.wheelColumn}
+									tabIndex={0}
+									onWheel={onInspirationWheel}
+									onTouchStart={onInspirationTouchStart}
+									onTouchEnd={onInspirationTouchEnd}
+									role="listbox"
+									aria-label="Select an inspiration source"
+								>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{topInspiration.label}
+									</div>
+									<div
+										className={styles.wheelCenter}
+										style={{ color: wheelColor }}
+									>
+										{centerInspiration.label}
+									</div>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{bottomInspiration.label}
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<button
+							className={styles.triangleBtn}
+							aria-label="Continue to origin"
+							type="submit"
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
+							</svg>
+						</button>
+					</form>
+				)}
+
+				{currentStep === "origin" && (
+					<form
+						className={styles.sentenceForm}
+						onSubmit={(e) => {
+							e.preventDefault();
+							fetchNameRecommendations();
+						}}
+					>
+						<button
+							className={styles.backTriangle}
+							type="button"
+							aria-label="Back to inspiration selection"
+							onClick={(e) => {
+								e.preventDefault();
+								e.stopPropagation();
+								trackStepProgression("origin", "inspiration");
+								setCurrentStep("inspiration");
+							}}
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
+							</svg>
+						</button>
+
+						<div className={styles.multiStepContent}>
+							<div className={styles.topRow} style={{ color: headerColor }}>
+								<span className={styles.selectedType}>
+									{selectedGender.charAt(0).toUpperCase() +
+										selectedGender.slice(1)}
+								</span>{" "}
+								names starting with {selectedLetter} for a baby who&apos;s{" "}
+								{selectedPersonality} & inspired by {selectedInspiration}
+							</div>
+
+							<div className={styles.letterSelectionContent}>
+								<div className={styles.phraseContainer}>
+									<span className={styles.phrase}>
+										<span className={styles.firstLine}>with</span>
+									</span>
+								</div>
+
+								<div
+									ref={originWheelRef}
+									className={styles.wheelColumn}
+									tabIndex={0}
+									onWheel={onOriginWheel}
+									onTouchStart={onOriginTouchStart}
+									onTouchEnd={onOriginTouchEnd}
+									role="listbox"
+									aria-label="Select an origin source"
+								>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{topOrigin.label}
+									</div>
+									<div
+										className={styles.wheelCenter}
+										style={{ color: wheelColor }}
+									>
+										{centerOrigin.label}
+									</div>
+									<div
+										className={styles.wheelFaded}
+										style={{ color: wheelColor }}
+									>
+										{bottomOrigin.label}
+									</div>
+								</div>
+								<div className={styles.phraseContainer}>
+									<span className={styles.phrase}>
+										<span className={styles.secondLine}>origin</span>
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<button
+							className={styles.triangleBtn}
+							aria-label="See results"
+							type="submit"
+						>
+							<svg
+								width="36"
+								height="36"
+								viewBox="0 0 32 32"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
+							</svg>
+						</button>
+					</form>
+				)}
+
 				{currentStep === "loading" && (
-					<LoadingNames gender={selectedGender} letter={selectedLetter} />
+					<LoadingNames
+						gender={selectedGender}
+						letter={selectedLetter}
+						personality={selectedPersonality}
+						inspiration={selectedInspiration}
+						origin={selectedOrigin}
+					/>
 				)}
 
 				{currentStep === "results" && (
@@ -471,7 +1056,10 @@ export default function Home() {
 						names={recommendedNames}
 						gender={selectedGender}
 						letter={selectedLetter}
-						onBack={() => setCurrentStep("letter")}
+						personality={selectedPersonality}
+						inspiration={selectedInspiration}
+						origin={selectedOrigin}
+						onBack={() => setCurrentStep("origin")}
 						isAIGenerated={isAIGenerated}
 					/>
 				)}

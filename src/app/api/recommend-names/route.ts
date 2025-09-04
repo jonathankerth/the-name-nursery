@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
 	try {
 		const requestData = await request.json();
-		const { gender, letter } = requestData;
+		const { gender, letter, personality, inspiration, origin } = requestData;
 
 		if (!gender || !letter) {
 			return NextResponse.json(
@@ -32,13 +32,28 @@ export async function POST(request: NextRequest) {
 		} names that start with the letter "${letter}". 
 
 Requirements:
-- Names should be modern, popular, and culturally diverse
-- Include a mix of traditional and contemporary names
+- Names should be culturally diverse and meaningful
+- Include both traditional and contemporary options
 - ${
 			gender === "baby"
 				? "All names should work for any gender"
 				: `All names should be appropriate for ${gender}s`
 		}
+${
+	personality
+		? `- Focus on names that feel ${personality} and sophisticated`
+		: ""
+}
+${
+	inspiration
+		? `- Draw inspiration from ${inspiration}-related themes and concepts`
+		: ""
+}
+${
+	origin
+		? `- Emphasize names with ${origin} linguistic and cultural origins`
+		: ""
+}
 - Provide only the names, one per line
 - No explanations, descriptions, or additional text
 - Each name must start with the letter ${letter}
