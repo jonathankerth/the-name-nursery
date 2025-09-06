@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
 import NamesResults from "../components/NamesResults";
-import HamburgerMenu from "../components/HamburgerMenu";
+import ProfileButton from "../components/ProfileButton";
 import {
 	trackNameSearch,
 	trackNameView,
@@ -585,7 +585,7 @@ export default function Home() {
 			className={styles.page}
 			style={{ background: pageColors[selectedGender] || undefined }}
 		>
-			<HamburgerMenu />
+			<ProfileButton />
 			<Header type={selectedGender} />
 			<main className={styles.centerMain}>
 				{currentStep === "gender" && (
