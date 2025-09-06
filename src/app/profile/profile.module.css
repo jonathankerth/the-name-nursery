@@ -1,7 +1,77 @@
 .profilePageContainer {
-	min-height: 100vh;
-	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	min-heigh.pageHeader {
+	text-align: center;
 	padding: 20px;
+	margin-bottom: 20px;
+	background: var(--header-bg-color, rgba(255, 255, 255, 0.9));
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+	border: var(--section-border, 2px solid #e2e8f0);
+	position: relative;
+	z-index: 1; /* Lower than profile button */
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+	.pageHeader {
+		text-align: left; /* Change to left alignment on mobile */
+		padding: 16px 20px; /* Reset padding, remove excessive right padding */
+	}
+}
+	background: var(
+		--profile-bg-color,
+		linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)
+	);
+	padding: 20px;
+}
+
+.profileHeader {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px;
+	margin-bottom: 30px;
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+	position: relative;
+	z-index: 10;
+	max-width: 1400px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 30px;
+}
+
+.profileTitle {
+	font-size: 2rem;
+	font-weight: 700;
+	margin: 0;
+	letter-spacing: -0.6px;
+	color: #2d3748;
+}
+
+.pageHeader {
+	text-align: center;
+	padding: 20px;
+	margin-bottom: 20px;
+	background: var(--header-bg-color, rgba(255, 255, 255, 0.9));
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	border: var(--section-border, 2px solid #e2e8f0);
+}
+
+.headerTitle {
+	margin: 0;
+	font-size: 2rem;
+	color: var(--header-color, #2d3748);
+	font-weight: bold;
+}
+
+.sectionTitle {
+	margin: 0 0 15px 0;
+	font-size: 1.5rem;
+	color: var(--header-color, #2d3748);
+	font-weight: bold;
 }
 
 .profileLayout {
@@ -23,7 +93,8 @@
 
 /* Profile Hero Section */
 .profileHero {
-	background: white;
+	background: var(--section-bg-color, white);
+	border: var(--section-border, none);
 	border-radius: 16px;
 	padding: 30px;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -106,7 +177,10 @@
 	justify-content: center;
 }
 
-.saveButton, .cancelButton, .editButton, .updatePasswordButton {
+.saveButton,
+.cancelButton,
+.editButton,
+.updatePasswordButton {
 	padding: 8px 16px;
 	border: none;
 	border-radius: 6px;
@@ -115,12 +189,16 @@
 	transition: all 0.2s;
 }
 
-.saveButton, .editButton, .updatePasswordButton {
+.saveButton,
+.editButton,
+.updatePasswordButton {
 	background: #10b981;
 	color: white;
 }
 
-.saveButton:hover, .editButton:hover, .updatePasswordButton:hover {
+.saveButton:hover,
+.editButton:hover,
+.updatePasswordButton:hover {
 	background: #059669;
 }
 
@@ -209,8 +287,8 @@
 }
 
 .navBox {
-	background: white;
-	border: none;
+	background: var(--section-bg-color, white);
+	border: var(--section-border, none);
 	border-radius: 12px;
 	padding: 20px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -252,7 +330,8 @@
 
 /* Liked Names Section */
 .likedNamesContainer {
-	background: white;
+	background: var(--section-bg-color, white);
+	border: var(--section-border, none);
 	border-radius: 16px;
 	padding: 30px;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -261,7 +340,7 @@
 
 .sectionTitle {
 	margin: 0 0 20px 0;
-	color: #111827;
+	color: var(--table-text-color, #111827) !important;
 	font-size: 24px;
 	font-weight: 700;
 }
@@ -269,25 +348,35 @@
 .namesTable {
 	display: flex;
 	flex-direction: column;
+	border-radius: 8px;
+	overflow: hidden;
+	border: 2px solid var(--table-border-color, #e5e7eb);
 }
 
 .tableHeader {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	gap: 20px;
-	padding: 15px 0;
-	border-bottom: 2px solid #e5e7eb;
+	padding: 15px;
 	font-weight: 600;
-	color: #374151;
+	color: var(--table-header-text-color, white) !important;
+	background: var(--table-header-bg-color, #374151) !important;
+	border: none;
 }
 
 .tableRow {
 	display: grid;
 	grid-template-columns: 1fr auto;
 	gap: 20px;
-	padding: 15px 0;
-	border-bottom: 1px solid #f3f4f6;
+	padding: 15px;
+	background: var(--table-row-bg-color, rgba(255, 255, 255, 0.7));
+	border-bottom: 1px solid var(--table-border-color, #f3f4f6) !important;
 	align-items: center;
+	transition: background-color 0.2s ease;
+}
+
+.tableRow:hover {
+	background: var(--table-row-hover-bg-color, #f9fafb);
 }
 
 .tableRow:last-child {
@@ -296,14 +385,14 @@
 
 .nameName {
 	font-size: 16px;
-	color: #111827;
+	color: var(--table-text-color, #111827) !important;
 	font-weight: 500;
 }
 
 .removeButton {
-	background: #ef4444;
+	background: var(--button-bg-color, #ef4444);
 	color: white;
-	border: none;
+	border: 1px solid var(--button-border-color, #dc2626);
 	padding: 6px 12px;
 	border-radius: 6px;
 	cursor: pointer;
@@ -312,23 +401,26 @@
 }
 
 .removeButton:hover {
-	background: #dc2626;
+	background: var(--button-hover-bg-color, #dc2626);
 }
 
 .emptyState {
 	text-align: center;
 	padding: 40px 20px;
-	color: #6b7280;
+	background: var(--table-row-bg-color, rgba(255, 255, 255, 0.7));
+	border-radius: 8px;
+	border: 1px solid var(--table-row-border-color, #f3f4f6);
 }
 
 .emptyState p {
 	margin: 0 0 10px 0;
+	color: var(--table-text-color, #6b7280);
 }
 
 .exploreButton {
-	background: #3b82f6;
-	color: white;
-	border: none;
+	background: var(--explore-button-bg-color, #3b82f6);
+	color: var(--explore-button-text-color, white);
+	border: 1px solid var(--explore-button-border-color, #2563eb);
 	padding: 12px 24px;
 	border-radius: 8px;
 	cursor: pointer;
@@ -338,7 +430,7 @@
 }
 
 .exploreButton:hover {
-	background: #2563eb;
+	background: var(--explore-button-hover-bg-color, #2563eb);
 }
 
 .loadingContainer {
@@ -362,8 +454,12 @@
 }
 
 @keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 /* Mobile responsive */
@@ -372,8 +468,9 @@
 		flex-direction: column;
 		gap: 20px;
 	}
-	
-	.leftSection, .rightSection {
+
+	.leftSection,
+	.rightSection {
 		min-width: unset;
 		flex: none;
 	}
@@ -383,31 +480,219 @@
 	.profilePageContainer {
 		padding: 10px;
 	}
-	
-	.profileHero, .likedNamesContainer {
-		padding: 20px;
+
+	.pageHeader {
+		padding: 12px 80px 12px 16px; /* Increased right padding from 60px to 80px */
+		margin-bottom: 20px;
+		border-radius: 6px;
 	}
 	
+	.headerTitle {
+		font-size: 1.4rem;
+		line-height: 1.3;
+	}
+
+	.profileLayout {
+		flex-direction: column;
+		gap: 20px;
+	}
+
+	.leftSection,
+	.rightSection {
+		min-width: unset;
+		flex: none;
+	}
+
+	.profileHero,
+	.likedNamesContainer {
+		padding: 20px;
+		border-radius: 12px;
+	}
+
 	.navBox {
 		padding: 15px;
+		border-radius: 10px;
 	}
-	
+
 	.navIcon {
 		font-size: 20px;
 		min-width: 30px;
 	}
+	
+	.navLabel {
+		font-size: 0.95rem;
+	}
+	
+	.navDescription {
+		font-size: 0.8rem;
+	}
+	
+	.sectionTitle {
+		font-size: 1.3rem;
+		margin-bottom: 16px;
+	}
+	
+	.tableHeader,
+	.tableRow {
+		padding: 12px;
+		gap: 16px;
+	}
+	
+	.nameName {
+		font-size: 0.95rem;
+	}
+	
+	.removeButton {
+		padding: 6px 10px;
+		font-size: 0.8rem;
+		border-radius: 4px;
+	}
 }
 
 @media (max-width: 480px) {
+	.pageHeader {
+		padding: 14px 20px; /* Consistent left padding, no excessive right padding */
+	}
+	
 	.profilePageContainer {
-		padding: 5px;
+		padding: 20px 10px;
+	}
+
+	.leftSection {
+		margin-bottom: 30px;
+	}
+
+	.profileAvatar {
+		width: 80px;
+		height: 80px;
+	}
+
+	.profileInfo h1 {
+		font-size: 1.3rem;
+	}
+
+	.navBox {
+		padding: 12px 15px;
+	}
+
+	.navIcon {
+		font-size: 1.2rem;
+	}
+
+	.navLabel {
+		font-size: 1rem;
+	}
+
+	.navDescription {
+		font-size: 0.75rem;
+	}
+
+	.sectionTitle {
+		font-size: 1.2rem;
+	}
+}/* Extra small screens */
+@media (max-width: 360px) {
+	.profilePageContainer {
+		padding: 6px;
+	}
+
+	.pageHeader {
+		padding: 8px 10px; /* Consistent padding, no excessive right padding */
+		margin-bottom: 12px;
 	}
 	
+	.headerTitle {
+		font-size: 1.1rem;
+		line-height: 1.3;
+	}
+
 	.profileLayout {
-		gap: 15px;
+		gap: 12px;
+	}
+
+	.profileHero,
+	.likedNamesContainer {
+		padding: 12px;
 	}
 	
-	.profileHero, .likedNamesContainer {
-		padding: 15px;
+	.profileAvatar {
+		width: 70px;
+		height: 70px;
+	}
+	
+	.userName {
+		font-size: 1.1rem;
+	}
+	
+	.userEmail {
+		font-size: 0.8rem;
+	}
+
+	.navBox {
+		padding: 10px;
+		gap: 8px;
+	}
+
+	.navIcon {
+		font-size: 16px;
+		min-width: 22px;
+	}
+	
+	.navLabel {
+		font-size: 0.8rem;
+	}
+	
+	.navDescription {
+		font-size: 0.7rem;
+	}
+	
+	.sectionTitle {
+		font-size: 1.1rem;
+		margin-bottom: 12px;
+	}
+	
+	.tableHeader,
+	.tableRow {
+		padding: 8px;
+		gap: 10px;
+		font-size: 0.85rem;
+	}
+	
+	.nameName {
+		font-size: 0.85rem;
+	}
+	
+	.removeButton {
+		padding: 3px 6px;
+		font-size: 0.7rem;
+		min-width: 50px;
+	}
+}
+
+/* Landscape orientation on small screens */
+@media (max-width: 768px) and (orientation: landscape) {
+	.profileLayout {
+		flex-direction: row;
+		gap: 16px;
+	}
+	
+	.leftSection {
+		flex: 0 0 300px;
+	}
+	
+	.rightSection {
+		flex: 1;
+	}
+	
+	.profileHero {
+		padding: 16px;
+	}
+	
+	.navigationSection {
+		gap: 12px;
+	}
+	
+	.navBox {
+		padding: 10px;
 	}
 }

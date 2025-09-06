@@ -828,18 +828,19 @@
 }
 
 /* Mobile responsive */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
 	.authContainer {
-		width: 95vw;
-		max-height: 85vh;
+		width: 92vw;
+		max-height: 90vh;
+		border-radius: 8px;
 	}
 
 	.authHeader {
-		padding: 20px 20px 12px 20px;
+		padding: 16px 20px;
 	}
 
 	.authHeader h2 {
-		font-size: 1.3rem;
+		font-size: 1.2rem;
 	}
 
 	.authMethods {
@@ -847,17 +848,234 @@
 	}
 
 	.googleButton {
-		padding: 14px 16px;
+		padding: 12px 16px;
 		font-size: 0.95rem;
+	}
+
+	.formGroup input {
+		padding: 12px 14px;
+		font-size: 16px; /* Prevent zoom on iOS */
+		border-radius: 6px;
+	}
+
+	.submitButton {
+		padding: 12px 16px;
+		font-size: 0.95rem;
+	}
+	
+	.passwordContainer input {
+		padding-right: 45px;
+	}
+}
+
+@media (max-width: 480px) {
+	.authContainer {
+		width: 95vw;
+		max-height: 90vh;
+		border-radius: 6px;
+		margin: 0;
+	}
+
+	.authHeader {
+		padding: 14px 16px;
+		border-radius: 6px 6px 0 0;
+	}
+
+	.authHeader h2 {
+		font-size: 1.1rem;
+	}
+
+	.closeButton {
+		width: 32px;
+		height: 32px;
+		font-size: 1.8rem;
+	}
+
+	.authMethods {
+		padding: 16px;
+	}
+
+	.googleButton {
+		padding: 14px 16px;
+		font-size: 0.9rem;
+		gap: 10px;
+	}
+	
+	.googleIcon {
+		width: 18px;
+		height: 18px;
+	}
+
+	.formGroup {
+		gap: 4px;
+	}
+	
+	.formGroup label {
+		font-size: 0.85rem;
 	}
 
 	.formGroup input {
 		padding: 14px 16px;
 		font-size: 16px; /* Prevent zoom on iOS */
+		border-radius: 8px;
+		border-width: 1px;
 	}
 
 	.submitButton {
 		padding: 14px 16px;
+		font-size: 0.95rem;
+		border-radius: 8px;
+		margin-top: 6px;
+	}
+	
+	.passwordContainer input {
+		padding-right: 50px;
+	}
+	
+	.passwordToggle {
+		right: 14px;
+		font-size: 1.1rem;
+		padding: 6px;
+	}
+	
+	.divider {
+		margin: 20px 0;
+	}
+	
+	.divider span {
+		padding: 0 12px;
+		font-size: 0.8rem;
+	}
+	
+	.emailLinkButton {
+		padding: 12px 16px;
+		font-size: 0.9rem;
+		margin-bottom: 16px;
+	}
+	
+	.backButton {
+		padding: 12px 16px;
+		font-size: 0.85rem;
+		margin-top: 10px;
+	}
+	
+	.forgotPasswordButton {
+		font-size: 0.8rem;
+		padding: 8px 0;
+		margin-top: 8px;
+	}
+	
+	.toggleMode {
+		margin-top: 20px;
+		padding-top: 16px;
+	}
+	
+	.toggleMode span {
+		font-size: 0.8rem;
+		margin-right: 6px;
+	}
+	
+	.toggleButton {
+		font-size: 0.8rem;
+	}
+	
+	.errorMessage,
+	.successMessage {
+		margin: 12px 16px;
+		padding: 10px 14px;
+		font-size: 0.85rem;
+		border-radius: 6px;
+	}
+	
+	.emailLinkSent {
+		padding: 20px 14px;
+		margin-bottom: 16px;
+		border-radius: 6px;
+	}
+	
+	.emailLinkSent h3 {
+		font-size: 1.1rem;
+		margin-bottom: 10px;
+	}
+	
+	.emailLinkSent p {
+		font-size: 0.85rem;
+		margin: 6px 0;
+	}
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+	.authContainer {
+		width: 98vw;
+		max-height: 95vh;
+	}
+
+	.authHeader {
+		padding: 12px 14px;
+	}
+
+	.authHeader h2 {
 		font-size: 1rem;
+	}
+
+	.authMethods {
+		padding: 14px;
+	}
+
+	.googleButton {
+		padding: 12px 14px;
+		font-size: 0.85rem;
+		gap: 8px;
+	}
+	
+	.googleIcon {
+		width: 16px;
+		height: 16px;
+	}
+
+	.formGroup input {
+		padding: 12px 14px;
+		font-size: 16px;
+	}
+
+	.submitButton {
+		padding: 12px 14px;
+		font-size: 0.9rem;
+	}
+	
+	.passwordContainer input {
+		padding-right: 45px;
+	}
+	
+	.passwordToggle {
+		right: 12px;
+		font-size: 1rem;
+		padding: 4px;
+	}
+}
+
+/* Landscape orientation on small screens */
+@media (max-width: 768px) and (orientation: landscape) {
+	.authContainer {
+		max-height: 95vh;
+		overflow-y: auto;
+	}
+	
+	.authMethods {
+		padding: 16px;
+	}
+	
+	.emailForm {
+		gap: 12px;
+	}
+	
+	.divider {
+		margin: 16px 0;
+	}
+	
+	.toggleMode {
+		margin-top: 16px;
+		padding-top: 12px;
 	}
 }
