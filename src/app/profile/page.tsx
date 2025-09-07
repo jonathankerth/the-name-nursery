@@ -10,6 +10,7 @@ import {
 	getUserLikedNames,
 	removeLikedName,
 	LikedName,
+	type SortOption,
 } from "../../lib/likedNames";
 import Image from "next/image";
 import styles from "./profile.module.css";
@@ -26,6 +27,7 @@ export default function ProfilePage() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [uploading, setUploading] = useState(false);
 	const [selectedGender, setSelectedGender] = useState<Gender>("baby");
+	const [sortOption, setSortOption] = useState<SortOption>("newest");
 
 	// Color scheme from home page
 	const pageColors = useMemo(
@@ -178,12 +180,12 @@ export default function ProfilePage() {
 	const loadLikedNames = useCallback(async () => {
 		if (!user) return;
 		try {
-			const names = await getUserLikedNames(user.uid);
+			const names = await getUserLikedNames(user.uid, sortOption);
 			setLikedNames(names);
 		} catch (error) {
 			console.error("Error loading liked names:", error);
 		}
-	}, [user]);
+	}, [user, sortOption]);
 
 	useEffect(() => {
 		if (user) {
@@ -433,21 +435,86 @@ export default function ProfilePage() {
 				<div className={styles.rightSection}>
 					<div className={styles.likedNamesContainer}>
 						<h2 className={styles.sectionTitle}>Your Favorite Names</h2>
+
+						{/* Sorting Controls */}
+						{likedNames.length > 0 && (
+							<div className={styles.sortingControls}>
+								<label htmlFor="sortSelect" className={styles.sortLabel}>
+									Sort by:
+								</label>
+								<select
+									id="sortSelect"
+									value={sortOption}
+									onChange={(e) => setSortOption(e.target.value as SortOption)}
+									className={styles.sortSelect}
+								>
+									<option value="newest">Most Recent</option>
+									<option value="oldest">Oldest First</option>
+									<option value="alphabetical">A-Z</option>
+									<option value="gender">By Gender</option>
+								</select>
+							</div>
+						)}
+
 						{likedNames.length > 0 ? (
 							<div className={styles.namesTable}>
 								<div className={styles.tableHeader}>
 									<span>Name</span>
+									<span>Details</span>
+									<span>Saved</span>
 									<span>Actions</span>
 								</div>
 								{likedNames.map((likedName, index) => (
 									<div key={index} className={styles.tableRow}>
-										<span className={styles.nameName}>{likedName.name}</span>
-										<button
-											onClick={() => handleUnlikeName(likedName.name)}
-											className={styles.removeButton}
-										>
-											Remove
-										</button>
+										<div className={styles.nameCell}>
+											<span className={styles.nameName}>{likedName.name}</span>
+										</div>
+										<div className={styles.detailsCell}>
+											<span className={styles.genderBadge}>
+												{likedName.gender === "boy" ? "👦" : "👧"}{" "}
+												{likedName.gender}
+											</span>
+										</div>
+										<div className={styles.dateCell}>
+											{likedName.likedAt ? (
+												<span className={styles.likedDate}>
+													{(() => {
+														const date = likedName.likedAt!.toDate();
+														const now = new Date();
+														const diffTime = now.getTime() - date.getTime();
+														const diffDays = Math.floor(
+															diffTime / (1000 * 60 * 60 * 24)
+														);
+
+														if (diffDays === 0) {
+															return `Today at ${date.toLocaleTimeString([], {
+																hour: "2-digit",
+																minute: "2-digit",
+															})}`;
+														} else if (diffDays === 1) {
+															return `Yesterday at ${date.toLocaleTimeString(
+																[],
+																{ hour: "2-digit", minute: "2-digit" }
+															)}`;
+														} else if (diffDays < 7) {
+															return `${diffDays} days ago`;
+														} else {
+															return date.toLocaleDateString();
+														}
+													})()}
+												</span>
+											) : (
+												<span className={styles.unknownDate}>Unknown</span>
+											)}
+										</div>
+										<div className={styles.actionsCell}>
+											<button
+												onClick={() => handleUnlikeName(likedName.name)}
+												className={styles.removeButton}
+											>
+												Remove
+											</button>
+										</div>
 									</div>
 								))}
 							</div>

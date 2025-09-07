@@ -76,7 +76,9 @@ export default function NamesResults({
 					name,
 					gender,
 					letter,
-					isAIGenerated
+					isAIGenerated,
+					sessionStorage.getItem("sessionId") || undefined,
+					navigator.userAgent
 				);
 				if (success) {
 					setLikedNames((prev) => new Set(prev).add(name));

@@ -1,23 +1,23 @@
 .profilePageContainer {
 	min-heigh.pageHeader {
-	text-align: center;
-	padding: 20px;
-	margin-bottom: 20px;
-	background: var(--header-bg-color, rgba(255, 255, 255, 0.9));
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-	border: var(--section-border, 2px solid #e2e8f0);
-	position: relative;
-	z-index: 1; /* Lower than profile button */
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-	.pageHeader {
-		text-align: left; /* Change to left alignment on mobile */
-		padding: 16px 20px; /* Reset padding, remove excessive right padding */
+		text-align: center;
+		padding: 20px;
+		margin-bottom: 20px;
+		background: var(--header-bg-color, rgba(255, 255, 255, 0.9));
+		border-radius: 8px;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		border: var(--section-border, 2px solid #e2e8f0);
+		position: relative;
+		z-index: 1; /* Lower than profile button */
 	}
-}
+
+	/* Mobile adjustments */
+	@media (max-width: 768px) {
+		.pageHeader {
+			text-align: left; /* Change to left alignment on mobile */
+			padding: 16px 20px; /* Reset padding, remove excessive right padding */
+		}
+	}
 	background: var(
 		--profile-bg-color,
 		linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)
@@ -355,7 +355,7 @@
 
 .tableHeader {
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 2fr 1.5fr 1.5fr auto;
 	gap: 20px;
 	padding: 15px;
 	font-weight: 600;
@@ -366,7 +366,7 @@
 
 .tableRow {
 	display: grid;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 2fr 1.5fr 1.5fr auto;
 	gap: 20px;
 	padding: 15px;
 	background: var(--table-row-bg-color, rgba(255, 255, 255, 0.7));
@@ -383,10 +383,65 @@
 	border-bottom: none;
 }
 
+.nameCell {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
 .nameName {
 	font-size: 16px;
 	color: var(--table-text-color, #111827) !important;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.detailsCell {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	min-width: 0;
+}
+
+.dateCell {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+
+.actionsCell {
+	display: flex;
+	justify-content: flex-end;
+	min-width: 80px;
+}
+
+.likedDate {
+	font-size: 0.85rem;
+	color: var(--table-text-color, #6b7280) !important;
 	font-weight: 500;
+	line-height: 1.3;
+}
+
+.unknownDate {
+	font-size: 0.85rem;
+	color: #9ca3af;
+	font-style: italic;
+}
+
+.genderBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	color: #2563eb;
+	background: rgba(37, 99, 235, 0.1);
+	padding: 4px 8px;
+	border-radius: 12px;
+	border: 1px solid rgba(37, 99, 235, 0.2);
+	width: fit-content;
 }
 
 .removeButton {
@@ -486,7 +541,7 @@
 		margin-bottom: 20px;
 		border-radius: 6px;
 	}
-	
+
 	.headerTitle {
 		font-size: 1.4rem;
 		line-height: 1.3;
@@ -518,34 +573,43 @@
 		font-size: 20px;
 		min-width: 30px;
 	}
-	
+
 	.navLabel {
 		font-size: 0.95rem;
 	}
-	
+
 	.navDescription {
 		font-size: 0.8rem;
 	}
-	
+
 	.sectionTitle {
 		font-size: 1.3rem;
 		margin-bottom: 16px;
 	}
-	
+
 	.tableHeader,
 	.tableRow {
 		padding: 12px;
 		gap: 16px;
 	}
-	
+
 	.nameName {
 		font-size: 0.95rem;
 	}
-	
+
 	.removeButton {
 		padding: 6px 10px;
 		font-size: 0.8rem;
 		border-radius: 4px;
+	}
+
+	.likedDate {
+		font-size: 0.8rem;
+	}
+
+	.genderBadge {
+		font-size: 0.75rem;
+		padding: 3px 6px;
 	}
 }
 
@@ -553,7 +617,7 @@
 	.pageHeader {
 		padding: 14px 20px; /* Consistent left padding, no excessive right padding */
 	}
-	
+
 	.profilePageContainer {
 		padding: 20px 10px;
 	}
@@ -590,7 +654,7 @@
 	.sectionTitle {
 		font-size: 1.2rem;
 	}
-}/* Extra small screens */
+} /* Extra small screens */
 @media (max-width: 360px) {
 	.profilePageContainer {
 		padding: 6px;
@@ -600,7 +664,7 @@
 		padding: 8px 10px; /* Consistent padding, no excessive right padding */
 		margin-bottom: 12px;
 	}
-	
+
 	.headerTitle {
 		font-size: 1.1rem;
 		line-height: 1.3;
@@ -614,16 +678,16 @@
 	.likedNamesContainer {
 		padding: 12px;
 	}
-	
+
 	.profileAvatar {
 		width: 70px;
 		height: 70px;
 	}
-	
+
 	.userName {
 		font-size: 1.1rem;
 	}
-	
+
 	.userEmail {
 		font-size: 0.8rem;
 	}
@@ -637,62 +701,90 @@
 		font-size: 16px;
 		min-width: 22px;
 	}
-	
+
 	.navLabel {
 		font-size: 0.8rem;
 	}
-	
+
 	.navDescription {
 		font-size: 0.7rem;
 	}
-	
+
 	.sectionTitle {
 		font-size: 1.1rem;
 		margin-bottom: 12px;
 	}
-	
+
 	.tableHeader,
 	.tableRow {
 		padding: 8px;
 		gap: 10px;
 		font-size: 0.85rem;
 	}
-	
+
 	.nameName {
 		font-size: 0.85rem;
 	}
-	
+
 	.removeButton {
 		padding: 3px 6px;
 		font-size: 0.7rem;
 		min-width: 50px;
 	}
+
+	.likedDate {
+		font-size: 0.75rem;
+	}
+
+	.genderBadge {
+		font-size: 0.7rem;
+		padding: 2px 4px;
+	}
 }
 
-/* Landscape orientation on small screens */
-@media (max-width: 768px) and (orientation: landscape) {
-	.profileLayout {
-		flex-direction: row;
-		gap: 16px;
-	}
-	
-	.leftSection {
-		flex: 0 0 300px;
-	}
-	
-	.rightSection {
-		flex: 1;
-	}
-	
-	.profileHero {
-		padding: 16px;
-	}
-	
-	.navigationSection {
-		gap: 12px;
-	}
-	
-	.navBox {
-		padding: 10px;
-	}
+/* Sorting Controls */
+.sortingControls {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px;
+	padding: 16px;
+	background: var(--section-bg-color, rgba(255, 255, 255, 0.9));
+	border-radius: 12px;
+	border: 1px solid var(--table-border-color, #e5e7eb);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sortLabel {
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--table-text-color, #374151);
+	margin: 0;
+	white-space: nowrap;
+}
+
+.sortSelect {
+	padding: 10px 14px;
+	border: 2px solid var(--table-border-color, #d1d5db);
+	border-radius: 8px;
+	font-size: 0.9rem;
+	background: white;
+	color: var(--table-text-color, #374151);
+	cursor: pointer;
+	transition: all 0.2s ease;
+	min-width: 140px;
+	font-weight: 500;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.sortSelect:focus {
+	outline: none;
+	border-color: var(--header-color, #2563eb);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+	background: white;
+}
+
+.sortSelect:hover {
+	border-color: var(--header-color, #2563eb);
+	background: #f8fafc;
 }

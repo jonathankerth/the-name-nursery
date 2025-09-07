@@ -14,6 +14,7 @@ import {
 	removeLikedNameById,
 	getUserLikedNames,
 	type LikedName,
+	type SortOption,
 } from "../lib/likedNames";
 import Image from "next/image";
 import styles from "./UserProfile.module.css";
@@ -49,20 +50,22 @@ const UserProfile = ({
 	const [likedNamesFilter, setLikedNamesFilter] = useState<
 		"all" | "boy" | "girl"
 	>("all");
+	const [likedNamesSort, setLikedNamesSort] = useState<SortOption>("newest");
 
 	const loadLikedNames = useCallback(async () => {
 		if (!user) return;
 
 		try {
 			setLoadingLikedNames(true);
-			const names = await getUserLikedNames(user.uid);
+			const names = await getUserLikedNames(user.uid, likedNamesSort);
 			setLikedNames(names);
-		} catch {
+		} catch (error) {
+			console.error("Error loading liked names:", error);
 			// Handle error silently
 		} finally {
 			setLoadingLikedNames(false);
 		}
-	}, [user]);
+	}, [user, likedNamesSort]);
 
 	useEffect(() => {
 		if (user) {
@@ -450,35 +453,57 @@ const UserProfile = ({
 					<div className={styles.likedNamesSection}>
 						<div className={styles.likedNamesHeader}>
 							<h3>Your Liked Names</h3>
-							{likedNames.length > 0 && (
-								<div className={styles.filterButtons}>
-									<button
-										className={`${styles.filterButton} ${
-											likedNamesFilter === "all" ? styles.active : ""
-										}`}
-										onClick={() => setLikedNamesFilter("all")}
+							<div className={styles.controlsContainer}>
+								<div className={styles.sortControls}>
+									<label htmlFor="sortSelect" className={styles.sortLabel}>
+										Sort by:
+									</label>
+									<select
+										id="sortSelect"
+										value={likedNamesSort}
+										onChange={(e) =>
+											setLikedNamesSort(e.target.value as SortOption)
+										}
+										className={styles.sortSelect}
 									>
-										All ({likedNames.length})
-									</button>
-									<button
-										className={`${styles.filterButton} ${
-											likedNamesFilter === "boy" ? styles.active : ""
-										}`}
-										onClick={() => setLikedNamesFilter("boy")}
-									>
-										Boys ({likedNames.filter((n) => n.gender === "boy").length})
-									</button>
-									<button
-										className={`${styles.filterButton} ${
-											likedNamesFilter === "girl" ? styles.active : ""
-										}`}
-										onClick={() => setLikedNamesFilter("girl")}
-									>
-										Girls (
-										{likedNames.filter((n) => n.gender === "girl").length})
-									</button>
+										<option value="newest">🕒 Most Recent</option>
+										<option value="oldest">📅 Oldest First</option>
+										<option value="alphabetical">🔤 A-Z</option>
+										<option value="gender">👥 By Gender</option>
+										<option value="letter">📝 By Letter</option>
+									</select>
 								</div>
-							)}
+								{likedNames.length > 0 && (
+									<div className={styles.filterButtons}>
+										<button
+											className={`${styles.filterButton} ${
+												likedNamesFilter === "all" ? styles.active : ""
+											}`}
+											onClick={() => setLikedNamesFilter("all")}
+										>
+											All ({likedNames.length})
+										</button>
+										<button
+											className={`${styles.filterButton} ${
+												likedNamesFilter === "boy" ? styles.active : ""
+											}`}
+											onClick={() => setLikedNamesFilter("boy")}
+										>
+											Boys (
+											{likedNames.filter((n) => n.gender === "boy").length})
+										</button>
+										<button
+											className={`${styles.filterButton} ${
+												likedNamesFilter === "girl" ? styles.active : ""
+											}`}
+											onClick={() => setLikedNamesFilter("girl")}
+										>
+											Girls (
+											{likedNames.filter((n) => n.gender === "girl").length})
+										</button>
+									</div>
+								)}
+							</div>
 						</div>
 
 						{loadingLikedNames ? (
@@ -510,6 +535,49 @@ const UserProfile = ({
 													{likedName.isAIGenerated && (
 														<span className={styles.aiGenerated}>
 															✨ AI Generated
+														</span>
+													)}
+													{likedName.likedAt && (
+														<span className={styles.likedDate}>
+															{(() => {
+																try {
+																	const date = likedName.likedAt!.toDate();
+																	const now = new Date();
+																	const diffTime =
+																		now.getTime() - date.getTime();
+																	const diffDays = Math.floor(
+																		diffTime / (1000 * 60 * 60 * 24)
+																	);
+
+																	if (diffDays === 0) {
+																		return `Today at ${date.toLocaleTimeString(
+																			[],
+																			{ hour: "2-digit", minute: "2-digit" }
+																		)}`;
+																	} else if (diffDays === 1) {
+																		return `Yesterday at ${date.toLocaleTimeString(
+																			[],
+																			{ hour: "2-digit", minute: "2-digit" }
+																		)}`;
+																	} else if (diffDays < 7) {
+																		return `${diffDays} days ago at ${date.toLocaleTimeString(
+																			[],
+																			{ hour: "2-digit", minute: "2-digit" }
+																		)}`;
+																	} else {
+																		return (
+																			date.toLocaleDateString() +
+																			" at " +
+																			date.toLocaleTimeString([], {
+																				hour: "2-digit",
+																				minute: "2-digit",
+																			})
+																		);
+																	}
+																} catch {
+																	return "Unknown date";
+																}
+															})()}
 														</span>
 													)}
 												</div>
