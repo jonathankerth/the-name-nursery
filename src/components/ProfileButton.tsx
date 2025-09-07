@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import Image from "next/image";
@@ -23,6 +23,20 @@ const ProfileButton = () => {
 	const closeAuthForms = () => {
 		setShowAuthForms(false);
 	};
+
+	// Prevent body scroll when modal is open
+	useEffect(() => {
+		if (showAuthForms) {
+			document.body.classList.add("modal-open");
+		} else {
+			document.body.classList.remove("modal-open");
+		}
+
+		// Cleanup on unmount
+		return () => {
+			document.body.classList.remove("modal-open");
+		};
+	}, [showAuthForms]);
 
 	const goToProfile = () => {
 		router.push("/profile");
@@ -63,12 +77,14 @@ const ProfileButton = () => {
 
 			{/* Auth Forms Modal */}
 			{showAuthForms && (
-				<>
-					<div className={styles.modalOverlay} onClick={closeAuthForms}></div>
-					<div className={styles.modalContainer}>
+				<div className={styles.modalOverlay} onClick={closeAuthForms}>
+					<div
+						className={styles.modalContainer}
+						onClick={(e) => e.stopPropagation()}
+					>
 						<AuthForms onClose={closeAuthForms} onSuccess={handleAuthSuccess} />
 					</div>
-				</>
+				</div>
 			)}
 		</>
 	);
