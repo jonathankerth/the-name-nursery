@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Crimson_Text } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { AuthProvider } from "../contexts/AuthContext";
 
-const geistSans = Geist({
-	variable: "--font-geist-sans",
+const inter = Inter({
+	variable: "--font-inter",
 	subsets: ["latin"],
-	display: "swap", // prevent font blocking
+	display: "swap",
+	weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
+const crimsonText = Crimson_Text({
+	variable: "--font-crimson-text",
 	subsets: ["latin"],
-	display: "swap", // prevent font blocking
+	display: "swap",
+	weight: ["400", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -44,7 +46,7 @@ export default function RootLayout({
 				/>
 			</head>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable}`}
+				className={`${inter.variable} ${crimsonText.variable}`}
 				style={{ background: "var(--background)" }}
 			>
 				{/* Firebase Warning Suppression */}
@@ -146,7 +148,7 @@ export default function RootLayout({
 							.page { min-height: 100vh; display: flex; flex-direction: column; }
 							.centerMain { width: 100%; flex: 1; display: flex; align-items: center; justify-content: center; }
 							/* ensure fonts load with fallback */
-							body { font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+							body { font-family: var(--font-crimson-text), var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 						`,
 					}}
 				/>
