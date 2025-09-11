@@ -1,3 +1,5 @@
+/* Clean, organized CSS for the name selection app */
+
 .centerMain {
 	width: 100%;
 	flex: 1;
@@ -5,15 +7,15 @@
 	align-items: center;
 	justify-content: center;
 	padding: 20px 20px 80px 20px;
-	min-height: calc(100vh - 120px); /* leave room for header */
+	min-height: calc(100vh - 120px);
 }
+
 .page {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
 	font-family: var(--font-crimson-text), var(--font-inter), system-ui,
 		sans-serif;
-	background: #f8fafc;
 	color: #ffffff;
 	overscroll-behavior: none;
 }
@@ -50,112 +52,89 @@
 	color: #1e40af;
 }
 
-.main {
+/* Gender elevator effect */
+.genderElevator {
 	display: flex;
-	flex-direction: column;
-	gap: 40px;
 	align-items: center;
-	padding: 32px 0;
+	justify-content: center;
+	min-width: 450px;
+	padding: 20px 32px;
+	transition: all 0.3s ease;
+	position: relative;
 }
 
-.section {
-	background: #fff;
-	border-radius: 12px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-	padding: 32px 24px;
-	min-width: 320px;
-	max-width: 400px;
-	width: 100%;
-	margin-bottom: 16px;
+.elevatorShaft {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-}
-.section h2 {
-	font-size: 1.3rem;
-	font-weight: 600;
-	margin-bottom: 16px;
-}
-.section ul {
-	margin-top: 8px;
-	padding-left: 20px;
-}
-.section li {
-	margin-bottom: 6px;
-	font-size: 1rem;
+	gap: 16px;
+	min-height: 180px;
+	padding: 20px 0;
+	position: relative;
 }
 
-.placeholder {
+.elevatorFloors {
 	display: flex;
 	flex-direction: column;
+	gap: 16px;
+	min-height: 160px;
+	padding: 12px 0;
 	align-items: center;
-	gap: 12px;
 }
-.button {
-	background: #2563eb;
-	color: #fff;
-	border: none;
-	border-radius: 8px;
-	padding: 10px 24px;
-	font-size: 1rem;
-	font-weight: 500;
-	cursor: not-allowed;
+
+.genderRow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 40px;
+	transition: opacity 0.3s ease;
+}
+
+.genderRowSelected {
+	opacity: 1;
+}
+
+.genderRowUnselected {
 	opacity: 0.7;
 }
-.comingSoon {
-	color: #64748b;
-	font-size: 0.95rem;
-	font-style: italic;
-}
 
-.footer {
+.elevatorText {
+	font-size: 1.4rem;
+	font-weight: 600;
+	color: inherit;
+	min-width: 50px;
 	text-align: center;
-	padding: 24px 0 16px 0;
-	background: #e0e7ef;
-	border-top: 1px solid #d1d5db;
-	font-size: 1rem;
-	color: #555;
+	transition: opacity 0.3s ease;
 }
 
-.centerForm {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	background: #fff;
-	border-radius: 16px;
-	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-	padding: 32px 32px;
-	min-width: 320px;
-	max-width: 600px;
-	width: auto;
-	gap: 32px;
-}
-.centerRow {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 24px;
+.genderOption {
+	background: none;
+	border: none;
+	font-size: 2rem;
+	font-weight: 600;
+	color: inherit;
+	cursor: pointer;
+	padding: 8px 16px;
+	border-radius: 8px;
+	min-width: 100px;
+	text-align: center;
+	outline: none;
 }
 
-/* Sentence layout: A [wheel] Name (submit) */
-.sentenceForm {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 48px;
-	background: transparent;
-	border-radius: 0;
-	box-shadow: none;
-	padding: 48px 56px;
-	min-width: 480px;
-	max-width: 1000px;
-	white-space: nowrap;
-	width: 100%;
-	overscroll-behavior: contain;
+.genderOptionSelected {
+	font-size: 2.5rem;
+	font-weight: 800;
+	color: inherit;
 }
 
+.genderOptionUnselected {
+	font-size: 1.8rem;
+	font-weight: 500;
+	opacity: 0.8;
+}
+
+/* Wheel selection styles */
 .wheelColumn {
 	display: flex;
 	flex-direction: column;
@@ -174,20 +153,16 @@
 	cursor: grabbing;
 }
 
-.fixedA {
-	font-size: 2.4rem;
-	font-weight: 800;
-	margin-right: 8px;
-}
-
-.fixedName {
-	font-size: 2.4rem;
-	font-weight: 800;
-	margin-left: 8px;
-}
-
 .wheelOptionSelected {
-	font-size: 2.4rem;
+	font-size: 2.7rem;
+	font-weight: 700;
+	transition: transform 0.28s ease, opacity 0.28s ease;
+	background: transparent;
+	box-shadow: none;
+}
+
+.wheelCenter {
+	font-size: 2.7rem;
 	font-weight: 700;
 	transition: transform 0.28s ease, opacity 0.28s ease;
 	background: transparent;
@@ -195,801 +170,193 @@
 }
 
 .wheelOptionFaded {
-	font-size: 1.3rem;
+	font-size: 1.5rem;
 	font-weight: 500;
 	opacity: 0.5;
 }
 
-.triangleBtn {
-	background: none;
-	border: none;
-	padding: 12px 16px;
-	margin: 0 !important;
-	cursor: pointer;
-	transition: transform 0.2s ease;
-	touch-action: manipulation;
-	position: absolute !important;
-	right: 2% !important;
-	left: auto !important;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 10;
+.wheelFaded {
+	font-size: 1.5rem;
+	font-weight: 500;
+	opacity: 0.5;
 }
 
-@media (max-width: 800px) {
-	.sentenceForm {
-		padding: 24px 20px;
-		gap: 20px;
-		min-width: 320px;
-		flex-wrap: nowrap;
-	}
-	.fixedA,
-	.fixedName {
-		font-size: 1.6rem;
-	}
-	.wheelColumn {
-		gap: 0px;
-		min-width: 120px;
-		touch-action: none;
-		overscroll-behavior: contain;
-		-webkit-overflow-scrolling: touch;
-	}
+.phrase {
+	font-size: 2.5rem;
+	font-weight: 600;
+	color: inherit;
+	text-align: center;
+	line-height: 1.2;
+	margin: 0;
 }
 
-@media (max-width: 600px) {
-	.main {
-		padding: 16px 0;
-		gap: 24px;
-	}
-	.section {
-		padding: 20px 8px;
-		min-width: 0;
-		max-width: 100vw;
-	}
-	.header {
-		padding: 20px 0 8px 0;
-	}
-	.title {
-		font-size: 2rem;
-	}
-	.sentenceForm {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		gap: 8px;
-		padding: 20px;
-		white-space: nowrap;
-		flex-wrap: nowrap;
-	}
-}
-
-/* Mobile and tablet optimizations */
-@media (max-width: 900px) {
-	.sentenceForm {
-		gap: 32px;
-		padding: 32px 24px;
-		min-width: 320px;
-		position: relative;
-	}
-
-	.letterSelectionContent {
-		gap: 0px;
-	}
-
-	.resultsContainer {
-		gap: 24px;
-		padding: 32px 24px;
-		min-width: 320px;
-	}
-}
-
-@media (max-width: 700px) {
-	.sentenceForm {
-		gap: 20px;
-		padding: 24px 16px;
-		flex-wrap: nowrap;
-		position: relative;
-	}
-
-	.fixedA,
-	.fixedName {
-		font-size: 2rem;
-		margin: 0 4px;
-	}
-
-	.wheelColumn {
-		gap: 0px;
-		min-width: 140px;
-	}
-
-	.wheelOptionSelected {
-		font-size: 2.2rem;
-	}
-
-	.phrase {
-		font-size: 1.4rem;
-		line-height: 1;
-	}
-
-	.firstLine,
-	.secondLine {
-		display: inline;
-	}
-
-	.firstLine::after {
-		content: " ";
-	}
-
-	.letterSelectionContent {
-		gap: 12px;
-		width: 100%;
-		flex-direction: row !important;
-		justify-content: center;
-		align-items: center;
-		white-space: nowrap;
-		display: flex !important;
-	}
-	.triangleBtn,
-	.backTriangle {
-		padding: 16px 20px;
-		margin: 0 !important;
-	}
-
-	.backTriangle {
-		position: absolute !important;
-		left: 0px !important;
-		right: auto !important;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-
-	.resultsContainer {
-		flex-direction: column;
-		gap: 20px;
-		padding: 24px 16px;
-		text-align: center;
-	}
-
-	.resultsCard {
-		padding: 24px 20px;
-		width: 100%;
-		max-width: 400px;
-	}
-}
-
-/* Mobile-specific adjustments */
-@media (max-width: 600px) {
-	.centerMain {
-		padding: 8px 8px 80px 8px;
-		min-height: calc(100vh - 100px);
-	}
-
-	.sentenceForm {
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		gap: 12px;
-		padding: 20px 8px;
-		min-width: 0;
-		width: 100%;
-		box-sizing: border-box;
-		position: relative;
-		white-space: nowrap;
-	}
-
-	.fixedA,
-	.fixedName {
-		font-size: 1.5rem;
-		margin: 0 1px;
-		flex-shrink: 0;
-	}
-
-	.wheelColumn {
-		min-width: 100px;
-		gap: 0px;
-		flex-shrink: 0;
-	}
-
-	.wheelOptionSelected {
-		font-size: 1.8rem;
-	}
-
-	.wheelOptionFaded {
-		font-size: 1.1rem;
-	}
-
-	.triangleBtn {
-		padding: 20px 24px;
-		margin: 0 !important;
-		flex-shrink: 0;
-		position: fixed !important;
-		right: 5vw !important;
-		left: auto !important;
-		top: 50%;
-		transform: translateY(-50%);
-		z-index: 10;
-	}
-
-	.backTriangle {
-		padding: 20px 24px;
-		margin: 0 !important;
-		flex-shrink: 0;
-		position: fixed !important;
-		left: 2px !important;
-		right: auto !important;
-		top: 50%;
-		transform: translateY(-50%);
-		z-index: 10;
-	}
-
-	/* Make touch targets larger on mobile */
-	.triangleBtn svg,
-	.backTriangle svg {
-		width: 40px;
-		height: 40px;
-	}
-
-	.phrase {
-		font-size: 1.2rem !important;
-		line-height: 1.2 !important;
-		text-align: center;
-		white-space: normal !important;
-		padding: 0;
-		display: flex !important;
-		flex-direction: column !important;
-		align-items: center;
-		gap: 0px;
-		max-width: 140px;
-	}
-
-	.firstLine,
-	.secondLine {
-		display: block !important;
-		white-space: nowrap;
-	}
-
-	.firstLine::after {
-		content: "";
-	}
-
-	.letterSelectionContent {
-		gap: 12px;
-		width: 100%;
-		max-width: 300px;
-		margin: 0 auto;
-		padding: 0; /* Remove padding, let buttons float outside */
-		box-sizing: border-box;
-		flex-direction: row !important;
-		justify-content: center;
-		align-items: center;
-		white-space: normal;
-		display: flex !important;
-	}
-
-	.phraseContainer {
-		width: auto;
-		flex-shrink: 0;
-		text-align: center;
-		max-width: 140px;
-	}
-	.resultsContainer {
-		flex-direction: column;
-		gap: 16px;
-		padding: 20px 12px;
-		width: 100%;
-		box-sizing: border-box;
-	}
-
-	.resultsCard {
-		padding: 20px 16px;
-		width: 100%;
-		max-width: none;
-		margin: 0;
-	}
-
-	.resultsCard h2 {
-		font-size: 1.5rem;
-		line-height: 1.4;
-		margin-bottom: 12px;
-	}
-
-	.resultsCard p {
-		font-size: 1rem;
-		line-height: 1.6;
-	}
-}
-
-/* Extra small mobile screens */
-@media (max-width: 400px) {
-	.sentenceForm {
-		gap: 8px;
-		padding: 16px 4px;
-	}
-
-	.fixedA,
-	.fixedName {
-		font-size: 1.3rem;
-	}
-
-	.wheelColumn {
-		min-width: 80px;
-		gap: 0px;
-	}
-
-	.wheelOptionSelected {
-		font-size: 1.6rem;
-	}
-
-	.wheelOptionFaded {
-		font-size: 1rem;
-	}
-
-	.phrase {
-		font-size: 1.1rem !important;
-		max-width: 120px;
-		padding: 0;
-		white-space: normal !important;
-		display: flex !important;
-		flex-direction: column !important;
-		align-items: center;
-		gap: 0px;
-		line-height: 1.2 !important;
-	}
-
-	.firstLine,
-	.secondLine {
-		display: block !important;
-		white-space: nowrap;
-	}
-
-	.letterSelectionContent {
-		padding: 0 55px;
-		max-width: 320px;
-		gap: 12px;
-		flex-direction: row !important;
-		justify-content: center;
-		align-items: center;
-		display: flex !important;
-	}
-	.triangleBtn,
-	.backTriangle {
-		padding: 16px 18px;
-		margin: 0 !important;
-	}
-
-	.triangleBtn {
-		position: absolute !important;
-		right: 12px !important;
-		left: auto !important;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-
-	.backTriangle {
-		position: absolute !important;
-		left: 2px !important;
-		right: auto !important;
-		top: 50%;
-		transform: translateY(-50%);
-	}
-
-	.resultsCard {
-		padding: 16px 12px;
-	}
-
-	.resultsCard h2 {
-		font-size: 1.3rem;
-	}
-}
-
-/* Letter selection specific styles */
+/* Content layout styles */
 .letterSelectionContent {
-	display: flex !important;
-	flex-direction: row !important;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
-	justify-content: center;
-	gap: 0px;
-	flex: 1;
-	white-space: nowrap;
-	width: 100%;
+	gap: 20px;
 }
 
 .phraseContainer {
 	text-align: center;
-	max-width: 100%;
-	flex-shrink: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin: 0;
-	padding: 0;
+	margin-bottom: 10px;
 }
 
-.phrase {
-	font-size: 2.2rem;
-	font-weight: 600;
-	text-align: center;
-	line-height: 1;
-	display: block;
-	white-space: nowrap;
-	margin: 0;
-	padding: 0;
-}
-
-.firstLine,
-.secondLine {
-	display: inline;
-}
-
-.firstLine::after {
-	content: " ";
-}
-
-.selectedType {
-	font-weight: 800;
-}
-
-.backTriangle {
-	background: none;
-	border: none;
-	padding: 12px 16px;
-	margin: 0 !important;
-	cursor: pointer;
-	transition: transform 0.2s ease;
-	touch-action: manipulation;
-	position: absolute !important;
-	left: 0px !important;
-	right: auto !important;
-	top: 50%;
-	transform: translateY(-50%);
-	z-index: 10;
-}
-
-.wheelCenter {
-	font-size: 2.4rem;
-	font-weight: 700;
-	transition: transform 0.28s ease, opacity 0.28s ease;
-}
-
-.wheelFaded {
-	font-size: 1.3rem;
-	font-weight: 500;
-	opacity: 0.5;
-}
-
-/* Results page styles */
-.resultsContainer {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 32px;
-	padding: 48px 56px;
-	min-width: 480px;
-	max-width: 1000px;
-}
-
-.resultsCard {
-	background: rgba(255, 255, 255, 0.15);
-	border-radius: 16px;
-	padding: 32px;
-	text-align: center;
-	backdrop-filter: blur(8px);
-	border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.resultsCard h2 {
-	font-size: 1.8rem;
-	font-weight: 700;
-	margin-bottom: 16px;
-	line-height: 1.3;
-}
-
-.resultsCard p {
-	font-size: 1.1rem;
-	opacity: 0.9;
-	line-height: 1.5;
-}
-
-/* Multi-step content styles for personality and inspiration */
 .multiStepContent {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 1rem;
+	gap: 20px;
 	width: 100%;
-	max-width: 600px;
-	margin: 0 auto;
-}
-
-.multiStepContent .topRow {
-	margin-bottom: 1rem;
-	width: 100%;
-	text-align: center;
-	font-size: 1.5rem;
-	font-weight: 600;
-	line-height: 1.2;
 }
 
 .topRow {
-	font-size: 1.8rem;
-	font-weight: 600;
-	line-height: 1.2;
-	margin-bottom: 1rem;
+	font-size: 1.4rem;
+	line-height: 1.3;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 	text-align: center;
-	padding: 0 10px;
-	max-width: 100%;
-	box-sizing: border-box;
+	margin-bottom: 10px;
 }
 
 .twoRowText {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 0.3rem;
+	gap: 4px;
 }
 
 .firstRow,
 .secondRow {
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 	text-align: center;
-	line-height: 1.2;
 }
 
-.firstRow {
-	font-weight: 700;
-	font-size: 1.6rem;
+.selectedType {
+	font-weight: bold;
+	font-size: 1.1em;
 }
 
-.secondRow {
-	font-weight: 500;
-	font-size: 1.4rem;
-}
-
-.wheelRow {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	gap: 1rem;
-	width: 100%;
-}
-
-.phraseContainer {
+.selectedLetter {
+	font-weight: bold;
+	font-size: 1.1em;
+	padding: 0.2rem 0.4rem;
+	border-radius: 4px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	display: inline-block;
+	margin: 0 0.1rem;
+	min-width: 1.5rem;
 	text-align: center;
-	max-width: 100%;
-	flex-shrink: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	cursor: pointer;
+	transition: all 0.2s ease;
 }
 
-.phrase {
-	font-size: 1.8rem;
-	font-weight: 600;
-	text-align: center;
-	line-height: 1.2;
-	display: block;
-	white-space: nowrap;
+.selectedLetter:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: scale(1.05);
+}
+
+.inlineLetterSelector {
+	display: inline;
+	font-weight: normal;
+}
+
+.inlineWheel {
+	display: inline-block !important;
+	margin: 0 1rem;
+	vertical-align: middle;
+	width: auto !important;
+	min-width: 60px;
+}
+
+/* Letter selection step - horizontal layout */
+.letterStep {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	flex-wrap: wrap !important;
+	gap: 1rem !important;
 }
 
 .firstLine,
 .secondLine {
-	display: inline;
+	display: block;
+	line-height: 1.2;
 }
 
-.firstLine::after {
-	content: " ";
+.firstLine {
+	margin-bottom: 0.5rem;
 }
 
-.selectedType {
-	font-weight: 800;
-}
-
-/* Mobile styles for multi-step content */
-@media (max-width: 600px) {
-	.centerMain {
-		padding: 10px 20px 120px 20px; /* Add bottom padding for navigation buttons */
-		min-height: calc(100vh - 160px);
-	}
-	FF .multiStepContent {
-		gap: 1rem;
-		max-width: 100%;
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: center;
-		position: relative;
-	}
-
-	.multiStepContent .topRow {
-		font-size: 1.1rem;
-		margin-bottom: 1.5rem;
-		margin-top: 0;
-		line-height: 1.3;
-		text-align: left;
-		padding: 0 20px;
-		width: 100%;
-		max-width: 100%;
-		white-space: normal;
-		word-wrap: break-word;
-		position: absolute;
-		top: 0;
-		left: 0;
-		box-sizing: border-box;
-	}
-
-	.topRow {
-		font-size: 1.1rem;
-		font-weight: 600;
-		line-height: 1.3;
-		margin-bottom: 1rem;
-		text-align: center;
-		padding: 0 20px;
-		white-space: normal;
-		word-wrap: break-word;
-	}
-
-	.twoRowText {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0.2rem;
-	}
-
-	.firstRow,
-	.secondRow {
-		text-align: center;
-		line-height: 1.2;
-	}
-
-	.firstRow {
-		font-weight: 700;
-		font-size: 1.15rem;
-	}
-
-	.secondRow {
-		font-weight: 500;
-		font-size: 1.05rem;
-	}
-
-	.wheelRow {
-		flex-direction: row;
-		gap: 0.2rem;
-		align-items: center;
+/* Responsive design */
+@media (max-width: 768px) {
+	.genderElevator {
+		min-width: auto;
+		padding: 20px 24px;
 		justify-content: center;
-		margin-top: 100px; /* Space for the top text */
 	}
 
-	.letterSelectionContent {
-		margin-top: 100px; /* Space for the top text */
-		width: 100%;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		justify-content: center;
-		gap: 0.2rem;
-	}
-
-	/* Move navigation buttons to bottom on mobile */
-	.sentenceForm {
-		position: relative;
-		height: 100%;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		white-space: nowrap;
-		flex-wrap: nowrap;
-	}
-
-	.triangleBtn,
-	.backTriangle {
-		position: fixed !important;
-		bottom: 20% !important;
-		top: auto !important;
-		transform: none !important;
-		z-index: 1000;
-		width: 36px !important;
-		height: 36px !important;
-		padding: 12px 16px !important;
-		margin: 0 !important;
-		background: none !important;
-		border: none !important;
-		border-radius: 0 !important;
-		box-shadow: none !important;
-		backdrop-filter: none !important;
-	}
-
-	.triangleBtn {
-		right: 20px !important;
-		left: auto !important;
-	}
-
-	.backTriangle {
-		left: 20px !important;
-		right: auto !important;
-	}
-
-	.multiStepContent .wheelCenter {
-		font-size: 1rem;
-		line-height: 1.2;
-		max-width: 140px;
-		white-space: normal;
-		word-wrap: break-word;
-		text-align: center;
-	}
-
-	.multiStepContent .wheelFaded {
-		font-size: 0.9rem;
-		opacity: 0.5;
-		line-height: 1.2;
-		max-width: 140px;
-		white-space: normal;
-		word-wrap: break-word;
-		text-align: center;
-	}
-
-	.multiStepContent .wheelColumn {
-		min-width: 140px;
-		max-width: 140px;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		cursor: pointer;
-		user-select: none;
-		touch-action: pan-y;
-		gap: 8px;
+	.wheelColumn {
+		min-width: 160px;
 	}
 
 	.phrase {
-		font-size: 1.6rem !important;
-		max-width: 180px;
-		padding: 0 !important;
-		margin: 0 !important;
-		white-space: normal !important;
-		display: flex !important;
-		flex-direction: column !important;
-		align-items: center;
-		gap: 0px;
-		line-height: 1.1 !important;
+		font-size: 2rem;
 	}
 
-	.firstLine,
-	.secondLine {
-		display: block !important;
-		white-space: nowrap;
+	.topRow {
+		font-size: 1.2rem;
 	}
 }
 
-@media (max-width: 400px) {
-	.multiStepContent .wheelCenter {
-		font-size: 1.6rem;
-		font-weight: 600;
-		line-height: 1.2;
-		text-align: center;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-width: 200px;
+@media (max-width: 480px) {
+	.genderElevator {
+		min-width: auto;
+		padding: 20px 16px;
+		justify-content: center;
 	}
 
-	.multiStepContent .wheelFaded {
+	.elevatorShaft {
+		padding: 20px 0;
+	}
+
+	.wheelColumn {
+		min-width: 120px;
+	}
+
+	.phrase {
+		font-size: 1.8rem;
+	}
+
+	.topRow {
 		font-size: 1rem;
-		font-weight: 500;
-		opacity: 0.5;
-		line-height: 1.2;
-		text-align: center;
-		white-space: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-width: 200px;
+		line-height: 1.4;
 	}
 
-	.multiStepContent .wheelColumn {
-		min-width: 200px;
-		max-width: 200px;
+	.genderOption {
+		font-size: 1.8rem;
+		min-width: 80px;
+		padding: 6px 12px;
+	}
+
+	.genderOptionSelected {
+		font-size: 2.2rem;
+	}
+
+	.genderOptionUnselected {
+		font-size: 1.6rem;
+	}
+
+	.wheelCenter,
+	.wheelOptionSelected {
+		font-size: 2.2rem;
+	}
+
+	.wheelFaded,
+	.wheelOptionFaded {
+		font-size: 1.3rem;
 	}
 }

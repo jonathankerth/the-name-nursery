@@ -21,7 +21,7 @@ export default function Header({ type: propType }: { type?: Gender }) {
 	const type = (propType as Gender) || queryType || "baby";
 
 	const pageColors: Record<Gender, string> = {
-		baby: "#EFD9AA",
+		baby: "#d3f3c8",
 		boy: "#B7E9F0",
 		girl: "#EDD5EB",
 	};
@@ -38,7 +38,7 @@ export default function Header({ type: propType }: { type?: Gender }) {
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
 
-	const headerColor = darken(pageColors[type] || "#111827", 0.22);
+	const headerColor = darken(pageColors[type] || "#111827", 0.6);
 
 	return (
 		<header className={styles.header}>

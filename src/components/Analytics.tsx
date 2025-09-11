@@ -131,7 +131,7 @@ const Analytics = () => {
 														? "#B7E9F0"
 														: item.gender === "girl"
 														? "#EDD5EB"
-														: "#EFD9AA",
+														: "#d3f3c8",
 											}}
 										></div>
 									</div>

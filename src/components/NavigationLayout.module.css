@@ -1,0 +1,136 @@
+/* Navigation Layout Component Styles */
+.layout {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 20px;
+	position: relative;
+	min-height: 400px;
+}
+
+.content {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	max-width: 800px;
+	width: 100%;
+	padding: 0 40px;
+}
+
+.backButton,
+.nextButton {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 10;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 20px;
+	border: 2px solid;
+	border-radius: 25px;
+	background: none;
+	color: inherit;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	touch-action: manipulation;
+	min-width: 80px;
+	box-shadow: none;
+	backdrop-filter: none;
+	margin: 0;
+}
+
+.backButton {
+	left: 20px;
+}
+
+.nextButton {
+	right: 20px;
+}
+
+.buttonText {
+	transition: opacity 0.2s ease;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+	.layout {
+		padding: 16px;
+		min-height: 300px;
+	}
+
+	.content {
+		padding: 0 30px;
+	}
+
+	.backButton,
+	.nextButton {
+		padding: 8px 12px;
+		min-width: 50px;
+		font-size: 0.9rem;
+	}
+
+	.backButton {
+		left: 10px;
+	}
+
+	.nextButton {
+		right: 10px;
+	}
+
+	.buttonText {
+		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.layout {
+		padding: 12px;
+		min-height: 250px;
+	}
+
+	.content {
+		padding: 0 20px;
+	}
+
+	.backButton,
+	.nextButton {
+		padding: 6px 10px;
+		min-width: 40px;
+		font-size: 0.8rem;
+	}
+
+	.backButton {
+		left: 5px;
+	}
+
+	.nextButton {
+		right: 5px;
+	}
+}
+
+/* Hover effects */
+.backButton:hover,
+.nextButton:hover {
+	transform: translateY(-50%) scale(1.05);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.backButton:active,
+.nextButton:active {
+	transform: translateY(-50%) scale(0.95);
+}
+
+/* Focus styles for accessibility */
+.backButton:focus,
+.nextButton:focus {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}

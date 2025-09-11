@@ -17,7 +17,14 @@ export async function GET() {
 export async function POST(request: NextRequest) {
 	try {
 		const requestData = await request.json();
-		const { gender, letter, personality, inspiration, origin } = requestData;
+		const {
+			gender,
+			letter,
+			personality,
+			inspiration,
+			origin,
+			existingNames = [],
+		} = requestData;
 
 		if (!gender || !letter) {
 			return NextResponse.json(
@@ -27,7 +34,9 @@ export async function POST(request: NextRequest) {
 		}
 
 		// Construct a cost-effective prompt for name recommendations
-		const prompt = `Generate exactly 10 ${
+		const prompt = `Generate exactly ${
+			existingNames.length > 0 ? "15" : "10"
+		} ${
 			gender === "baby" ? "unisex" : gender
 		} names that start with the letter "${letter}". 
 
@@ -52,6 +61,13 @@ ${
 ${
 	origin
 		? `- Emphasize names with ${origin} linguistic and cultural origins`
+		: ""
+}
+${
+	existingNames.length > 0
+		? `- CRITICAL: DO NOT include ANY of these existing names under any circumstances: ${existingNames.join(
+				", "
+		  )}\n- If you accidentally generate any of these names, you must replace them with completely different names`
 		: ""
 }
 - Provide only the names, one per line
@@ -85,7 +101,7 @@ Names:`;
 			.filter((name) => name.length > 0)
 			.map((name) => name.replace(/^\d+\.\s*/, "")) // Remove numbering if present
 			.map((name) => name.replace(/^-\s*/, "")) // Remove bullet points if present
-			.slice(0, 10); // Ensure we only return 10 names
+			.slice(0, existingNames.length > 0 ? 15 : 10); // Get more names when avoiding duplicates
 
 		return NextResponse.json({
 			names,

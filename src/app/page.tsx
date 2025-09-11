@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
 import NamesResults from "../components/NamesResults";
+import NavigationLayout from "../components/NavigationLayout";
 import ProfileButton from "../components/ProfileButton";
 import {
 	trackNameSearch,
@@ -85,14 +86,6 @@ export default function Home() {
 		[]
 	);
 
-	// Wheel effect logic for gender selection
-	const selectedIndex = options.findIndex(
-		(opt) => opt.value === selectedGender
-	);
-	const lastScrollRef = useRef<number>(0);
-	const touchStartRef = useRef<number | null>(null);
-	const wheelRef = useRef<HTMLDivElement | null>(null);
-
 	// Letter selection state
 	const [letterIndex, setLetterIndex] = useState(0);
 	const letterScrollRef = useRef<number>(0);
@@ -119,7 +112,7 @@ export default function Home() {
 
 	const pageColors = useMemo(
 		() => ({
-			baby: "#EFD9AA",
+			baby: "#d3f3c8",
 			boy: "#B7E9F0",
 			girl: "#EDD5EB",
 		}),
@@ -233,8 +226,12 @@ export default function Home() {
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
 
-	const wheelColor = darken(pageColors[selectedGender] || "#111827", 0.22);
-	const headerColor = darken(pageColors[selectedGender] || "#111827", 0.35);
+	const handleNamesUpdate = useCallback((newNames: string[]) => {
+		setRecommendedNames(newNames);
+	}, []);
+
+	const wheelColor = darken(pageColors[selectedGender] || "#111827", 0.5);
+	const headerColor = darken(pageColors[selectedGender] || "#111827", 0.6);
 
 	// Update background color and selected letter when step changes
 	useEffect(() => {
@@ -248,15 +245,6 @@ export default function Home() {
 		}
 		setSelectedLetter(alphabet[letterIndex]);
 	}, [selectedGender, letterIndex, alphabet, pageColors]);
-
-	const changeGender = useCallback(
-		(delta: number) => {
-			const idx = options.findIndex((opt) => opt.value === selectedGender);
-			const newIdx = (idx + delta + options.length) % options.length;
-			setSelectedGender(options[newIdx].value as "baby" | "girl" | "boy");
-		},
-		[selectedGender, options]
-	);
 
 	// Keyboard handlers
 	useEffect(() => {
@@ -273,10 +261,18 @@ export default function Home() {
 			if (currentStep === "gender") {
 				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
 					e.preventDefault();
-					changeGender(1);
+					const currentIdx = options.findIndex(
+						(opt) => opt.value === selectedGender
+					);
+					const nextIdx = (currentIdx + 1) % options.length;
+					setSelectedGender(options[nextIdx].value as "baby" | "girl" | "boy");
 				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
 					e.preventDefault();
-					changeGender(-1);
+					const currentIdx = options.findIndex(
+						(opt) => opt.value === selectedGender
+					);
+					const prevIdx = (currentIdx - 1 + options.length) % options.length;
+					setSelectedGender(options[prevIdx].value as "baby" | "girl" | "boy");
 				} else if (e.key === "Enter") {
 					e.preventDefault();
 					setCurrentStep("letter");
@@ -363,36 +359,10 @@ export default function Home() {
 		personalityOptions.length,
 		inspirationOptions.length,
 		originOptions.length,
-		changeGender,
+		options,
+		selectedGender,
 		fetchNameRecommendations,
 	]);
-
-	// Gender wheel handlers
-	const onGenderWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
-		const now = Date.now();
-		if (now - lastScrollRef.current < 150) return;
-		if (Math.abs(e.deltaY) < 5) return;
-		lastScrollRef.current = now;
-		changeGender(e.deltaY > 0 ? 1 : -1);
-	};
-
-	const onGenderTouchStart = (e: React.TouchEvent) => {
-		touchStartRef.current = e.touches[0].clientY;
-		e.preventDefault(); // Prevent scrolling
-	};
-
-	const onGenderTouchEnd = (e: React.TouchEvent) => {
-		if (touchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - touchStartRef.current;
-		if (Math.abs(delta) > 20) {
-			// Reduced threshold for easier mobile interaction
-			changeGender(delta > 0 ? -1 : 1);
-		}
-		touchStartRef.current = null;
-		e.preventDefault();
-	};
 
 	// Letter wheel handlers
 	const onLetterWheel = (e: React.WheelEvent) => {
@@ -424,7 +394,8 @@ export default function Home() {
 		e.preventDefault();
 	};
 
-	// Personality wheel handlers
+	// Elevator shaft ref and height calculation
+	const elevatorShaftRef = useRef<HTMLDivElement>(null); // Personality wheel handlers
 	const onPersonalityWheel = (e: React.WheelEvent) => {
 		e.preventDefault();
 		const now = Date.now();
@@ -522,13 +493,6 @@ export default function Home() {
 		e.preventDefault();
 	};
 
-	// Wheel order for gender selection
-	const getWheelOrder = () => {
-		if (selectedIndex === 0) return [2, 0, 1]; // Baby selected
-		if (selectedIndex === 1) return [0, 1, 2]; // Girl selected
-		return [1, 2, 0]; // Boy selected
-	};
-
 	// Letter wheel display
 	const topLetter =
 		alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
@@ -589,94 +553,77 @@ export default function Home() {
 			<Header type={selectedGender} />
 			<main className={styles.centerMain}>
 				{currentStep === "gender" && (
-					<form
-						className={styles.sentenceForm}
-						onSubmit={(e) => {
-							e.preventDefault();
+					<NavigationLayout
+						onNext={() => {
 							trackStepProgression("gender", "letter");
 							setCurrentStep("letter");
 						}}
+						showBack={false}
+						nextLabel="Next"
+						buttonStyle={{
+							borderColor: wheelColor,
+							backgroundColor: pageColors[selectedGender],
+							color: headerColor,
+						}}
 					>
-						<span className={styles.fixedA}>A</span>
-						<div
-							ref={wheelRef}
-							className={styles.wheelColumn}
-							onWheel={onGenderWheel}
-							onTouchStart={onGenderTouchStart}
-							onTouchEnd={onGenderTouchEnd}
-							tabIndex={0}
-							role="listbox"
-							aria-label="Name type selector"
-						>
-							<div
-								className={styles.wheelOptionFaded}
-								style={{ color: wheelColor }}
-							>
-								{options[getWheelOrder()[0]].label}
-							</div>
-							<div
-								className={styles.wheelOptionSelected}
-								style={{ color: wheelColor }}
-							>
-								{options[getWheelOrder()[1]].label}
-							</div>
-							<div
-								className={styles.wheelOptionFaded}
-								style={{ color: wheelColor }}
-							>
-								{options[getWheelOrder()[2]].label}
+						<div className={styles.genderElevator}>
+							<div className={styles.elevatorShaft} ref={elevatorShaftRef}>
+								<div className={styles.elevatorFloors}>
+									{options.map((option) => (
+										<div
+											key={option.value}
+											className={`${styles.genderRow} ${
+												selectedGender === option.value
+													? styles.genderRowSelected
+													: styles.genderRowUnselected
+											}`}
+										>
+											{selectedGender === option.value && (
+												<span className={styles.elevatorText}>A</span>
+											)}
+											<button
+												type="button"
+												className={`${styles.genderOption} ${
+													selectedGender === option.value
+														? styles.genderOptionSelected
+														: styles.genderOptionUnselected
+												}`}
+												onClick={() =>
+													setSelectedGender(
+														option.value as "baby" | "girl" | "boy"
+													)
+												}
+											>
+												{option.label}
+											</button>
+											{selectedGender === option.value && (
+												<span className={styles.elevatorText}>Name</span>
+											)}
+										</div>
+									))}
+								</div>
 							</div>
 						</div>
-						<span className={styles.fixedName}>Name</span>
-						<button
-							type="submit"
-							className={styles.triangleBtn}
-							aria-label="Continue to letter selection"
-						>
-							<svg
-								width="32"
-								height="32"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-							</svg>
-						</button>
-					</form>
-				)}
-
+					</NavigationLayout>
+				)}{" "}
 				{currentStep === "letter" && (
-					<form
-						className={styles.sentenceForm}
-						onSubmit={(e) => {
-							e.preventDefault();
+					<NavigationLayout
+						onBack={() => {
+							trackStepProgression("letter", "gender");
+							setCurrentStep("gender");
+						}}
+						onNext={() => {
 							trackStepProgression("letter", "personality");
 							setCurrentStep("personality");
 						}}
+						backLabel="Back"
+						nextLabel="Next"
+						buttonStyle={{
+							borderColor: wheelColor,
+							backgroundColor: pageColors[selectedGender],
+							color: headerColor,
+						}}
 					>
-						<button
-							className={styles.backTriangle}
-							type="button"
-							aria-label="Back to gender selection"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								trackStepProgression("letter", "gender");
-								setCurrentStep("gender");
-							}}
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
-							</svg>
-						</button>
-
 						<div className={styles.letterSelectionContent}>
 							<div className={styles.phraseContainer}>
 								<span className={styles.phrase}>
@@ -724,56 +671,26 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-
-						<button
-							className={styles.triangleBtn}
-							aria-label="See results"
-							type="submit"
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-							</svg>
-						</button>
-					</form>
+					</NavigationLayout>
 				)}
-
 				{currentStep === "personality" && (
-					<form
-						className={styles.sentenceForm}
-						onSubmit={(e) => {
-							e.preventDefault();
+					<NavigationLayout
+						onBack={() => {
+							trackStepProgression("personality", "letter");
+							setCurrentStep("letter");
+						}}
+						onNext={() => {
 							trackStepProgression("personality", "inspiration");
 							setCurrentStep("inspiration");
 						}}
+						backLabel="Back"
+						nextLabel="Next"
+						buttonStyle={{
+							borderColor: wheelColor,
+							backgroundColor: pageColors[selectedGender],
+							color: headerColor,
+						}}
 					>
-						<button
-							className={styles.backTriangle}
-							type="button"
-							aria-label="Back to letter selection"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								trackStepProgression("personality", "letter");
-								setCurrentStep("letter");
-							}}
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
-							</svg>
-						</button>
-
 						<div className={styles.multiStepContent}>
 							<div className={styles.topRow} style={{ color: headerColor }}>
 								<span className={styles.selectedType}>
@@ -821,56 +738,26 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-
-						<button
-							className={styles.triangleBtn}
-							aria-label="Continue to inspiration"
-							type="submit"
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-							</svg>
-						</button>
-					</form>
+					</NavigationLayout>
 				)}
-
 				{currentStep === "inspiration" && (
-					<form
-						className={styles.sentenceForm}
-						onSubmit={(e) => {
-							e.preventDefault();
+					<NavigationLayout
+						onBack={() => {
+							trackStepProgression("inspiration", "personality");
+							setCurrentStep("personality");
+						}}
+						onNext={() => {
 							trackStepProgression("inspiration", "origin");
 							setCurrentStep("origin");
 						}}
+						backLabel="Back"
+						nextLabel="Next"
+						buttonStyle={{
+							borderColor: wheelColor,
+							backgroundColor: pageColors[selectedGender],
+							color: headerColor,
+						}}
 					>
-						<button
-							className={styles.backTriangle}
-							type="button"
-							aria-label="Back to personality selection"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								trackStepProgression("inspiration", "personality");
-								setCurrentStep("personality");
-							}}
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
-							</svg>
-						</button>
-
 						<div className={styles.multiStepContent}>
 							<div className={styles.topRow} style={{ color: headerColor }}>
 								<span className={styles.selectedType}>
@@ -920,55 +807,23 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-
-						<button
-							className={styles.triangleBtn}
-							aria-label="Continue to origin"
-							type="submit"
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-							</svg>
-						</button>
-					</form>
+					</NavigationLayout>
 				)}
-
 				{currentStep === "origin" && (
-					<form
-						className={styles.sentenceForm}
-						onSubmit={(e) => {
-							e.preventDefault();
-							fetchNameRecommendations();
+					<NavigationLayout
+						onBack={() => {
+							trackStepProgression("origin", "inspiration");
+							setCurrentStep("inspiration");
+						}}
+						onNext={fetchNameRecommendations}
+						backLabel="Back"
+						nextLabel="Next"
+						buttonStyle={{
+							borderColor: wheelColor,
+							backgroundColor: pageColors[selectedGender],
+							color: headerColor,
 						}}
 					>
-						<button
-							className={styles.backTriangle}
-							type="button"
-							aria-label="Back to inspiration selection"
-							onClick={(e) => {
-								e.preventDefault();
-								e.stopPropagation();
-								trackStepProgression("origin", "inspiration");
-								setCurrentStep("inspiration");
-							}}
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="24,4 4,16 24,28" fill={wheelColor} />
-							</svg>
-						</button>
-
 						<div className={styles.multiStepContent}>
 							<div className={styles.topRow} style={{ color: headerColor }}>
 								<div className={styles.twoRowText}>
@@ -1029,25 +884,8 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-
-						<button
-							className={styles.triangleBtn}
-							aria-label="See results"
-							type="submit"
-						>
-							<svg
-								width="36"
-								height="36"
-								viewBox="0 0 32 32"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<polygon points="8,4 28,16 8,28" fill={wheelColor} />
-							</svg>
-						</button>
-					</form>
+					</NavigationLayout>
 				)}
-
 				{currentStep === "loading" && (
 					<LoadingNames
 						gender={selectedGender}
@@ -1057,7 +895,6 @@ export default function Home() {
 						origin={selectedOrigin}
 					/>
 				)}
-
 				{currentStep === "results" && (
 					<NamesResults
 						names={recommendedNames}
@@ -1068,6 +905,7 @@ export default function Home() {
 						origin={selectedOrigin}
 						onBack={() => setCurrentStep("origin")}
 						isAIGenerated={isAIGenerated}
+						onNamesUpdate={handleNamesUpdate}
 					/>
 				)}
 			</main>

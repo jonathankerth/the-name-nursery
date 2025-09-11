@@ -32,7 +32,7 @@ export default function ProfilePage() {
 	// Color scheme from home page
 	const pageColors = useMemo(
 		() => ({
-			baby: "#EFD9AA",
+			baby: "#d3f3c8",
 			boy: "#B7E9F0",
 			girl: "#EDD5EB",
 		}),

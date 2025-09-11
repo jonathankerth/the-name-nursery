@@ -19,8 +19,6 @@ body {
 /* ensure the app wrapper covers the viewport so transition background is visible */
 #app-root {
 	min-height: 100vh;
-	/* keep a persistent base background so the app never flashes black between pages */
-	background: var(--background);
 	width: 100%;
 }
 
@@ -28,7 +26,6 @@ body {
 
 body {
 	color: var(--foreground);
-	background: var(--background);
 	font-family: var(--font-crimson-text), var(--font-inter), Arial, Helvetica,
 		sans-serif;
 	-webkit-font-smoothing: antialiased;
