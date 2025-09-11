@@ -24,30 +24,66 @@ export async function POST(request: NextRequest) {
 			inspiration,
 			origin,
 			existingNames = [],
+			exploreMode = false,
 		} = requestData;
 
-		if (!gender || !letter) {
+		if (!gender && !exploreMode) {
 			return NextResponse.json(
-				{ error: "Gender and letter are required" },
+				{ error: "Gender is required" },
 				{ status: 400 }
 			);
 		}
 
-		// Construct a cost-effective prompt for name recommendations
-		const prompt = `Generate exactly ${
-			existingNames.length > 0 ? "15" : "10"
-		} ${
-			gender === "baby" ? "unisex" : gender
-		} names that start with the letter "${letter}". 
+		// Different prompt for explore mode vs regular mode
+		let prompt: string;
+		let targetCount: number;
+
+		if (exploreMode) {
+			// Explore mode: Generate popular names for swiping
+			targetCount = 25;
+			const genderText = gender === "baby" ? "unisex/gender-neutral" : gender;
+
+			prompt = `Generate exactly ${targetCount} of the most popular and trending ${genderText} baby names.
+
+Requirements:
+- Focus on currently popular and trending names
+- Include a mix of classic and modern names
+- ${
+	gender === "baby"
+		? "All names should work perfectly for any gender"
+		: `All names should be appropriate for ${gender}s`
+}
+${
+	existingNames.length > 0
+		? `- CRITICAL: DO NOT include ANY of these existing names under any circumstances: ${existingNames.join(
+				", "
+		  )}\n- If you accidentally generate any of these names, you must replace them with completely different popular names`
+		: ""
+}
+- Provide only the names, one per line
+- No explanations, descriptions, or additional text
+- Each name should be a single word (no hyphens or spaces)
+- Focus on names that are currently popular in baby name trends
+
+Popular ${genderText} names:`;
+		} else {
+			// Regular mode: Generate names based on criteria
+			targetCount = existingNames.length > 0 ? 15 : 10;
+
+			prompt = `Generate exactly ${
+				targetCount
+			} ${
+				gender === "baby" ? "unisex" : gender
+			} names that start with the letter "${letter}". 
 
 Requirements:
 - Names should be culturally diverse and meaningful
 - Include both traditional and contemporary options
 - ${
-			gender === "baby"
-				? "All names should work for any gender"
-				: `All names should be appropriate for ${gender}s`
-		}
+	gender === "baby"
+		? "All names should work for any gender"
+		: `All names should be appropriate for ${gender}s`
+}
 ${
 	personality
 		? `- Focus on names that feel ${personality} and sophisticated`
@@ -75,8 +111,7 @@ ${
 - Each name must start with the letter ${letter}
 
 Names:`;
-
-		const completion = await openai.chat.completions.create({
+		}		const completion = await openai.chat.completions.create({
 			model: process.env.OPENAI_MODEL || "gpt-4o-mini",
 			messages: [
 				{
@@ -84,7 +119,7 @@ Names:`;
 					content: prompt,
 				},
 			],
-			max_tokens: 150,
+			max_tokens: exploreMode ? 200 : 150,
 			temperature: 0.8,
 		});
 
@@ -101,12 +136,13 @@ Names:`;
 			.filter((name) => name.length > 0)
 			.map((name) => name.replace(/^\d+\.\s*/, "")) // Remove numbering if present
 			.map((name) => name.replace(/^-\s*/, "")) // Remove bullet points if present
-			.slice(0, existingNames.length > 0 ? 15 : 10); // Get more names when avoiding duplicates
+			.slice(0, targetCount); // Get the target number of names
 
 		return NextResponse.json({
 			names,
 			gender,
-			letter,
+			letter: exploreMode ? "" : letter,
+			exploreMode,
 		});
 	} catch {
 		return NextResponse.json(

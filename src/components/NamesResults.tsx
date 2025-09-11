@@ -248,7 +248,8 @@ export default function NamesResults({
 			<div className={styles.content}>
 				<div className={styles.header}>
 					<h1 className={styles.title} style={{ color: headerColor }}>
-						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting with {letter}
+						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting
+						with {letter}
 					</h1>
 					<p className={styles.subtitle} style={{ color: headerColor }}>
 						<span style={{ fontWeight: "normal" }}>For a </span>
@@ -278,7 +279,7 @@ export default function NamesResults({
 							className={`${styles.nameCard} ${
 								flippedCard === index ? styles.nameCardFlipped : ""
 							}`}
-							onClick={() => user ? null : handleNameClick(index)}
+							onClick={() => (user ? null : handleNameClick(index))}
 							style={{ backgroundColor: cardBackgroundColor }}
 						>
 							{flippedCard === index ? (
