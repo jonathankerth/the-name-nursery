@@ -91,24 +91,32 @@ export default function Home() {
 	const letterScrollRef = useRef<number>(0);
 	const letterTouchStartRef = useRef<number | null>(null);
 	const letterWheelRef = useRef<HTMLDivElement | null>(null);
+	const letterDragStartRef = useRef<number | null>(null);
+	const letterIsDraggingRef = useRef<boolean>(false);
 
 	// Personality selection state
 	const [personalityIndex, setPersonalityIndex] = useState(0);
 	const personalityScrollRef = useRef<number>(0);
 	const personalityTouchStartRef = useRef<number | null>(null);
 	const personalityWheelRef = useRef<HTMLDivElement | null>(null);
+	const personalityDragStartRef = useRef<number | null>(null);
+	const personalityIsDraggingRef = useRef<boolean>(false);
 
 	// Inspiration selection state
 	const [inspirationIndex, setInspirationIndex] = useState(0);
 	const inspirationScrollRef = useRef<number>(0);
 	const inspirationTouchStartRef = useRef<number | null>(null);
 	const inspirationWheelRef = useRef<HTMLDivElement | null>(null);
+	const inspirationDragStartRef = useRef<number | null>(null);
+	const inspirationIsDraggingRef = useRef<boolean>(false);
 
 	// Origin selection state
 	const [originIndex, setOriginIndex] = useState(0);
 	const originScrollRef = useRef<number>(0);
 	const originTouchStartRef = useRef<number | null>(null);
 	const originWheelRef = useRef<HTMLDivElement | null>(null);
+	const originDragStartRef = useRef<number | null>(null);
+	const originIsDraggingRef = useRef<boolean>(false);
 
 	const pageColors = useMemo(
 		() => ({
@@ -376,9 +384,45 @@ export default function Home() {
 		);
 	};
 
+	const onLetterMouseDown = (e: React.MouseEvent) => {
+		letterDragStartRef.current = e.clientY;
+		letterIsDraggingRef.current = false;
+		e.preventDefault();
+	};
+
+	const onLetterMouseMove = useCallback((e: MouseEvent) => {
+		if (letterDragStartRef.current === null) return;
+
+		const deltaY = e.clientY - letterDragStartRef.current;
+		if (Math.abs(deltaY) > 10) {
+			letterIsDraggingRef.current = true;
+		}
+
+		if (letterIsDraggingRef.current) {
+			const dragThreshold = 30; // pixels per item
+			const indexChange = Math.round(deltaY / dragThreshold);
+			if (indexChange !== 0) {
+				setLetterIndex((i) => {
+					const newIndex = (i - indexChange + alphabet.length) % alphabet.length;
+					letterDragStartRef.current = e.clientY; // Reset for continuous dragging
+					return newIndex;
+				});
+			}
+		}
+	}, [alphabet.length]);
+
+	const onLetterMouseUp = useCallback(() => {
+		letterDragStartRef.current = null;
+		letterIsDraggingRef.current = false;
+	}, []);
+
 	const onLetterTouchStart = (e: React.TouchEvent) => {
 		letterTouchStartRef.current = e.touches[0].clientY;
 		e.preventDefault(); // Prevent scrolling
+	};
+
+	const onLetterTouchMove = (e: React.TouchEvent) => {
+		e.preventDefault(); // Prevent page scrolling during touch
 	};
 
 	const onLetterTouchEnd = (e: React.TouchEvent) => {
@@ -409,9 +453,45 @@ export default function Home() {
 		);
 	};
 
+	const onPersonalityMouseDown = (e: React.MouseEvent) => {
+		personalityDragStartRef.current = e.clientY;
+		personalityIsDraggingRef.current = false;
+		e.preventDefault();
+	};
+
+	const onPersonalityMouseMove = useCallback((e: MouseEvent) => {
+		if (personalityDragStartRef.current === null) return;
+
+		const deltaY = e.clientY - personalityDragStartRef.current;
+		if (Math.abs(deltaY) > 10) {
+			personalityIsDraggingRef.current = true;
+		}
+
+		if (personalityIsDraggingRef.current) {
+			const dragThreshold = 30; // pixels per item
+			const indexChange = Math.round(deltaY / dragThreshold);
+			if (indexChange !== 0) {
+				setPersonalityIndex((i) => {
+					const newIndex = (i - indexChange + personalityOptions.length) % personalityOptions.length;
+					personalityDragStartRef.current = e.clientY; // Reset for continuous dragging
+					return newIndex;
+				});
+			}
+		}
+	}, [personalityOptions.length]);
+
+	const onPersonalityMouseUp = useCallback(() => {
+		personalityDragStartRef.current = null;
+		personalityIsDraggingRef.current = false;
+	}, []);
+
 	const onPersonalityTouchStart = (e: React.TouchEvent) => {
 		personalityTouchStartRef.current = e.touches[0].clientY;
 		e.preventDefault();
+	};
+
+	const onPersonalityTouchMove = (e: React.TouchEvent) => {
+		e.preventDefault(); // Prevent page scrolling during touch
 	};
 
 	const onPersonalityTouchEnd = (e: React.TouchEvent) => {
@@ -441,9 +521,45 @@ export default function Home() {
 		);
 	};
 
+	const onInspirationMouseDown = (e: React.MouseEvent) => {
+		inspirationDragStartRef.current = e.clientY;
+		inspirationIsDraggingRef.current = false;
+		e.preventDefault();
+	};
+
+	const onInspirationMouseMove = useCallback((e: MouseEvent) => {
+		if (inspirationDragStartRef.current === null) return;
+
+		const deltaY = e.clientY - inspirationDragStartRef.current;
+		if (Math.abs(deltaY) > 10) {
+			inspirationIsDraggingRef.current = true;
+		}
+
+		if (inspirationIsDraggingRef.current) {
+			const dragThreshold = 30; // pixels per item
+			const indexChange = Math.round(deltaY / dragThreshold);
+			if (indexChange !== 0) {
+				setInspirationIndex((i) => {
+					const newIndex = (i - indexChange + inspirationOptions.length) % inspirationOptions.length;
+					inspirationDragStartRef.current = e.clientY; // Reset for continuous dragging
+					return newIndex;
+				});
+			}
+		}
+	}, [inspirationOptions.length]);
+
+	const onInspirationMouseUp = useCallback(() => {
+		inspirationDragStartRef.current = null;
+		inspirationIsDraggingRef.current = false;
+	}, []);
+
 	const onInspirationTouchStart = (e: React.TouchEvent) => {
 		inspirationTouchStartRef.current = e.touches[0].clientY;
 		e.preventDefault();
+	};
+
+	const onInspirationTouchMove = (e: React.TouchEvent) => {
+		e.preventDefault(); // Prevent page scrolling during touch
 	};
 
 	const onInspirationTouchEnd = (e: React.TouchEvent) => {
@@ -474,9 +590,45 @@ export default function Home() {
 		);
 	};
 
+	const onOriginMouseDown = (e: React.MouseEvent) => {
+		originDragStartRef.current = e.clientY;
+		originIsDraggingRef.current = false;
+		e.preventDefault();
+	};
+
+	const onOriginMouseMove = useCallback((e: MouseEvent) => {
+		if (originDragStartRef.current === null) return;
+
+		const deltaY = e.clientY - originDragStartRef.current;
+		if (Math.abs(deltaY) > 10) {
+			originIsDraggingRef.current = true;
+		}
+
+		if (originIsDraggingRef.current) {
+			const dragThreshold = 30; // pixels per item
+			const indexChange = Math.round(deltaY / dragThreshold);
+			if (indexChange !== 0) {
+				setOriginIndex((i) => {
+					const newIndex = (i - indexChange + originOptions.length) % originOptions.length;
+					originDragStartRef.current = e.clientY; // Reset for continuous dragging
+					return newIndex;
+				});
+			}
+		}
+	}, [originOptions.length]);
+
+	const onOriginMouseUp = useCallback(() => {
+		originDragStartRef.current = null;
+		originIsDraggingRef.current = false;
+	}, []);
+
 	const onOriginTouchStart = (e: React.TouchEvent) => {
 		originTouchStartRef.current = e.touches[0].clientY;
 		e.preventDefault();
+	};
+
+	const onOriginTouchMove = (e: React.TouchEvent) => {
+		e.preventDefault(); // Prevent page scrolling during touch
 	};
 
 	const onOriginTouchEnd = (e: React.TouchEvent) => {
@@ -515,6 +667,40 @@ export default function Home() {
 	useEffect(() => {
 		setSelectedOrigin(originOptions[originIndex].value);
 	}, [originIndex, originOptions]);
+
+	// Document event listeners for mouse drag
+	useEffect(() => {
+		const handleMouseMove = (e: MouseEvent) => {
+			onLetterMouseMove(e);
+			onPersonalityMouseMove(e);
+			onInspirationMouseMove(e);
+			onOriginMouseMove(e);
+		};
+
+		const handleMouseUp = () => {
+			onLetterMouseUp();
+			onPersonalityMouseUp();
+			onInspirationMouseUp();
+			onOriginMouseUp();
+		};
+
+		document.addEventListener("mousemove", handleMouseMove);
+		document.addEventListener("mouseup", handleMouseUp);
+
+		return () => {
+			document.removeEventListener("mousemove", handleMouseMove);
+			document.removeEventListener("mouseup", handleMouseUp);
+		};
+	}, [
+		onLetterMouseMove,
+		onLetterMouseUp,
+		onPersonalityMouseMove,
+		onPersonalityMouseUp,
+		onInspirationMouseMove,
+		onInspirationMouseUp,
+		onOriginMouseMove,
+		onOriginMouseUp,
+	]);
 
 	// Personality wheel display
 	const topPersonality =
@@ -649,26 +835,34 @@ export default function Home() {
 								className={styles.wheelColumn}
 								tabIndex={0}
 								onWheel={onLetterWheel}
+								onMouseDown={onLetterMouseDown}
 								onTouchStart={onLetterTouchStart}
+								onTouchMove={onLetterTouchMove}
 								onTouchEnd={onLetterTouchEnd}
 								role="listbox"
 								aria-label="Select a starting letter"
 							>
 								<div
-									className={styles.wheelFaded}
-									style={{ color: wheelColor }}
+									className={`${styles.wheelFaded} ${styles.wheelItem}`}
+									style={{ color: wheelColor, cursor: 'pointer' }}
+									onClick={() => setLetterIndex((letterIndex - 1 + alphabet.length) % alphabet.length)}
+									title={`Select ${topLetter}`}
 								>
 									{topLetter}
 								</div>
 								<div
-									className={styles.wheelCenter}
-									style={{ color: wheelColor }}
+									className={`${styles.wheelCenter} ${styles.wheelItem}`}
+									style={{ color: wheelColor, cursor: 'pointer' }}
+									onClick={() => setLetterIndex(letterIndex)}
+									title={`Select ${centerLetter}`}
 								>
 									{centerLetter}
 								</div>
 								<div
-									className={styles.wheelFaded}
-									style={{ color: wheelColor }}
+									className={`${styles.wheelFaded} ${styles.wheelItem}`}
+									style={{ color: wheelColor, cursor: 'pointer' }}
+									onClick={() => setLetterIndex((letterIndex + 1) % alphabet.length)}
+									title={`Select ${bottomLetter}`}
 								>
 									{bottomLetter}
 								</div>
@@ -715,26 +909,34 @@ export default function Home() {
 									className={styles.wheelColumn}
 									tabIndex={0}
 									onWheel={onPersonalityWheel}
+									onMouseDown={onPersonalityMouseDown}
 									onTouchStart={onPersonalityTouchStart}
+									onTouchMove={onPersonalityTouchMove}
 									onTouchEnd={onPersonalityTouchEnd}
 									role="listbox"
 									aria-label="Select a personality trait"
 								>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setPersonalityIndex((personalityIndex - 1 + personalityOptions.length) % personalityOptions.length)}
+										title={`Select ${topPersonality.label}`}
 									>
 										{topPersonality.label}
 									</div>
 									<div
-										className={styles.wheelCenter}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelCenter} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setPersonalityIndex(personalityIndex)}
+										title={`Select ${centerPersonality.label}`}
 									>
 										{centerPersonality.label}
 									</div>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setPersonalityIndex((personalityIndex + 1) % personalityOptions.length)}
+										title={`Select ${bottomPersonality.label}`}
 									>
 										{bottomPersonality.label}
 									</div>
@@ -784,26 +986,34 @@ export default function Home() {
 									className={styles.wheelColumn}
 									tabIndex={0}
 									onWheel={onInspirationWheel}
+									onMouseDown={onInspirationMouseDown}
 									onTouchStart={onInspirationTouchStart}
+									onTouchMove={onInspirationTouchMove}
 									onTouchEnd={onInspirationTouchEnd}
 									role="listbox"
 									aria-label="Select an inspiration source"
 								>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setInspirationIndex((inspirationIndex - 1 + inspirationOptions.length) % inspirationOptions.length)}
+										title={`Select ${topInspiration.label}`}
 									>
 										{topInspiration.label}
 									</div>
 									<div
-										className={styles.wheelCenter}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelCenter} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setInspirationIndex(inspirationIndex)}
+										title={`Select ${centerInspiration.label}`}
 									>
 										{centerInspiration.label}
 									</div>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setInspirationIndex((inspirationIndex + 1) % inspirationOptions.length)}
+										title={`Select ${bottomInspiration.label}`}
 									>
 										{bottomInspiration.label}
 									</div>
@@ -856,26 +1066,34 @@ export default function Home() {
 									className={styles.wheelColumn}
 									tabIndex={0}
 									onWheel={onOriginWheel}
+									onMouseDown={onOriginMouseDown}
 									onTouchStart={onOriginTouchStart}
+									onTouchMove={onOriginTouchMove}
 									onTouchEnd={onOriginTouchEnd}
 									role="listbox"
 									aria-label="Select an origin source"
 								>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setOriginIndex((originIndex - 1 + originOptions.length) % originOptions.length)}
+										title={`Select ${topOrigin.label}`}
 									>
 										{topOrigin.label}
 									</div>
 									<div
-										className={styles.wheelCenter}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelCenter} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setOriginIndex(originIndex)}
+										title={`Select ${centerOrigin.label}`}
 									>
 										{centerOrigin.label}
 									</div>
 									<div
-										className={styles.wheelFaded}
-										style={{ color: wheelColor }}
+										className={`${styles.wheelFaded} ${styles.wheelItem}`}
+										style={{ color: wheelColor, cursor: 'pointer' }}
+										onClick={() => setOriginIndex((originIndex + 1) % originOptions.length)}
+										title={`Select ${bottomOrigin.label}`}
 									>
 										{bottomOrigin.label}
 									</div>

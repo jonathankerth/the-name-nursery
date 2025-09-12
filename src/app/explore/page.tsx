@@ -214,14 +214,21 @@ export default function ExplorePage() {
 			currentY.current = e.clientY;
 			isDragging.current = true;
 
+			// Attach document listeners for mouse move and up
+			document.addEventListener("mousemove", handleMouseMove);
+			document.addEventListener("mouseup", handleMouseUp);
+
 			e.preventDefault();
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[isAnimating]
 	);
 
 	const handleMouseMove = useCallback(
-		(e: React.MouseEvent) => {
-			if (!isDragging.current || isAnimating) return;
+		(e: MouseEvent) => {
+			if (!isDragging.current || isAnimating) {
+				return;
+			}
 
 			currentX.current = e.clientX;
 			currentY.current = e.clientY;
@@ -231,25 +238,33 @@ export default function ExplorePage() {
 		[isAnimating]
 	);
 
-	const handleMouseUp = useCallback(() => {
-		if (!isDragging.current || isAnimating) return;
+	const handleMouseUp = useCallback(
+		() => {
+			if (!isDragging.current || isAnimating) return;
 
-		const deltaX = currentX.current - startX.current;
-		const deltaY = currentY.current - startY.current;
-		const absDeltaX = Math.abs(deltaX);
-		const absDeltaY = Math.abs(deltaY);
+			// Remove document listeners
+			document.removeEventListener("mousemove", handleMouseMove);
+			document.removeEventListener("mouseup", handleMouseUp);
 
-		// Only trigger swipe if horizontal movement is greater than vertical
-		if (absDeltaX > absDeltaY && absDeltaX > 50) {
-			if (deltaX > 0) {
-				handleSwipe("right");
-			} else {
-				handleSwipe("left");
+			const deltaX = currentX.current - startX.current;
+			const deltaY = currentY.current - startY.current;
+			const absDeltaX = Math.abs(deltaX);
+			const absDeltaY = Math.abs(deltaY);
+
+			// Only trigger swipe if horizontal movement is greater than vertical
+			if (absDeltaX > absDeltaY && absDeltaX > 50) {
+				if (deltaX > 0) {
+					handleSwipe("right");
+				} else {
+					handleSwipe("left");
+				}
 			}
-		}
 
-		isDragging.current = false;
-	}, [handleSwipe, isAnimating]);
+			isDragging.current = false;
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[handleSwipe, isAnimating]
+	);
 
 	// Keyboard handlers
 	useEffect(() => {
@@ -382,9 +397,6 @@ export default function ExplorePage() {
 							onTouchMove={handleTouchMove}
 							onTouchEnd={handleTouchEnd}
 							onMouseDown={handleMouseDown}
-							onMouseMove={handleMouseMove}
-							onMouseUp={handleMouseUp}
-							onMouseLeave={handleMouseUp}
 						>
 							<div className={styles.card}>
 								<div className={styles.cardContent}>

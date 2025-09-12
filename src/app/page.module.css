@@ -8,6 +8,8 @@
 	justify-content: center;
 	padding: 20px 20px 80px 20px;
 	min-height: calc(100vh - 120px);
+	touch-action: manipulation;
+	overscroll-behavior: contain;
 }
 
 .page {
@@ -145,12 +147,13 @@
 	cursor: grab;
 	user-select: none;
 	-webkit-user-select: none;
-	touch-action: none;
+	touch-action: pan-y;
 	overscroll-behavior: contain;
-}
-
-.wheelColumn:active {
-	cursor: grabbing;
+	-webkit-overflow-scrolling: touch;
+	position: relative;
+	z-index: 10;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
 }
 
 .wheelOptionSelected {
@@ -179,6 +182,23 @@
 	font-size: 1.5rem;
 	font-weight: 500;
 	opacity: 0.5;
+}
+
+.wheelItem {
+	transition: all 0.2s ease;
+	padding: 5px 10px;
+	border-radius: 8px;
+}
+
+.wheelItem:hover {
+	opacity: 0.8;
+	transform: scale(1.05);
+	background: rgba(255, 255, 255, 0.1);
+}
+
+.wheelCenter:hover {
+	opacity: 1;
+	background: rgba(255, 255, 255, 0.15);
 }
 
 .phrase {
@@ -358,5 +378,13 @@
 	.wheelFaded,
 	.wheelOptionFaded {
 		font-size: 1.3rem;
+	}
+
+	.wheelItem {
+		padding: 3px 8px;
+	}
+
+	.wheelItem:hover {
+		transform: scale(1.02);
 	}
 }
