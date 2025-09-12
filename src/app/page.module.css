@@ -22,6 +22,12 @@
 	overscroll-behavior: none;
 }
 
+/* Prevent page scrolling when interacting with wheel elements */
+.wheelColumn,
+.wheelColumn * {
+	touch-action: none !important;
+}
+
 .header {
 	display: flex;
 	flex-direction: column;
@@ -147,7 +153,7 @@
 	cursor: grab;
 	user-select: none;
 	-webkit-user-select: none;
-	touch-action: pan-y;
+	touch-action: none;
 	overscroll-behavior: contain;
 	-webkit-overflow-scrolling: touch;
 	position: relative;
@@ -321,6 +327,9 @@
 
 	.wheelColumn {
 		min-width: 160px;
+		touch-action: none !important;
+		-webkit-touch-callout: none !important;
+		-webkit-tap-highlight-color: transparent !important;
 	}
 
 	.phrase {
@@ -345,6 +354,9 @@
 
 	.wheelColumn {
 		min-width: 120px;
+		touch-action: none !important;
+		-webkit-touch-callout: none !important;
+		-webkit-tap-highlight-color: transparent !important;
 	}
 
 	.phrase {
