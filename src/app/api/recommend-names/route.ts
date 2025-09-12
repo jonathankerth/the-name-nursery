@@ -49,10 +49,10 @@ Requirements:
 - Focus on currently popular and trending names
 - Include a mix of classic and modern names
 - ${
-	gender === "baby"
-		? "All names should work perfectly for any gender"
-		: `All names should be appropriate for ${gender}s`
-}
+				gender === "baby"
+					? "All names should work perfectly for any gender"
+					: `All names should be appropriate for ${gender}s`
+			}
 ${
 	existingNames.length > 0
 		? `- CRITICAL: DO NOT include ANY of these existing names under any circumstances: ${existingNames.join(
@@ -70,9 +70,7 @@ Popular ${genderText} names:`;
 			// Regular mode: Generate names based on criteria
 			targetCount = existingNames.length > 0 ? 15 : 10;
 
-			prompt = `Generate exactly ${
-				targetCount
-			} ${
+			prompt = `Generate exactly ${targetCount} ${
 				gender === "baby" ? "unisex" : gender
 			} names that start with the letter "${letter}". 
 
@@ -80,10 +78,10 @@ Requirements:
 - Names should be culturally diverse and meaningful
 - Include both traditional and contemporary options
 - ${
-	gender === "baby"
-		? "All names should work for any gender"
-		: `All names should be appropriate for ${gender}s`
-}
+				gender === "baby"
+					? "All names should work for any gender"
+					: `All names should be appropriate for ${gender}s`
+			}
 ${
 	personality
 		? `- Focus on names that feel ${personality} and sophisticated`
@@ -111,7 +109,8 @@ ${
 - Each name must start with the letter ${letter}
 
 Names:`;
-		}		const completion = await openai.chat.completions.create({
+		}
+		const completion = await openai.chat.completions.create({
 			model: process.env.OPENAI_MODEL || "gpt-4o-mini",
 			messages: [
 				{

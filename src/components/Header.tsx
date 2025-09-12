@@ -1,11 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import styles from "./header.module.css";
 
 export type Gender = "baby" | "girl" | "boy";
 
-export default function Header({ type: propType }: { type?: Gender }) {
+export default function Header({
+	type: propType,
+	showRestartButton,
+}: {
+	type?: Gender;
+	showRestartButton?: boolean;
+}) {
 	const [queryType, setQueryType] = useState<Gender | null>(null);
+	const pathname = usePathname();
 
 	useEffect(() => {
 		try {
@@ -40,11 +48,54 @@ export default function Header({ type: propType }: { type?: Gender }) {
 
 	const headerColor = darken(pageColors[type] || "#111827", 0.6);
 
+	// Determine redirect URL based on current page and environment
+	const getRedirectUrl = () => {
+		const isLocalhost =
+			typeof window !== "undefined" &&
+			(window.location.hostname === "localhost" ||
+				window.location.hostname === "127.0.0.1" ||
+				window.location.hostname.includes(".local"));
+
+		if (pathname === "/profile" || pathname === "/explore") {
+			return "/";
+		}
+
+		// For localhost/development, go to root, otherwise go to external site
+		return isLocalhost ? "/" : "https://www.thenamenursery.com/";
+	};
+
+	const getAriaLabel = () => {
+		if (pathname === "/profile" || pathname === "/explore") {
+			return "Go to home page";
+		}
+		return "Go to The Name Nursery website";
+	};
+
 	return (
 		<header className={styles.header}>
-			<h1 className={styles.title} style={{ color: headerColor }}>
-				The Name Nursery
-			</h1>
+			{pathname === "/" && !showRestartButton ? (
+				<h1 className={styles.title} style={{ color: headerColor }}>
+					The Name Nursery
+				</h1>
+			) : (
+				<button
+					className={styles.titleButton}
+					onClick={() => {
+						const url = getRedirectUrl();
+						if (url.startsWith("http")) {
+							window.location.href = url;
+						} else {
+							// For internal routes, we need to import and use Next.js router
+							window.location.href = url;
+						}
+					}}
+					aria-label={getAriaLabel()}
+				>
+					<h1 className={styles.title} style={{ color: headerColor }}>
+						The Name Nursery
+					</h1>
+				</button>
+			)}
 		</header>
 	);
 }

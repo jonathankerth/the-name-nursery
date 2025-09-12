@@ -1,12 +1,53 @@
 /* Main Container */
 .exploreContainer {
 	min-height: 100vh;
-	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	background: #d3f3c8;
 	display: flex;
 	flex-direction: column;
 	padding: 20px;
 	position: relative;
 	overflow: hidden;
+}
+
+/* Main Header */
+.mainHeader {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px 0 8px 0;
+	min-height: 72px;
+	background: transparent;
+}
+
+.mainTitle {
+	font-size: 2rem;
+	font-weight: 700;
+	margin: 0;
+	letter-spacing: -0.6px;
+	color: #2d3748;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.titleButton {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font: inherit;
+	color: inherit;
+	text-decoration: none;
+	display: block;
+	transition: opacity 0.2s ease;
+}
+
+.titleButton:hover {
+	opacity: 0.8;
+}
+
+.titleButton:focus {
+	outline: 2px solid rgba(45, 55, 72, 0.5);
+	outline-offset: 2px;
+	border-radius: 4px;
 }
 
 /* Header */
@@ -19,9 +60,9 @@
 }
 
 .backButton {
-	background: rgba(255, 255, 255, 0.2);
-	color: white;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	background: rgba(45, 55, 72, 0.1);
+	color: #2d3748;
+	border: 2px solid rgba(45, 55, 72, 0.2);
 	padding: 8px 16px;
 	border-radius: 20px;
 	cursor: pointer;
@@ -31,16 +72,16 @@
 }
 
 .backButton:hover {
-	background: rgba(255, 255, 255, 0.3);
+	background: rgba(45, 55, 72, 0.2);
 	transform: translateY(-1px);
 }
 
 .title {
-	color: white;
+	color: #2d3748;
 	font-size: 24px;
 	font-weight: 700;
 	margin: 0;
-	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .spacer {
@@ -62,9 +103,9 @@
 	align-items: center;
 	padding: 12px 16px;
 	border-radius: 16px;
-	border: 2px solid rgba(255, 255, 255, 0.3);
-	background: rgba(255, 255, 255, 0.1);
-	color: white;
+	border: 2px solid rgba(45, 55, 72, 0.2);
+	background: rgba(255, 255, 255, 0.8);
+	color: #2d3748;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	backdrop-filter: blur(10px);
@@ -74,15 +115,15 @@
 }
 
 .genderButton:hover {
-	background: rgba(255, 255, 255, 0.2);
+	background: rgba(255, 255, 255, 0.9);
 	transform: translateY(-2px);
 }
 
 .genderButton.active {
-	background: rgba(255, 255, 255, 0.9);
-	color: #667eea;
-	border-color: rgba(255, 255, 255, 0.9);
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	background: #d3f3c8;
+	color: #2d3748;
+	border-color: rgba(45, 55, 72, 0.4);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .emoji {
@@ -238,7 +279,7 @@
 /* Loading States */
 .loading {
 	text-align: center;
-	color: white;
+	color: #2d3748;
 }
 
 .spinner {
@@ -252,8 +293,12 @@
 }
 
 @keyframes spin {
-	0% { transform: rotate(0deg); }
-	100% { transform: rotate(360deg); }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 .generatingIndicator {
@@ -261,7 +306,7 @@
 	bottom: 20px;
 	left: 50%;
 	transform: translateX(-50%);
-	background: rgba(0, 0, 0, 0.8);
+	background: rgba(45, 55, 72, 0.9);
 	color: white;
 	padding: 10px 20px;
 	border-radius: 20px;
@@ -284,8 +329,8 @@
 /* Empty State */
 .emptyState {
 	text-align: center;
-	color: white;
-	background: rgba(255, 255, 255, 0.1);
+	color: #2d3748;
+	background: rgba(255, 255, 255, 0.8);
 	padding: 40px;
 	border-radius: 20px;
 	backdrop-filter: blur(10px);
@@ -303,9 +348,9 @@
 }
 
 .refreshButton {
-	background: rgba(255, 255, 255, 0.2);
-	color: white;
-	border: 2px solid rgba(255, 255, 255, 0.3);
+	background: rgba(45, 55, 72, 0.1);
+	color: #2d3748;
+	border: 2px solid rgba(45, 55, 72, 0.2);
 	padding: 12px 24px;
 	border-radius: 20px;
 	cursor: pointer;
@@ -314,14 +359,14 @@
 }
 
 .refreshButton:hover {
-	background: rgba(255, 255, 255, 0.3);
+	background: rgba(45, 55, 72, 0.2);
 	transform: translateY(-1px);
 }
 
 /* Instructions */
 .instructions {
 	text-align: center;
-	color: rgba(255, 255, 255, 0.8);
+	color: rgba(45, 55, 72, 0.8);
 	margin-top: 20px;
 	font-size: 14px;
 	line-height: 1.5;
@@ -459,6 +504,6 @@
 .backButton:focus,
 .refreshButton:focus,
 .genderButton:focus {
-	outline: 2px solid #fff;
+	outline: 2px solid rgba(45, 55, 72, 0.8);
 	outline-offset: 2px;
 }

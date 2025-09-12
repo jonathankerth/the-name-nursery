@@ -28,7 +28,9 @@ export default function ExplorePage() {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isGenerating, setIsGenerating] = useState(false);
-	const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(null);
+	const [swipeDirection, setSwipeDirection] = useState<"left" | "right" | null>(
+		null
+	);
 	const [isAnimating, setIsAnimating] = useState(false);
 
 	const cardRef = useRef<HTMLDivElement>(null);
@@ -44,123 +46,142 @@ export default function ExplorePage() {
 	);
 
 	// Generate names using OpenAI API
-	const generateNames = useCallback(async (gender: Gender, existingNames: string[] = []) => {
-		try {
-			setIsGenerating(true);
-			const response = await fetch("/api/recommend-names", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					gender,
-					letter: "", // Empty letter for explore mode
-					personality: "",
-					inspiration: "",
-					origin: "",
-					existingNames,
-					exploreMode: true, // Flag to indicate explore mode
-				}),
-			});
+	const generateNames = useCallback(
+		async (gender: Gender, existingNames: string[] = []) => {
+			try {
+				setIsGenerating(true);
+				const response = await fetch("/api/recommend-names", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						gender,
+						letter: "", // Empty letter for explore mode
+						personality: "",
+						inspiration: "",
+						origin: "",
+						existingNames,
+						exploreMode: true, // Flag to indicate explore mode
+					}),
+				});
 
-			if (!response.ok) {
-				throw new Error("Failed to generate names");
+				if (!response.ok) {
+					throw new Error("Failed to generate names");
+				}
+
+				const data = await response.json();
+				return data.names || [];
+			} catch (error) {
+				console.error("Error generating names:", error);
+				return [];
+			} finally {
+				setIsGenerating(false);
 			}
-
-			const data = await response.json();
-			return data.names || [];
-		} catch (error) {
-			console.error("Error generating names:", error);
-			return [];
-		} finally {
-			setIsGenerating(false);
-		}
-	}, []);
+		},
+		[]
+	);
 
 	// Load initial names
-	const loadInitialNames = useCallback(async (gender: Gender) => {
-		setIsLoading(true);
-		const newNames = await generateNames(gender);
+	const loadInitialNames = useCallback(
+		async (gender: Gender) => {
+			setIsLoading(true);
+			const newNames = await generateNames(gender);
 
-		const nameCards: NameCard[] = newNames.map((name: string, index: number) => ({
-			id: `${gender}_${Date.now()}_${index}`,
-			name,
-			gender,
-		}));
+			const nameCards: NameCard[] = newNames.map(
+				(name: string, index: number) => ({
+					id: `${gender}_${Date.now()}_${index}`,
+					name,
+					gender,
+				})
+			);
 
-		setNames(nameCards);
-		setCurrentIndex(0);
-		setIsLoading(false);
-	}, [generateNames]);
+			setNames(nameCards);
+			setCurrentIndex(0);
+			setIsLoading(false);
+		},
+		[generateNames]
+	);
 
 	// Load more names when running low
 	const loadMoreNames = useCallback(async () => {
 		if (isGenerating) return;
 
-		const existingNames = names.map(card => card.name);
+		const existingNames = names.map((card) => card.name);
 		const newNames = await generateNames(currentGender, existingNames);
 
 		if (newNames.length > 0) {
-			const nameCards: NameCard[] = newNames.map((name: string, index: number) => ({
-				id: `${currentGender}_${Date.now()}_${names.length + index}`,
-				name,
-				gender: currentGender,
-			}));
+			const nameCards: NameCard[] = newNames.map(
+				(name: string, index: number) => ({
+					id: `${currentGender}_${Date.now()}_${names.length + index}`,
+					name,
+					gender: currentGender,
+				})
+			);
 
-			setNames(prev => [...prev, ...nameCards]);
+			setNames((prev) => [...prev, ...nameCards]);
 		}
 	}, [currentGender, names, generateNames, isGenerating]);
 
 	// Handle swipe/save action
-	const handleSwipe = useCallback(async (direction: "left" | "right") => {
-		if (isAnimating) return;
+	const handleSwipe = useCallback(
+		async (direction: "left" | "right") => {
+			if (isAnimating) return;
 
-		setIsAnimating(true);
-		setSwipeDirection(direction);
+			setIsAnimating(true);
+			setSwipeDirection(direction);
 
-		// If swiping right, save the name
-		if (direction === "right" && user && names[currentIndex]) {
-			const currentName = names[currentIndex];
-			await addLikedName(
-				user.uid,
-				currentName.name,
-				currentName.gender,
-				"", // No specific letter for explore mode
-				false, // Not AI generated in the traditional sense
-				sessionId.current,
-				navigator.userAgent
-			);
-		}
+			// If swiping right, save the name
+			if (direction === "right" && user && names[currentIndex]) {
+				const currentName = names[currentIndex];
+				await addLikedName(
+					user.uid,
+					currentName.name,
+					currentName.gender,
+					"", // No specific letter for explore mode
+					false, // Not AI generated in the traditional sense
+					sessionId.current,
+					navigator.userAgent
+				);
+			}
 
-		// Move to next card after animation
-		setTimeout(() => {
-			setCurrentIndex(prev => prev + 1);
-			setSwipeDirection(null);
-			setIsAnimating(false);
-		}, 300);
-	}, [currentIndex, names, user, isAnimating]);
+			// Move to next card after animation
+			setTimeout(() => {
+				setCurrentIndex((prev) => prev + 1);
+				setSwipeDirection(null);
+				setIsAnimating(false);
+			}, 300);
+		},
+		[currentIndex, names, user, isAnimating]
+	);
 
 	// Touch event handlers
-	const handleTouchStart = useCallback((e: React.TouchEvent) => {
-		if (isAnimating) return;
+	const handleTouchStart = useCallback(
+		(e: React.TouchEvent) => {
+			if (isAnimating) return;
 
-		const touch = e.touches[0];
-		startX.current = touch.clientX;
-		startY.current = touch.clientY;
-		currentX.current = touch.clientX;
-		currentY.current = touch.clientY;
-		isDragging.current = true;
-	}, [isAnimating]);
+			const touch = e.touches[0];
+			startX.current = touch.clientX;
+			startY.current = touch.clientY;
+			currentX.current = touch.clientX;
+			currentY.current = touch.clientY;
+			isDragging.current = true;
+		},
+		[isAnimating]
+	);
 
-	const handleTouchMove = useCallback((e: React.TouchEvent) => {
-		if (!isDragging.current || isAnimating) return;
+	const handleTouchMove = useCallback(
+		(e: React.TouchEvent) => {
+			if (!isDragging.current || isAnimating) return;
 
-		const touch = e.touches[0];
-		currentX.current = touch.clientX;
-		currentY.current = touch.clientY;
+			const touch = e.touches[0];
+			currentX.current = touch.clientX;
+			currentY.current = touch.clientY;
 
-		e.preventDefault();
-	}, [isAnimating]);
+			e.preventDefault();
+		},
+		[isAnimating]
+	);
 
 	const handleTouchEnd = useCallback(() => {
 		if (!isDragging.current || isAnimating) return;
@@ -183,26 +204,32 @@ export default function ExplorePage() {
 	}, [handleSwipe, isAnimating]);
 
 	// Mouse event handlers for desktop
-	const handleMouseDown = useCallback((e: React.MouseEvent) => {
-		if (isAnimating) return;
+	const handleMouseDown = useCallback(
+		(e: React.MouseEvent) => {
+			if (isAnimating) return;
 
-		startX.current = e.clientX;
-		startY.current = e.clientY;
-		currentX.current = e.clientX;
-		currentY.current = e.clientY;
-		isDragging.current = true;
+			startX.current = e.clientX;
+			startY.current = e.clientY;
+			currentX.current = e.clientX;
+			currentY.current = e.clientY;
+			isDragging.current = true;
 
-		e.preventDefault();
-	}, [isAnimating]);
+			e.preventDefault();
+		},
+		[isAnimating]
+	);
 
-	const handleMouseMove = useCallback((e: React.MouseEvent) => {
-		if (!isDragging.current || isAnimating) return;
+	const handleMouseMove = useCallback(
+		(e: React.MouseEvent) => {
+			if (!isDragging.current || isAnimating) return;
 
-		currentX.current = e.clientX;
-		currentY.current = e.clientY;
+			currentX.current = e.clientX;
+			currentY.current = e.clientY;
 
-		e.preventDefault();
-	}, [isAnimating]);
+			e.preventDefault();
+		},
+		[isAnimating]
+	);
 
 	const handleMouseUp = useCallback(() => {
 		if (!isDragging.current || isAnimating) return;
@@ -271,6 +298,17 @@ export default function ExplorePage() {
 
 	return (
 		<div className={styles.exploreContainer}>
+			{/* Main Header */}
+			<div className={styles.mainHeader}>
+				<button
+					className={styles.titleButton}
+					onClick={() => router.push("/")}
+					aria-label="Go to home page"
+				>
+					<h1 className={styles.mainTitle}>The Name Nursery</h1>
+				</button>
+			</div>
+
 			{/* Header */}
 			<div className={styles.header}>
 				<button
@@ -317,7 +355,11 @@ export default function ExplorePage() {
 									<div className={styles.cardContent}>
 										<h2 className={styles.cardName}>{nextCard.name}</h2>
 										<div className={styles.cardGender}>
-											{nextCard.gender === "boy" ? "👦" : nextCard.gender === "girl" ? "👧" : "🍼"}
+											{nextCard.gender === "boy"
+												? "👦"
+												: nextCard.gender === "girl"
+												? "👧"
+												: "🍼"}
 											{nextCard.gender}
 										</div>
 									</div>
@@ -328,9 +370,11 @@ export default function ExplorePage() {
 						{/* Current Card */}
 						<div
 							ref={cardRef}
-							className={`${styles.cardWrapper} ${isAnimating ? styles.animating : ""} ${
-								swipeDirection === "left" ? styles.swipeLeft : ""
-							} ${swipeDirection === "right" ? styles.swipeRight : ""}`}
+							className={`${styles.cardWrapper} ${
+								isAnimating ? styles.animating : ""
+							} ${swipeDirection === "left" ? styles.swipeLeft : ""} ${
+								swipeDirection === "right" ? styles.swipeRight : ""
+							}`}
 							style={{
 								transform: getCardTransform(),
 							}}
@@ -346,7 +390,11 @@ export default function ExplorePage() {
 								<div className={styles.cardContent}>
 									<h2 className={styles.cardName}>{currentCard.name}</h2>
 									<div className={styles.cardGender}>
-										{currentCard.gender === "boy" ? "👦" : currentCard.gender === "girl" ? "👧" : "🍼"}
+										{currentCard.gender === "boy"
+											? "👦"
+											: currentCard.gender === "girl"
+											? "👧"
+											: "🍼"}
 										{currentCard.gender}
 									</div>
 								</div>
@@ -396,8 +444,7 @@ export default function ExplorePage() {
 				<p>
 					{user
 						? "Swipe right to save ❤️, left to skip ✕"
-						: "Sign in to save your favorite names! For now, just swipe to explore."
-					}
+						: "Sign in to save your favorite names! For now, just swipe to explore."}
 				</p>
 				<p className={styles.keyboardHint}>
 					Use arrow keys ← → or click the buttons

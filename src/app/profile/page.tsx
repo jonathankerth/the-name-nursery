@@ -278,7 +278,13 @@ export default function ProfilePage() {
 	return (
 		<div className={styles.profilePageContainer}>
 			<header className={styles.pageHeader}>
-				<h1 className={styles.headerTitle}>Your Name Nursery</h1>
+				<button
+					className={styles.headerTitleButton}
+					onClick={() => router.push("/")}
+					aria-label="Go to home page"
+				>
+					<h1 className={styles.headerTitle}>Your Name Nursery</h1>
+				</button>
 			</header>
 			<div className={styles.profileLayout}>
 				{/* Left Side - Profile Hero and Navigation */}

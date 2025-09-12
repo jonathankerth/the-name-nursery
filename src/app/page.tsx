@@ -550,7 +550,10 @@ export default function Home() {
 			style={{ background: pageColors[selectedGender] || undefined }}
 		>
 			<ProfileButton />
-			<Header type={selectedGender} />
+			<Header
+				type={selectedGender}
+				showRestartButton={currentStep === "results"}
+			/>
 			<main className={styles.centerMain}>
 				{currentStep === "gender" && (
 					<NavigationLayout
