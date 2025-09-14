@@ -481,7 +481,7 @@ export default function ProfilePage() {
 							<div className={styles.navContent}>
 								<span className={styles.navLabel}>Social</span>
 								<span className={styles.navDescription}>
-									Connect with other parents
+									Connect with others
 								</span>
 							</div>
 						</button>
