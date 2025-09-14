@@ -40,8 +40,7 @@ export type SortOption =
 	| "newest"
 	| "oldest"
 	| "alphabetical"
-	| "gender"
-	| "letter";
+	| "reverse-alphabetical";
 
 // Add a name to user's liked list with enhanced metadata
 export const addLikedName = async (
@@ -157,19 +156,8 @@ export const getUserLikedNames = async (
 			case "alphabetical":
 				likedNames.sort((a, b) => a.name.localeCompare(b.name));
 				break;
-			case "gender":
-				likedNames.sort((a, b) => {
-					const genderCompare = a.gender.localeCompare(b.gender);
-					if (genderCompare !== 0) return genderCompare;
-					return a.name.localeCompare(b.name);
-				});
-				break;
-			case "letter":
-				likedNames.sort((a, b) => {
-					const letterCompare = (a.letter || "").localeCompare(b.letter || "");
-					if (letterCompare !== 0) return letterCompare;
-					return a.name.localeCompare(b.name);
-				});
+			case "reverse-alphabetical":
+				likedNames.sort((a, b) => b.name.localeCompare(a.name));
 				break;
 		}
 

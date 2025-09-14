@@ -27,7 +27,11 @@ export default function ProfilePage() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [uploading, setUploading] = useState(false);
 	const [selectedGender, setSelectedGender] = useState<Gender>("baby");
+	const [categoryFilter, setCategoryFilter] = useState<
+		"all" | "boy" | "girl" | "gender-neutral" | "recent"
+	>("all");
 	const [sortOption, setSortOption] = useState<SortOption>("newest");
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
 	// Color scheme from home page
 	const pageColors = useMemo(
@@ -38,6 +42,30 @@ export default function ProfilePage() {
 		}),
 		[]
 	);
+
+	// Dropdown options
+	const sortOptions = [
+		{ value: "newest", label: "📅 Most Recent" },
+		{ value: "oldest", label: "⏰ Oldest First" },
+		{ value: "alphabetical", label: "🔤 A-Z" },
+		{ value: "reverse-alphabetical", label: "🔤 Z-A" },
+	];
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			const target = event.target as HTMLElement;
+			if (!target.closest('[data-dropdown="sort"]')) {
+				setIsDropdownOpen(false);
+			}
+		};
+
+		if (isDropdownOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+			return () =>
+				document.removeEventListener("mousedown", handleClickOutside);
+		}
+	}, [isDropdownOpen]);
 
 	const darken = useCallback((hex: string, amount = 0.22) => {
 		const c = hex.replace("#", "");
@@ -80,16 +108,6 @@ export default function ProfilePage() {
 
 		try {
 			if (document.documentElement) {
-				console.log("Setting CSS properties for gender:", selectedGender);
-				console.log(
-					"Table text color:",
-					darken(pageColors[selectedGender], 0.3)
-				);
-				console.log(
-					"Table header bg:",
-					darken(pageColors[selectedGender], 0.2)
-				);
-
 				document.documentElement.style.setProperty("--background", bg);
 				document.documentElement.style.setProperty("--profile-bg-color", bg);
 				document.documentElement.style.setProperty(
@@ -180,12 +198,58 @@ export default function ProfilePage() {
 	const loadLikedNames = useCallback(async () => {
 		if (!user) return;
 		try {
-			const names = await getUserLikedNames(user.uid, sortOption);
+			const names = await getUserLikedNames(user.uid);
 			setLikedNames(names);
 		} catch (error) {
 			console.error("Error loading liked names:", error);
 		}
-	}, [user, sortOption]);
+	}, [user]);
+
+	// Filter and sort names based on category and sort option
+	const filteredNames = useMemo(() => {
+		let names = likedNames;
+
+		// First filter by category
+		if (categoryFilter === "all") {
+			names = likedNames;
+		} else if (categoryFilter === "boy") {
+			names = likedNames.filter((name) => name.gender === "boy");
+		} else if (categoryFilter === "girl") {
+			names = likedNames.filter((name) => name.gender === "girl");
+		} else if (categoryFilter === "gender-neutral") {
+			names = likedNames.filter((name) => name.gender === "baby");
+		} else if (categoryFilter === "recent") {
+			const threeDaysAgo = new Date();
+			threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+			names = likedNames.filter(
+				(name) => name.likedAt && name.likedAt.toDate() >= threeDaysAgo
+			);
+		}
+
+		// Then sort the filtered results
+		switch (sortOption) {
+			case "newest":
+				names.sort((a, b) => {
+					if (!a.likedAt || !b.likedAt) return 0;
+					return b.likedAt.toMillis() - a.likedAt.toMillis();
+				});
+				break;
+			case "oldest":
+				names.sort((a, b) => {
+					if (!a.likedAt || !b.likedAt) return 0;
+					return a.likedAt.toMillis() - b.likedAt.toMillis();
+				});
+				break;
+			case "alphabetical":
+				names.sort((a, b) => a.name.localeCompare(b.name));
+				break;
+			case "reverse-alphabetical":
+				names.sort((a, b) => b.name.localeCompare(a.name));
+				break;
+		}
+
+		return names;
+	}, [likedNames, categoryFilter, sortOption]);
 
 	useEffect(() => {
 		if (user) {
@@ -442,27 +506,100 @@ export default function ProfilePage() {
 					<div className={styles.likedNamesContainer}>
 						<h2 className={styles.sectionTitle}>Your Favorite Names</h2>
 
-						{/* Sorting Controls */}
+						{/* Category Filter Buttons */}
 						{likedNames.length > 0 && (
-							<div className={styles.sortingControls}>
-								<label htmlFor="sortSelect" className={styles.sortLabel}>
-									Sort by:
-								</label>
-								<select
-									id="sortSelect"
-									value={sortOption}
-									onChange={(e) => setSortOption(e.target.value as SortOption)}
-									className={styles.sortSelect}
+							<div className={styles.categoryFilters}>
+								<button
+									className={`${styles.categoryButton} ${
+										categoryFilter === "all" ? styles.active : ""
+									}`}
+									onClick={() => setCategoryFilter("all")}
 								>
-									<option value="newest">Most Recent</option>
-									<option value="oldest">Oldest First</option>
-									<option value="alphabetical">A-Z</option>
-									<option value="gender">By Gender</option>
-								</select>
+									All ({likedNames.length})
+								</button>
+								<button
+									className={`${styles.categoryButton} ${
+										categoryFilter === "boy" ? styles.active : ""
+									}`}
+									onClick={() => setCategoryFilter("boy")}
+								>
+									Boys ({likedNames.filter((n) => n.gender === "boy").length})
+								</button>
+								<button
+									className={`${styles.categoryButton} ${
+										categoryFilter === "girl" ? styles.active : ""
+									}`}
+									onClick={() => setCategoryFilter("girl")}
+								>
+									Girls ({likedNames.filter((n) => n.gender === "girl").length})
+								</button>
+								<button
+									className={`${styles.categoryButton} ${
+										categoryFilter === "gender-neutral" ? styles.active : ""
+									}`}
+									onClick={() => setCategoryFilter("gender-neutral")}
+								>
+									Gender Neutral (
+									{likedNames.filter((n) => n.gender === "baby").length})
+								</button>
+								<button
+									className={`${styles.categoryButton} ${
+										categoryFilter === "recent" ? styles.active : ""
+									}`}
+									onClick={() => setCategoryFilter("recent")}
+								>
+									Liked Recently (
+									{(() => {
+										const threeDaysAgo = new Date();
+										threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+										return likedNames.filter(
+											(n) => n.likedAt && n.likedAt.toDate() >= threeDaysAgo
+										).length;
+									})()}
+									)
+								</button>
 							</div>
 						)}
 
-						{likedNames.length > 0 ? (
+						{/* Sorting Controls */}
+						{filteredNames.length > 0 && (
+							<div className={styles.sortingControls}>
+								<span className={styles.sortLabel}>Sort by:</span>
+								<div className={styles.customDropdown} data-dropdown="sort">
+									<button
+										className={`${styles.sortSelect} ${
+											isDropdownOpen ? styles.dropdownOpen : ""
+										}`}
+										onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+										type="button"
+									>
+										{sortOptions.find((opt) => opt.value === sortOption)
+											?.label || "Most Recent"}
+									</button>
+									{isDropdownOpen && (
+										<div className={styles.dropdownMenu}>
+											{sortOptions.map((option) => (
+												<button
+													key={option.value}
+													className={`${styles.dropdownItem} ${
+														sortOption === option.value ? styles.active : ""
+													}`}
+													onClick={() => {
+														setSortOption(option.value as SortOption);
+														setIsDropdownOpen(false);
+													}}
+													type="button"
+												>
+													{option.label}
+												</button>
+											))}
+										</div>
+									)}
+								</div>
+							</div>
+						)}
+
+						{filteredNames.length > 0 ? (
 							<div className={styles.namesTable}>
 								<div className={styles.tableHeader}>
 									<span>Name</span>
@@ -470,7 +607,7 @@ export default function ProfilePage() {
 									<span>Saved</span>
 									<span>Actions</span>
 								</div>
-								{likedNames.map((likedName, index) => (
+								{filteredNames.map((likedName, index) => (
 									<div key={index} className={styles.tableRow}>
 										<div className={styles.nameCell}>
 											<span className={styles.nameName}>{likedName.name}</span>
@@ -559,7 +696,15 @@ export default function ProfilePage() {
 							</div>
 						) : (
 							<div className={styles.emptyState}>
-								<p>No favorite names yet!</p>
+								<p>
+									{categoryFilter === "all"
+										? "No favorite names yet!"
+										: `No ${
+												categoryFilter === "gender-neutral"
+													? "gender neutral"
+													: categoryFilter
+										  } names found!`}
+								</p>
 								<p>Start exploring names and save your favorites.</p>
 								<button
 									onClick={() => router.push("/")}

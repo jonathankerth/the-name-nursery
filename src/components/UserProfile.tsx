@@ -51,6 +51,31 @@ const UserProfile = ({
 		"all" | "boy" | "girl" | "baby"
 	>("all");
 	const [likedNamesSort, setLikedNamesSort] = useState<SortOption>("newest");
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+	// Dropdown options
+	const sortOptions = [
+		{ value: "newest", label: "🕒 Most Recent" },
+		{ value: "oldest", label: "📅 Oldest First" },
+		{ value: "alphabetical", label: "🔤 A-Z" },
+		{ value: "reverse-alphabetical", label: "🔤 Z-A" },
+	];
+
+	// Close dropdown when clicking outside
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			const target = event.target as HTMLElement;
+			if (!target.closest('[data-dropdown="sort"]')) {
+				setIsDropdownOpen(false);
+			}
+		};
+
+		if (isDropdownOpen) {
+			document.addEventListener("mousedown", handleClickOutside);
+			return () =>
+				document.removeEventListener("mousedown", handleClickOutside);
+		}
+	}, [isDropdownOpen]);
 
 	const loadLikedNames = useCallback(async () => {
 		if (!user) return;
@@ -455,23 +480,40 @@ const UserProfile = ({
 							<h3>Your Liked Names</h3>
 							<div className={styles.controlsContainer}>
 								<div className={styles.sortControls}>
-									<label htmlFor="sortSelect" className={styles.sortLabel}>
-										Sort by:
-									</label>
-									<select
-										id="sortSelect"
-										value={likedNamesSort}
-										onChange={(e) =>
-											setLikedNamesSort(e.target.value as SortOption)
-										}
-										className={styles.sortSelect}
-									>
-										<option value="newest">🕒 Most Recent</option>
-										<option value="oldest">📅 Oldest First</option>
-										<option value="alphabetical">🔤 A-Z</option>
-										<option value="gender">👥 By Gender</option>
-										<option value="letter">📝 By Letter</option>
-									</select>
+									<span className={styles.sortLabel}>Sort by:</span>
+									<div className={styles.customDropdown} data-dropdown="sort">
+										<button
+											className={`${styles.sortSelect} ${
+												isDropdownOpen ? styles.dropdownOpen : ""
+											}`}
+											onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+											type="button"
+										>
+											{sortOptions.find((opt) => opt.value === likedNamesSort)
+												?.label || "🕒 Most Recent"}
+										</button>
+										{isDropdownOpen && (
+											<div className={styles.dropdownMenu}>
+												{sortOptions.map((option) => (
+													<button
+														key={option.value}
+														className={`${styles.dropdownItem} ${
+															likedNamesSort === option.value
+																? styles.active
+																: ""
+														}`}
+														onClick={() => {
+															setLikedNamesSort(option.value as SortOption);
+															setIsDropdownOpen(false);
+														}}
+														type="button"
+													>
+														{option.label}
+													</button>
+												))}
+											</div>
+										)}
+									</div>
 								</div>
 								{likedNames.length > 0 && (
 									<div className={styles.filterButtons}>
