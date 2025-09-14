@@ -34,6 +34,7 @@ export default function RootLayout({
 		<html lang="en" style={{ background: "var(--background)" }}>
 			<head>
 				<link rel="icon" href="/favicon.ico" sizes="any" />
+				<meta name="google-adsense-account" content="ca-pub-1895631836444724" />
 				<link
 					rel="preconnect"
 					href="https://fonts.googleapis.com"
@@ -50,6 +51,12 @@ export default function RootLayout({
 					async
 					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1895631836444724"
 					crossOrigin="anonymous"
+				></script>
+
+				{/* Google Consent Management Platform */}
+				<script
+					async
+					src="https://fundingchoicesmessages.google.com/i/pub-1895631836444724/consent?base_cid=1895631836444724"
 				></script>
 			</head>
 			<body
@@ -119,6 +126,22 @@ export default function RootLayout({
 				{GA_TRACKING_ID && (
 					<>
 						<Script
+							id="consent-mode"
+							strategy="beforeInteractive"
+							dangerouslySetInnerHTML={{
+								__html: `
+									window.dataLayer = window.dataLayer || [];
+									function gtag(){dataLayer.push(arguments);}
+									gtag('consent', 'default', {
+										'ad_storage': 'denied',
+										'ad_user_data': 'denied',
+										'ad_personalization': 'denied',
+										'analytics_storage': 'denied'
+									});
+								`,
+							}}
+						/>
+						<Script
 							strategy="afterInteractive"
 							src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
 						/>
@@ -127,8 +150,6 @@ export default function RootLayout({
 							strategy="afterInteractive"
 							dangerouslySetInnerHTML={{
 								__html: `
-									window.dataLayer = window.dataLayer || [];
-									function gtag(){dataLayer.push(arguments);}
 									gtag('js', new Date());
 									gtag('config', '${GA_TRACKING_ID}', {
 										page_path: window.location.pathname,
