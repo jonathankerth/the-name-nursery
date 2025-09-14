@@ -48,7 +48,7 @@ const UserProfile = ({
 	const [likedNames, setLikedNames] = useState<LikedName[]>([]);
 	const [loadingLikedNames, setLoadingLikedNames] = useState(true);
 	const [likedNamesFilter, setLikedNamesFilter] = useState<
-		"all" | "boy" | "girl"
+		"all" | "boy" | "girl" | "baby"
 	>("all");
 	const [likedNamesSort, setLikedNamesSort] = useState<SortOption>("newest");
 
@@ -501,6 +501,15 @@ const UserProfile = ({
 											Girls (
 											{likedNames.filter((n) => n.gender === "girl").length})
 										</button>
+										<button
+											className={`${styles.filterButton} ${
+												likedNamesFilter === "baby" ? styles.active : ""
+											}`}
+											onClick={() => setLikedNamesFilter("baby")}
+										>
+											Babies (
+											{likedNames.filter((n) => n.gender === "baby").length})
+										</button>
 									</div>
 								)}
 							</div>
@@ -524,8 +533,11 @@ const UserProfile = ({
 												</span>
 												<div className={styles.nameDetails}>
 													<span className={styles.nameGender}>
-														{likedName.gender === "boy" ? "👦" : "👧"}{" "}
-														{likedName.gender}
+														{likedName.gender === "boy"
+															? "👦 Boy"
+															: likedName.gender === "girl"
+															? "👧 Girl"
+															: "👶 Baby"}
 													</span>
 													{likedName.letter && (
 														<span className={styles.nameLetter}>
@@ -543,8 +555,21 @@ const UserProfile = ({
 																try {
 																	const date = likedName.likedAt!.toDate();
 																	const now = new Date();
+
+																	// Get dates in local timezone for accurate day comparison
+																	const dateLocal = new Date(
+																		date.getFullYear(),
+																		date.getMonth(),
+																		date.getDate()
+																	);
+																	const nowLocal = new Date(
+																		now.getFullYear(),
+																		now.getMonth(),
+																		now.getDate()
+																	);
+
 																	const diffTime =
-																		now.getTime() - date.getTime();
+																		nowLocal.getTime() - dateLocal.getTime();
 																	const diffDays = Math.floor(
 																		diffTime / (1000 * 60 * 60 * 24)
 																	);
@@ -552,17 +577,26 @@ const UserProfile = ({
 																	if (diffDays === 0) {
 																		return `Today at ${date.toLocaleTimeString(
 																			[],
-																			{ hour: "2-digit", minute: "2-digit" }
+																			{
+																				hour: "2-digit",
+																				minute: "2-digit",
+																			}
 																		)}`;
 																	} else if (diffDays === 1) {
 																		return `Yesterday at ${date.toLocaleTimeString(
 																			[],
-																			{ hour: "2-digit", minute: "2-digit" }
+																			{
+																				hour: "2-digit",
+																				minute: "2-digit",
+																			}
 																		)}`;
 																	} else if (diffDays < 7) {
 																		return `${diffDays} days ago at ${date.toLocaleTimeString(
 																			[],
-																			{ hour: "2-digit", minute: "2-digit" }
+																			{
+																				hour: "2-digit",
+																				minute: "2-digit",
+																			}
 																		)}`;
 																	} else {
 																		return (

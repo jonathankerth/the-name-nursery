@@ -477,8 +477,11 @@ export default function ProfilePage() {
 										</div>
 										<div className={styles.detailsCell}>
 											<span className={styles.genderBadge}>
-												{likedName.gender === "boy" ? "👦" : "👧"}{" "}
-												{likedName.gender}
+												{likedName.gender === "boy"
+													? "👦 Boy"
+													: likedName.gender === "girl"
+													? "👧 Girl"
+													: "👶 Baby"}
 											</span>
 										</div>
 										<div className={styles.dateCell}>
@@ -487,7 +490,21 @@ export default function ProfilePage() {
 													{(() => {
 														const date = likedName.likedAt!.toDate();
 														const now = new Date();
-														const diffTime = now.getTime() - date.getTime();
+
+														// Get dates in local timezone for accurate day comparison
+														const dateLocal = new Date(
+															date.getFullYear(),
+															date.getMonth(),
+															date.getDate()
+														);
+														const nowLocal = new Date(
+															now.getFullYear(),
+															now.getMonth(),
+															now.getDate()
+														);
+
+														const diffTime =
+															nowLocal.getTime() - dateLocal.getTime();
 														const diffDays = Math.floor(
 															diffTime / (1000 * 60 * 60 * 24)
 														);
@@ -500,12 +517,28 @@ export default function ProfilePage() {
 														} else if (diffDays === 1) {
 															return `Yesterday at ${date.toLocaleTimeString(
 																[],
-																{ hour: "2-digit", minute: "2-digit" }
+																{
+																	hour: "2-digit",
+																	minute: "2-digit",
+																}
 															)}`;
 														} else if (diffDays < 7) {
-															return `${diffDays} days ago`;
+															return `${diffDays} days ago at ${date.toLocaleTimeString(
+																[],
+																{
+																	hour: "2-digit",
+																	minute: "2-digit",
+																}
+															)}`;
 														} else {
-															return date.toLocaleDateString();
+															return (
+																date.toLocaleDateString() +
+																" at " +
+																date.toLocaleTimeString([], {
+																	hour: "2-digit",
+																	minute: "2-digit",
+																})
+															);
 														}
 													})()}
 												</span>
