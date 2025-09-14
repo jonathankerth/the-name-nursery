@@ -33,6 +33,15 @@ export default function Home() {
 	const [recommendedNames, setRecommendedNames] = useState<string[]>([]);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
 
+	// Helper function to safely prevent default
+	const safePreventDefault = (e: Event | React.SyntheticEvent) => {
+		try {
+			e.preventDefault();
+		} catch {
+			// Ignore passive event listener error on mobile
+		}
+	};
+
 	const options = useMemo(
 		() => [
 			{ label: "Baby", value: "baby" },
@@ -374,7 +383,7 @@ export default function Home() {
 
 	// Letter wheel handlers
 	const onLetterWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
+		safePreventDefault(e);
 		const now = Date.now();
 		if (now - letterScrollRef.current < 120) return;
 		if (Math.abs(e.deltaY) < 5) return;
@@ -422,12 +431,10 @@ export default function Home() {
 
 	const onLetterTouchStart = (e: React.TouchEvent) => {
 		letterTouchStartRef.current = e.touches[0].clientY;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onLetterTouchMove = (e: React.TouchEvent) => {
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
@@ -439,16 +446,16 @@ export default function Home() {
 			setLetterIndex(
 				(i) => (i + (delta > 0 ? -1 : 1) + alphabet.length) % alphabet.length
 			);
+			safePreventDefault(e);
 		}
 		letterTouchStartRef.current = null;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	// Elevator shaft ref and height calculation
 	const elevatorShaftRef = useRef<HTMLDivElement>(null); // Personality wheel handlers
 	const onPersonalityWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
+		safePreventDefault(e);
 		const now = Date.now();
 		if (now - personalityScrollRef.current < 120) return;
 		if (Math.abs(e.deltaY) < 5) return;
@@ -499,12 +506,10 @@ export default function Home() {
 
 	const onPersonalityTouchStart = (e: React.TouchEvent) => {
 		personalityTouchStartRef.current = e.touches[0].clientY;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onPersonalityTouchMove = (e: React.TouchEvent) => {
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
@@ -512,19 +517,20 @@ export default function Home() {
 		if (personalityTouchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - personalityTouchStartRef.current;
-		if (Math.abs(delta) > 20)
+		if (Math.abs(delta) > 20) {
 			setPersonalityIndex(
 				(i) =>
 					(i + (delta > 0 ? -1 : 1) + personalityOptions.length) %
 					personalityOptions.length
 			);
+			safePreventDefault(e);
+		}
 		personalityTouchStartRef.current = null;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onInspirationWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
+		safePreventDefault(e);
 		const now = Date.now();
 		if (now - inspirationScrollRef.current < 120) return;
 		if (Math.abs(e.deltaY) < 5) return;
@@ -575,12 +581,10 @@ export default function Home() {
 
 	const onInspirationTouchStart = (e: React.TouchEvent) => {
 		inspirationTouchStartRef.current = e.touches[0].clientY;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onInspirationTouchMove = (e: React.TouchEvent) => {
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
@@ -595,13 +599,13 @@ export default function Home() {
 					inspirationOptions.length
 			);
 		inspirationTouchStartRef.current = null;
-		e.preventDefault();
+		safePreventDefault(e);
 		e.stopPropagation();
 	};
 
 	// Inspiration wheel handlers
 	const onOriginWheel = (e: React.WheelEvent) => {
-		e.preventDefault();
+		safePreventDefault(e);
 		const now = Date.now();
 		if (now - originScrollRef.current < 120) return;
 		if (Math.abs(e.deltaY) < 5) return;
@@ -651,12 +655,10 @@ export default function Home() {
 
 	const onOriginTouchStart = (e: React.TouchEvent) => {
 		originTouchStartRef.current = e.touches[0].clientY;
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
 	const onOriginTouchMove = (e: React.TouchEvent) => {
-		e.preventDefault();
 		e.stopPropagation();
 	};
 
@@ -671,7 +673,7 @@ export default function Home() {
 					originOptions.length
 			);
 		originTouchStartRef.current = null;
-		e.preventDefault();
+		safePreventDefault(e);
 		e.stopPropagation();
 	};
 
@@ -869,7 +871,7 @@ export default function Home() {
 						<div className={styles.letterSelectionContent}>
 							<div className={styles.phraseContainer}>
 								<span className={styles.phrase}>
-									<span className={styles.firstLine}>
+									<span className={styles.firstLine} style={{ whiteSpace: 'nowrap' }}>
 										<span
 											className={styles.selectedType}
 											style={{ color: headerColor }}
@@ -877,9 +879,8 @@ export default function Home() {
 											{selectedGender.charAt(0).toUpperCase() +
 												selectedGender.slice(1)}
 										</span>{" "}
-										names
+										names starting with
 									</span>
-									<span className={styles.secondLine}>starting with</span>
 								</span>
 							</div>
 

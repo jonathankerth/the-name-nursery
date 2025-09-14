@@ -247,18 +247,19 @@ export default function NamesResults({
 
 			<div className={styles.content}>
 				<div className={styles.header}>
-					<h1 className={styles.title} style={{ color: headerColor }}>
-						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting
-						with {letter}
+					<h1 className={styles.title} style={{ color: headerColor, whiteSpace: "nowrap", wordBreak: "keep-all", display: "inline-block", overflow: "visible" }}>
+						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting with {letter}
 					</h1>
 					<p className={styles.subtitle} style={{ color: headerColor }}>
-						<span style={{ fontWeight: "normal" }}>For a </span>
-						<span style={{ fontWeight: "bold" }}>{personality}</span>
-						<span style={{ fontWeight: "normal" }}> baby inspired by </span>
-						<span style={{ fontWeight: "bold" }}>{inspiration}</span>
-						<span style={{ fontWeight: "normal" }}> with </span>
-						<span style={{ fontWeight: "bold" }}>{origin}</span>
-						<span style={{ fontWeight: "normal" }}> origin</span>
+						<span className={styles.subtitleSpan}>
+							<span style={{ fontWeight: "normal" }}>For a </span>
+							<span style={{ fontWeight: "bold" }}>{personality}</span>
+							<span style={{ fontWeight: "normal" }}> baby inspired by </span>
+							<span style={{ fontWeight: "bold" }}>{inspiration}</span>
+							<span style={{ fontWeight: "normal" }}> with </span>
+							<span style={{ fontWeight: "bold" }}>{origin}</span>
+							<span style={{ fontWeight: "normal" }}> origin</span>
+						</span>
 					</p>
 					{isAIGenerated && (
 						<p className={styles.subtitle} style={{ color: headerColor }}>

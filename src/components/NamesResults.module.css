@@ -32,7 +32,7 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	max-width: 800px;
+	max-width: none;
 	margin: 0 auto;
 	width: 100%;
 	padding-top: 2rem;
@@ -48,7 +48,10 @@
 	border: 1px solid rgba(255, 255, 255, 0.1);
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 	position: relative;
-	overflow: hidden;
+	overflow: visible;
+	width: fit-content;
+	min-width: fit-content;
+	display: inline-block;
 }
 
 .header::before {
@@ -80,6 +83,10 @@
 	line-height: 1.1;
 	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 	letter-spacing: -0.5px;
+	white-space: nowrap !important;
+	word-break: keep-all !important;
+	word-wrap: normal !important;
+	hyphens: none !important;
 }
 
 .subtitle {
@@ -89,6 +96,14 @@
 	font-weight: 600;
 	line-height: 1.4;
 	opacity: 0.95;
+	white-space: nowrap !important;
+	display: inline-block;
+	width: auto;
+}
+
+.subtitleSpan {
+	white-space: nowrap !important;
+	display: inline !important;
 }
 
 .subtitleNormal {
@@ -502,7 +517,7 @@
 	}
 }
 
-@media (max-width: 768px) {
+@media (max-width: 600px) {
 	.container {
 		padding: 0.5rem 1rem 1rem 1rem;
 	}
@@ -516,10 +531,26 @@
 		left: 1rem;
 	}
 
+	.header {
+		min-width: 300px;
+	}
+
 	.title {
 		font-size: 2rem;
 		margin-bottom: 0.5rem;
 		font-weight: 600;
+		white-space: normal !important;
+		overflow: visible !important;
+		text-overflow: initial !important;
+		display: block;
+		width: 100%;
+	}
+
+	.titleSpan {
+		white-space: normal !important;
+		display: inline !important;
+		overflow: visible !important;
+		text-overflow: initial !important;
 	}
 
 	.titleNormal {
@@ -533,6 +564,18 @@
 	.subtitle {
 		font-size: 1.1rem;
 		font-weight: 600;
+		white-space: normal !important;
+		overflow: visible !important;
+		text-overflow: initial !important;
+		display: block;
+		width: 100%;
+	}
+
+	.subtitleSpan {
+		white-space: normal !important;
+		display: inline !important;
+		overflow: visible !important;
+		text-overflow: initial !important;
 	}
 
 	.subtitleNormal {
@@ -670,6 +713,22 @@
 	}
 }
 
+/* Force single line title on desktop/laptop - highest priority */
+@media (min-width: 601px) {
+	.title,
+	.title *,
+	h1.title {
+		white-space: nowrap !important;
+		word-break: keep-all !important;
+		word-wrap: normal !important;
+		hyphens: none !important;
+		overflow: visible !important;
+		text-overflow: clip !important;
+		display: inline !important;
+		line-height: normal !important;
+	}
+}
+
 /* Large desktop screens */
 @media (min-width: 1400px) {
 	.namesGrid {
@@ -678,6 +737,29 @@
 		gap: 0.6rem;
 		padding: 0;
 		margin: 0 auto 2rem auto;
+	}
+}
+
+/* Laptop screens - ensure single line text */
+@media (min-width: 601px) and (max-width: 1200px) {
+	.title {
+		white-space: nowrap !important;
+		overflow: visible !important;
+		text-overflow: clip !important;
+		font-size: 2.2rem;
+		word-break: keep-all !important;
+		word-wrap: normal !important;
+		hyphens: none !important;
+	}
+
+	.subtitle {
+		white-space: nowrap !important;
+		overflow: visible !important;
+		text-overflow: clip !important;
+		font-size: 1.1rem;
+		word-break: keep-all !important;
+		word-wrap: normal !important;
+		hyphens: none !important;
 	}
 }
 

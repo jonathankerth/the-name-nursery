@@ -219,9 +219,18 @@
 /* Content layout styles */
 .letterSelectionContent {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	align-items: center;
+	justify-content: center;
 	gap: 20px;
+	flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+	.letterSelectionContent {
+		flex-direction: column;
+		gap: 20px;
+	}
 }
 
 .phraseContainer {
