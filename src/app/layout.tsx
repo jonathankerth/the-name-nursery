@@ -44,6 +44,13 @@ export default function RootLayout({
 					href="https://fonts.gstatic.com"
 					crossOrigin="anonymous"
 				/>
+
+				{/* Google AdSense */}
+				<script
+					async
+					src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1895631836444724"
+					crossOrigin="anonymous"
+				></script>
 			</head>
 			<body
 				className={`${inter.variable} ${crimsonText.variable}`}
