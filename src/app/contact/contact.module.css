@@ -1,0 +1,335 @@
+.contactContainer {
+	min-height: 100vh;
+	background: var(--background, #ffffff);
+	color: var(--foreground, #000000);
+	font-family: var(--font-crimson-text), serif;
+}
+
+.header {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 20px 0 8px 0;
+	border-bottom: 1px solid var(--border, #e5e5e5);
+}
+
+.titleButton {
+	background: none;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+	color: inherit;
+}
+
+.titleButton:hover {
+	opacity: 0.8;
+}
+
+.mainTitle {
+	font-size: 2rem;
+	font-weight: 700;
+	margin: 0;
+	line-height: 1.2;
+	letter-spacing: -0.6px;
+	color: var(--foreground, #000000);
+}
+
+.breadcrumbs {
+	padding: 16px 20px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.9rem;
+	color: var(--muted-foreground, #666666);
+}
+
+.breadcrumbLink {
+	background: none;
+	border: none;
+	color: var(--primary, #2563eb);
+	cursor: pointer;
+	text-decoration: none;
+	padding: 0;
+	font-size: inherit;
+}
+
+.breadcrumbLink:hover {
+	text-decoration: underline;
+}
+
+.breadcrumbSeparator {
+	color: var(--muted-foreground, #666666);
+}
+
+.breadcrumbCurrent {
+	color: var(--foreground, #000000);
+	font-weight: 500;
+}
+
+.content {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 40px 20px;
+	line-height: 1.6;
+}
+
+.pageTitle {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+	text-align: center;
+	color: var(--foreground, #000000);
+}
+
+.introSection {
+	text-align: center;
+	margin-bottom: 3rem;
+	padding: 2rem;
+	background: var(--muted, #f8f9fa);
+	border-radius: 8px;
+}
+
+.introSection p {
+	font-size: 1.1rem;
+	margin: 0;
+	color: var(--muted-foreground, #666666);
+}
+
+.twoColumn {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 3rem;
+	margin-bottom: 4rem;
+}
+
+.formSection h2,
+.infoSection h2 {
+	font-size: 1.8rem;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+	color: var(--foreground, #000000);
+	border-bottom: 2px solid var(--primary, #2563eb);
+	padding-bottom: 0.5rem;
+}
+
+.contactForm {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.formGroup label {
+	font-weight: 600;
+	color: var(--foreground, #000000);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+	padding: 12px;
+	border: 1px solid var(--border, #e5e5e5);
+	border-radius: 6px;
+	font-size: 1rem;
+	font-family: inherit;
+	background: var(--background, #ffffff);
+	color: var(--foreground, #000000);
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+	outline: none;
+	border-color: var(--primary, #2563eb);
+	box-shadow: 0 0 0 2px var(--primary-light, #3b82f620);
+}
+
+.formGroup textarea {
+	resize: vertical;
+	min-height: 120px;
+}
+
+.submitButton {
+	background: var(--primary, #2563eb);
+	color: white;
+	border: none;
+	padding: 14px 28px;
+	border-radius: 6px;
+	font-size: 1.1rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.submitButton:hover:not(:disabled) {
+	background: var(--primary-dark, #1d4ed8);
+}
+
+.submitButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.successMessage {
+	text-align: center;
+	padding: 2rem;
+	background: var(--success-bg, #f0f9ff);
+	border: 1px solid var(--success-border, #bae6fd);
+	border-radius: 8px;
+	color: var(--success-text, #0c4a6e);
+}
+
+.successMessage h3 {
+	margin-bottom: 1rem;
+	color: var(--success-text, #0c4a6e);
+}
+
+.newMessageButton {
+	background: var(--primary, #2563eb);
+	color: white;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 6px;
+	cursor: pointer;
+	margin-top: 1rem;
+}
+
+.contactMethod {
+	margin-bottom: 2rem;
+	padding: 1.5rem;
+	background: var(--card, #ffffff);
+	border: 1px solid var(--border, #e5e5e5);
+	border-radius: 8px;
+}
+
+.contactMethod h3 {
+	margin-bottom: 1rem;
+	color: var(--primary, #2563eb);
+}
+
+.contactMethod p {
+	margin: 0.5rem 0;
+	color: var(--foreground, #000000);
+}
+
+.faqSection,
+.resourcesSection {
+	margin-top: 4rem;
+}
+
+.faqSection h2,
+.resourcesSection h2 {
+	font-size: 1.8rem;
+	font-weight: 600;
+	margin-bottom: 2rem;
+	text-align: center;
+	color: var(--foreground, #000000);
+	border-bottom: 2px solid var(--primary, #2563eb);
+	padding-bottom: 0.5rem;
+}
+
+.faqGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+.faqItem {
+	padding: 1.5rem;
+	background: var(--card, #ffffff);
+	border: 1px solid var(--border, #e5e5e5);
+	border-radius: 8px;
+}
+
+.faqItem h3 {
+	margin-bottom: 0.5rem;
+	color: var(--primary, #2563eb);
+}
+
+.faqItem p {
+	margin: 0;
+	color: var(--muted-foreground, #666666);
+}
+
+.resourceLinks {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+.resourceLink {
+	background: var(--card, #ffffff);
+	border: 1px solid var(--border, #e5e5e5);
+	color: var(--foreground, #000000);
+	padding: 12px 20px;
+	border-radius: 6px;
+	cursor: pointer;
+	text-decoration: none;
+	transition: all 0.2s;
+	font-size: 1rem;
+}
+
+.resourceLink:hover {
+	background: var(--primary, #2563eb);
+	color: white;
+	border-color: var(--primary, #2563eb);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	.contactContainer {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+		--muted-foreground: #a1a1aa;
+		--muted: #18181b;
+		--border: #27272a;
+		--card: #18181b;
+		--primary: #3b82f6;
+		--primary-dark: #2563eb;
+		--primary-light: #3b82f620;
+		--success-bg: #0f172a;
+		--success-border: #1e293b;
+		--success-text: #38bdf8;
+	}
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+	.mainTitle {
+		font-size: 1.5rem;
+	}
+
+	.pageTitle {
+		font-size: 2rem;
+	}
+
+	.content {
+		padding: 20px 16px;
+	}
+
+	.twoColumn {
+		grid-template-columns: 1fr;
+		gap: 2rem;
+	}
+
+	.faqGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.resourceLinks {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.resourceLink {
+		width: 100%;
+		max-width: 300px;
+		text-align: center;
+	}
+}

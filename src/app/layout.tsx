@@ -3,6 +3,7 @@ import { Inter, Crimson_Text } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { AuthProvider } from "../contexts/AuthContext";
+import Footer from "../components/Footer";
 
 const inter = Inter({
 	variable: "--font-inter",
@@ -19,8 +20,46 @@ const crimsonText = Crimson_Text({
 });
 
 export const metadata: Metadata = {
-	title: "The Name Nursery",
-	description: "Explore baby names and generate ideas with The Name Nursery",
+	title: "The Name Nursery - Discover Perfect Baby Names",
+	description:
+		"Find the perfect baby name with our interactive name generator. Explore thousands of meaningful names from different cultures, origins, and inspirations. Get personalized name recommendations for boys, girls, and gender-neutral options.",
+	keywords:
+		"baby names, name generator, boy names, girl names, gender neutral names, name meanings, baby naming, cultural names, unique names, popular names",
+	authors: [
+		{
+			name: "Jonathan Gallardo-Kerth",
+			url: "https://www.linkedin.com/in/jonathankerth/",
+		},
+		{ name: "Zac Holman", url: "https://www.linkedin.com/in/zac-holman/" },
+	],
+	creator: "Jonathan Gallardo-Kerth & Zac Holman",
+	publisher: "The Name Nursery",
+	openGraph: {
+		title: "The Name Nursery - Discover Perfect Baby Names",
+		description:
+			"Find the perfect baby name with our interactive name generator. Explore meaningful names from different cultures and get personalized recommendations.",
+		url: "https://www.thenamenursery.com",
+		siteName: "The Name Nursery",
+		type: "website",
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "The Name Nursery - Discover Perfect Baby Names",
+		description:
+			"Find the perfect baby name with our interactive name generator.",
+		creator: "@thenamenursery",
+	},
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			"index": true,
+			"follow": true,
+			"max-video-preview": -1,
+			"max-image-preview": "large",
+			"max-snippet": -1,
+		},
+	},
 };
 
 export default function RootLayout({
@@ -35,6 +74,11 @@ export default function RootLayout({
 			<head>
 				<link rel="icon" href="/favicon.ico" sizes="any" />
 				<meta name="google-adsense-account" content="ca-pub-1895631836444724" />
+				<meta
+					name="google-site-verification"
+					content="your-verification-code"
+				/>
+				<link rel="canonical" href="https://www.thenamenursery.com" />
 				<link
 					rel="preconnect"
 					href="https://fonts.googleapis.com"
@@ -62,6 +106,7 @@ export default function RootLayout({
 			<body
 				className={`${inter.variable} ${crimsonText.variable}`}
 				style={{ background: "var(--background)" }}
+				suppressHydrationWarning={true}
 			>
 				{/* Firebase Warning Suppression */}
 				<Script
@@ -121,7 +166,26 @@ export default function RootLayout({
 						`,
 					}}
 				/>
-
+				{/* Schema.org structured data */}
+				<Script
+					id="schema-markup"
+					type="application/ld+json"
+					strategy="afterInteractive"
+					dangerouslySetInnerHTML={{
+						__html: `{
+							"@context": "https://schema.org",
+							"@type": "WebSite",
+							"name": "The Name Nursery",
+							"description": "Find the perfect baby name with our interactive name generator. Explore meaningful names from different cultures and get personalized recommendations.",
+							"url": "https://www.thenamenursery.com",
+							"potentialAction": {
+								"@type": "SearchAction",
+								"target": "https://www.thenamenursery.com/?search={search_term_string}",
+								"query-input": "required name=search_term_string"
+							}
+						}`,
+					}}
+				/>
 				{/* Google Analytics */}
 				{GA_TRACKING_ID && (
 					<>
@@ -158,8 +222,7 @@ export default function RootLayout({
 							}}
 						/>
 					</>
-				)}
-
+				)}{" "}
 				{/* Critical CSS for instant paint */}
 				<style
 					dangerouslySetInnerHTML={{
@@ -181,7 +244,18 @@ export default function RootLayout({
 					}}
 				/>
 				<div id="app-root">
-					<AuthProvider>{children}</AuthProvider>
+					<AuthProvider>
+						<div
+							style={{
+								minHeight: "100vh",
+								display: "flex",
+								flexDirection: "column",
+							}}
+						>
+							{children}
+							<Footer />
+						</div>
+					</AuthProvider>
 				</div>
 			</body>
 		</html>

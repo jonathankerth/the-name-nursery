@@ -1,0 +1,271 @@
+.container {
+	min-height: 100vh;
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+	padding: 2rem 1rem;
+}
+
+.header {
+	max-width: 800px;
+	margin: 0 auto 3rem;
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+}
+
+.backButton {
+	background: rgba(255, 255, 255, 0.9);
+	border: 2px solid #e2e8f0;
+	border-radius: 12px;
+	padding: 0.75rem 1rem;
+	font-size: 1rem;
+	color: #475569;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.backButton:hover {
+	background: white;
+	border-color: #cbd5e1;
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	color: #1e293b;
+	margin: 0;
+	text-align: center;
+	flex: 1;
+}
+
+.content {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.section {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 20px;
+	padding: 2.5rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+.sectionTitle {
+	font-size: 2rem;
+	font-weight: 600;
+	color: #2d3748;
+	margin-bottom: 1.5rem;
+	text-align: center;
+}
+
+.description {
+	font-size: 1.125rem;
+	line-height: 1.7;
+	color: #4a5568;
+	text-align: center;
+	margin: 0;
+}
+
+.processSteps {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 20px;
+	padding: 2.5rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(10px);
+}
+
+.step {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.5rem;
+	margin-bottom: 2.5rem;
+	padding: 1.5rem;
+	border-radius: 16px;
+	transition: all 0.3s ease;
+}
+
+.step:hover {
+	background: rgba(99, 179, 237, 0.05);
+	transform: translateX(8px);
+}
+
+.step:last-child {
+	margin-bottom: 0;
+}
+
+.stepNumber {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.25rem;
+	font-weight: 700;
+	flex-shrink: 0;
+	box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.stepContent {
+	flex: 1;
+}
+
+.stepTitle {
+	font-size: 1.375rem;
+	font-weight: 600;
+	color: #2d3748;
+	margin-bottom: 0.75rem;
+}
+
+.stepDescription {
+	font-size: 1rem;
+	line-height: 1.6;
+	color: #4a5568;
+	margin: 0;
+}
+
+.aiSection {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	border-radius: 20px;
+	padding: 2.5rem;
+	margin-bottom: 2rem;
+	box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.aiSection .sectionTitle {
+	color: white;
+}
+
+.aiSection .description {
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.ctaSection {
+	background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+	color: white;
+	border-radius: 20px;
+	padding: 3rem 2.5rem;
+	text-align: center;
+	box-shadow: 0 15px 35px rgba(245, 87, 108, 0.4);
+}
+
+.ctaTitle {
+	font-size: 2.25rem;
+	font-weight: 700;
+	margin-bottom: 1rem;
+	color: white;
+}
+
+.ctaDescription {
+	font-size: 1.125rem;
+	line-height: 1.6;
+	margin-bottom: 2rem;
+	color: rgba(255, 255, 255, 0.95);
+}
+
+.ctaButton {
+	background: white;
+	color: #f5576c;
+	border: none;
+	border-radius: 50px;
+	padding: 1rem 2.5rem;
+	font-size: 1.125rem;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.ctaButton:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+	background: #f8f9fa;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+	.container {
+		padding: 1rem;
+	}
+
+	.header {
+		flex-direction: column;
+		text-align: center;
+		gap: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.backButton {
+		align-self: flex-start;
+	}
+
+	.title {
+		font-size: 2rem;
+	}
+
+	.section,
+	.processSteps,
+	.aiSection,
+	.ctaSection {
+		padding: 1.5rem;
+	}
+
+	.step {
+		flex-direction: column;
+		text-align: center;
+		gap: 1rem;
+	}
+
+	.stepNumber {
+		align-self: center;
+	}
+
+	.ctaTitle {
+		font-size: 1.75rem;
+	}
+
+	.sectionTitle {
+		font-size: 1.5rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.container {
+		padding: 0.5rem;
+	}
+
+	.header {
+		margin-bottom: 1.5rem;
+	}
+
+	.title {
+		font-size: 1.75rem;
+	}
+
+	.section,
+	.processSteps,
+	.aiSection,
+	.ctaSection {
+		padding: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	.ctaTitle {
+		font-size: 1.5rem;
+	}
+
+	.description,
+	.ctaDescription {
+		font-size: 1rem;
+	}
+}
