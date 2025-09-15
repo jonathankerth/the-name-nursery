@@ -247,8 +247,18 @@ export default function NamesResults({
 
 			<div className={styles.content}>
 				<div className={styles.header}>
-					<h1 className={styles.title} style={{ color: headerColor, whiteSpace: "nowrap", wordBreak: "keep-all", display: "inline-block", overflow: "visible" }}>
-						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting with {letter}
+					<h1
+						className={styles.title}
+						style={{
+							color: headerColor,
+							whiteSpace: "nowrap",
+							wordBreak: "keep-all",
+							display: "inline-block",
+							overflow: "visible",
+						}}
+					>
+						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting
+						with {letter}
 					</h1>
 					<p className={styles.subtitle} style={{ color: headerColor }}>
 						<span className={styles.subtitleSpan}>

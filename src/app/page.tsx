@@ -592,14 +592,15 @@ export default function Home() {
 		if (inspirationTouchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - inspirationTouchStartRef.current;
-		if (Math.abs(delta) > 20)
+		if (Math.abs(delta) > 20) {
 			setInspirationIndex(
 				(i) =>
 					(i + (delta > 0 ? -1 : 1) + inspirationOptions.length) %
 					inspirationOptions.length
 			);
+			safePreventDefault(e);
+		}
 		inspirationTouchStartRef.current = null;
-		safePreventDefault(e);
 		e.stopPropagation();
 	};
 
@@ -666,14 +667,15 @@ export default function Home() {
 		if (originTouchStartRef.current == null) return;
 		const endY = e.changedTouches[0].clientY;
 		const delta = endY - originTouchStartRef.current;
-		if (Math.abs(delta) > 20)
+		if (Math.abs(delta) > 20) {
 			setOriginIndex(
 				(i) =>
 					(i + (delta > 0 ? -1 : 1) + originOptions.length) %
 					originOptions.length
 			);
+			safePreventDefault(e);
+		}
 		originTouchStartRef.current = null;
-		safePreventDefault(e);
 		e.stopPropagation();
 	};
 
@@ -871,7 +873,10 @@ export default function Home() {
 						<div className={styles.letterSelectionContent}>
 							<div className={styles.phraseContainer}>
 								<span className={styles.phrase}>
-									<span className={styles.firstLine} style={{ whiteSpace: 'nowrap' }}>
+									<span
+										className={styles.firstLine}
+										style={{ whiteSpace: "nowrap" }}
+									>
 										<span
 											className={styles.selectedType}
 											style={{ color: headerColor }}
