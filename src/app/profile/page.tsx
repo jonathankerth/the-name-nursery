@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
+import PageHeader from "@/components/PageHeader";
 import { updateProfile, updatePassword, signOut } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage, auth } from "../../lib/firebase";
@@ -188,12 +189,7 @@ export default function ProfilePage() {
 		}
 	}, [selectedGender, pageColors, headerColor, darken]);
 
-	useEffect(() => {
-		// Redirect to home if user is not logged in
-		if (!loading && !user) {
-			router.push("/");
-		}
-	}, [user, loading, router]);
+	// Authentication check - don't redirect, show login prompt instead
 
 	const loadLikedNames = useCallback(async () => {
 		if (!user) return;
@@ -334,25 +330,117 @@ export default function ProfilePage() {
 		);
 	}
 
-	// Don't render anything if user is not logged in (will redirect)
+	// Show login prompt if user is not logged in
 	if (!user) {
-		return null;
+		return (
+			<div className={styles.profilePageContainer}>
+				<PageHeader title="Your Name Nursery" showProfileButton={false} />
+				<div className={styles.profileLayout}>
+					<div className={styles.loginPrompt}>
+						<div className={styles.promptIcon}>👤</div>
+						<h2>Sign In to View Profile</h2>
+						<p>
+							To view your profile and manage your favorite names, you need to
+							be signed in to your account.
+						</p>
+						<p>Your profile includes:</p>
+						<ul className={styles.featureList}>
+							<li>❤️ All your saved favorite names</li>
+							<li>📊 Name preferences and history</li>
+							<li>⚙️ Account settings and security</li>
+							<li>📸 Profile photo and display name</li>
+						</ul>
+						<div className={styles.promptActions}>
+							<button
+								className={styles.signInButton}
+								onClick={() => router.push("/?signin=true")}
+							>
+								Sign In to Continue
+							</button>
+							<button
+								className={styles.goHomeButton}
+								onClick={() => router.push("/")}
+							>
+								Go to Home Page
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
 		<div className={styles.profilePageContainer}>
-			<header className={styles.pageHeader}>
-				<button
-					className={styles.headerTitleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.headerTitle}>Your Name Nursery</h1>
-				</button>
-			</header>
+			<PageHeader title="Your Name Nursery" showProfileButton={false} />
 			<div className={styles.profileLayout}>
-				{/* Left Side - Profile Hero and Navigation */}
+				{/* Left Side - Navigation and Profile Hero */}
 				<div className={styles.leftSection}>
+					{/* Navigation Boxes */}
+					<div className={styles.navigationSection}>
+						<button onClick={() => router.push("/")} className={styles.navBox}>
+							<span className={styles.navIcon}>🏠</span>
+							<div className={styles.navContent}>
+								<span className={styles.navLabel}>Home</span>
+								<span className={styles.navDescription}>
+									Generate baby names
+								</span>
+							</div>
+						</button>
+
+						<button
+							onClick={() => router.push("/explore")}
+							className={styles.navBox}
+						>
+							<span className={styles.navIcon}>🔍</span>
+							<div className={styles.navContent}>
+								<span className={styles.navLabel}>Explore</span>
+								<span className={styles.navDescription}>
+									Discover trending names
+								</span>
+							</div>
+						</button>
+
+						<button
+							onClick={() => router.push("/blog")}
+							className={styles.navBox}
+						>
+							<span className={styles.navIcon}>📝</span>
+							<div className={styles.navContent}>
+								<span className={styles.navLabel}>Blog</span>
+								<span className={styles.navDescription}>
+									Naming trends, Anthroponymy & more
+								</span>
+							</div>
+						</button>
+
+						<button
+							onClick={() => router.push("/social")}
+							className={styles.navBox}
+						>
+							<span className={styles.navIcon}>👥</span>
+							<div className={styles.navContent}>
+								<span className={styles.navLabel}>Social</span>
+								<span className={styles.navDescription}>
+									Connect with others
+								</span>
+							</div>
+						</button>
+
+						<button
+							onClick={() => router.push("/naming-guide")}
+							className={styles.navBox}
+						>
+							<span className={styles.navIcon}>📖</span>
+							<div className={styles.navContent}>
+								<span className={styles.navLabel}>Naming Guide</span>
+								<span className={styles.navDescription}>
+									How to choose names
+								</span>
+							</div>
+						</button>
+					</div>
+
 					{/* Profile Hero Section */}
 					<div className={styles.profileHero}>
 						<div className={styles.avatarSection}>
@@ -459,45 +547,6 @@ export default function ProfilePage() {
 								</button>
 							</div>
 						</div>
-					</div>
-
-					{/* Navigation Boxes */}
-					<div className={styles.navigationSection}>
-						<button onClick={() => router.push("/")} className={styles.navBox}>
-							<span className={styles.navIcon}>🏠</span>
-							<div className={styles.navContent}>
-								<span className={styles.navLabel}>Home</span>
-								<span className={styles.navDescription}>
-									Generate baby names
-								</span>
-							</div>
-						</button>
-
-						<button
-							onClick={() => router.push("/social")}
-							className={styles.navBox}
-						>
-							<span className={styles.navIcon}>👥</span>
-							<div className={styles.navContent}>
-								<span className={styles.navLabel}>Social</span>
-								<span className={styles.navDescription}>
-									Connect with others
-								</span>
-							</div>
-						</button>
-
-						<button
-							onClick={() => router.push("/explore")}
-							className={styles.navBox}
-						>
-							<span className={styles.navIcon}>🔍</span>
-							<div className={styles.navContent}>
-								<span className={styles.navLabel}>Explore</span>
-								<span className={styles.navDescription}>
-									Discover trending names
-								</span>
-							</div>
-						</button>
 					</div>
 				</div>
 

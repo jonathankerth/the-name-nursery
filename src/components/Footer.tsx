@@ -2,10 +2,12 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../contexts/AuthContext";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
 	const router = useRouter();
+	const { user } = useAuth();
 
 	return (
 		<footer className={styles.footer}>
@@ -36,14 +38,16 @@ export default function Footer() {
 									Name Generator
 								</button>
 							</li>
-							<li>
-								<button
-									onClick={() => router.push("/explore")}
-									className={styles.footerLink}
-								>
-									Explore Names
-								</button>
-							</li>
+							{user && (
+								<li>
+									<button
+										onClick={() => router.push("/explore")}
+										className={styles.footerLink}
+									>
+										Explore Names
+									</button>
+								</li>
+							)}
 							<li>
 								<button
 									onClick={() => router.push("/blog")}

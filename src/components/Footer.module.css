@@ -28,7 +28,7 @@
 	font-size: 1.5rem;
 	font-weight: 700;
 	margin-bottom: 1rem;
-	color: var(--primary, #2563eb);
+	color: var(--primary-green, #4ade80);
 }
 
 .footerDescription {
@@ -68,7 +68,7 @@
 }
 
 .footerLink:hover {
-	color: var(--primary, #2563eb);
+	color: var(--primary-green, #4ade80);
 }
 
 .socialLinks {
@@ -108,7 +108,7 @@
 }
 
 .bottomLink:hover {
-	color: var(--primary, #2563eb);
+	color: var(--primary-green, #4ade80);
 }
 
 /* Dark mode */
@@ -118,7 +118,8 @@
 		--border: #27272a;
 		--foreground: #ededed;
 		--muted-foreground: #a1a1aa;
-		--primary: #3b82f6;
+		--primary-green: #4ade80;
+		--primary-green-dark: #22c55e;
 	}
 }
 
@@ -175,12 +176,12 @@
 }
 
 .founderLink {
-	color: var(--primary, #2563eb);
+	color: var(--primary-green, #4ade80);
 	text-decoration: none;
 	transition: color 0.2s ease;
 }
 
 .founderLink:hover {
-	color: var(--primary-dark, #1d4ed8);
+	color: var(--primary-green-dark, #22c55e);
 	text-decoration: underline;
 }

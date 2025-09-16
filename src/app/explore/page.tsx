@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import { addLikedName } from "../../lib/likedNames";
+import PageHeader from "@/components/PageHeader";
 import styles from "./explore.module.css";
 
 type Gender = "boy" | "girl" | "baby";
@@ -22,7 +23,7 @@ const GENDERS: { value: Gender; label: string; emoji: string }[] = [
 
 export default function ExplorePage() {
 	const router = useRouter();
-	const { user } = useAuth();
+	const { user, loading } = useAuth();
 	const [currentGender, setCurrentGender] = useState<Gender>("baby");
 	const [names, setNames] = useState<NameCard[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -284,10 +285,15 @@ export default function ExplorePage() {
 		return () => window.removeEventListener("keydown", handleKeyPress);
 	}, [handleSwipe, isAnimating]);
 
+	// Check authentication but don't auto-redirect
+	// We'll show a login prompt instead
+
 	// Load initial names when gender changes
 	useEffect(() => {
-		loadInitialNames(currentGender);
-	}, [currentGender, loadInitialNames]);
+		if (user) {
+			loadInitialNames(currentGender);
+		}
+	}, [currentGender, loadInitialNames, user]);
 
 	// Load more names when running low
 	useEffect(() => {
@@ -311,30 +317,82 @@ export default function ExplorePage() {
 	const currentCard = names[currentIndex];
 	const nextCard = names[currentIndex + 1];
 
+	// Show loading state while checking auth
+	if (loading) {
+		return (
+			<div className={styles.exploreContainer}>
+				<div className={styles.loading}>
+					<div className={styles.spinner}></div>
+					<p>Loading...</p>
+				</div>
+			</div>
+		);
+	}
+
+	// Show login prompt if user is not logged in
+	if (!user && !loading) {
+		return (
+			<div className={styles.exploreContainer}>
+				{/* Header with Profile Button */}
+				<PageHeader
+					showBackButton={true}
+					backButtonText="← Back to Home"
+					backButtonPath="/"
+				/>
+
+				{/* Page Title */}
+				<div className={styles.header}>
+					<h1 className={styles.title}>Explore Names</h1>
+				</div>
+
+				{/* Login Prompt */}
+				<div className={styles.content}>
+					<div className={styles.loginPrompt}>
+						<div className={styles.promptIcon}>🔒</div>
+						<h2>Sign In Required</h2>
+						<p>
+							To explore and save your favorite baby names, you need to be
+							signed in to your account.
+						</p>
+						<p>Signing in allows you to:</p>
+						<ul className={styles.featureList}>
+							<li>🔍 Explore curated name suggestions</li>
+							<li>❤️ Save names to your favorites</li>
+							<li>📊 Track your naming preferences</li>
+							<li>🎯 Get personalized recommendations</li>
+						</ul>
+						<div className={styles.promptActions}>
+							<button
+								className={styles.signInButton}
+								onClick={() => router.push("/?signin=true")}
+							>
+								Sign In to Continue
+							</button>
+							<button
+								className={styles.goHomeButton}
+								onClick={() => router.push("/")}
+							>
+								Go to Home Page
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className={styles.exploreContainer}>
-			{/* Main Header */}
-			<div className={styles.mainHeader}>
-				<button
-					className={styles.titleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.mainTitle}>The Name Nursery</h1>
-				</button>
-			</div>
+			{/* Header with Profile Button */}
+			<PageHeader
+				showBackButton={true}
+				backButtonText="← Back"
+				backButtonPath="/profile"
+			/>
 
-			{/* Header */}
+			{/* Page Title */}
 			<div className={styles.header}>
-				<button
-					className={styles.backButton}
-					onClick={() => router.push("/profile")}
-					aria-label="Back to profile"
-				>
-					← Back
-				</button>
 				<h1 className={styles.title}>Explore Names</h1>
-				<div className={styles.spacer}></div>
 			</div>
 
 			{/* Gender Selector */}

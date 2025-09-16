@@ -1,10 +1,15 @@
-/* Profile Button Styles */
-.profileButton,
-.loginButton {
+/* Profile Button Container */
+.profileDropdownContainer {
 	position: fixed;
 	top: 40px;
 	right: 20px;
 	z-index: 1000;
+}
+
+/* Profile Button Styles */
+.profileButton,
+.loginButton {
+	position: relative;
 	display: flex;
 	align-items: center;
 	gap: 4px;
@@ -19,7 +24,15 @@
 	font-weight: 600;
 	backdrop-filter: blur(10px);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	max-width: calc(100vw - 40=px); /* Prevent overflow */
+	max-width: calc(100vw - 40px); /* Prevent overflow */
+}
+
+/* For login button without dropdown container */
+.loginButton {
+	position: fixed;
+	top: 40px;
+	right: 20px;
+	z-index: 1000;
 }
 
 .profileButton:hover,
@@ -46,6 +59,67 @@
 .loginText {
 	color: #374151;
 	white-space: nowrap;
+}
+
+.dropdownArrow {
+	color: #6b7280;
+	font-size: 10px;
+	margin-left: 2px;
+	transition: transform 0.2s ease;
+}
+
+.dropdownArrow.open {
+	transform: rotate(180deg);
+}
+
+.dropdownMenu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	margin-top: 4px;
+	background: rgba(255, 255, 255, 0.95);
+	border: 2px solid rgba(0, 0, 0, 0.1);
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	backdrop-filter: blur(10px);
+	min-width: 160px;
+	overflow: hidden;
+	z-index: 1001;
+}
+
+.dropdownItem {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 12px;
+	background: none;
+	border: none;
+	font-family: inherit;
+	font-size: 14px;
+	font-weight: 500;
+	color: #374151;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	text-align: left;
+}
+
+.dropdownItem:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dropdownItem:first-child {
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+
+.dropdownItem:last-child {
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+
+.dropdownIcon {
+	font-size: 14px;
 }
 
 /* Modal styles */
@@ -82,17 +156,42 @@ body.modal-open {
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-	.profileButton,
-	.loginButton {
+	.profileDropdownContainer {
 		top: 28px;
 		right: 8px;
+	}
+
+	.profileButton,
+	.loginButton {
 		padding: 3px 6px;
 		font-size: 11px;
 		gap: 3px;
 		border-radius: 18px;
 		backdrop-filter: blur(8px);
 		max-width: calc(100vw - 16px);
+	}
+
+	.loginButton {
+		top: 28px;
+		right: 8px;
 		z-index: 1001; /* Higher than page header */
+	}
+
+	.dropdownArrow {
+		font-size: 8px;
+	}
+
+	.dropdownMenu {
+		min-width: 140px;
+	}
+
+	.dropdownItem {
+		padding: 8px 10px;
+		font-size: 12px;
+	}
+
+	.dropdownIcon {
+		font-size: 12px;
 	}
 
 	.avatar {
@@ -116,14 +215,22 @@ body.modal-open {
 }
 
 @media (max-width: 480px) {
-	.profileButton,
-	.loginButton {
+	.profileDropdownContainer {
 		top: 56px;
 		right: 6px;
+	}
+
+	.profileButton,
+	.loginButton {
 		padding: 3px 4px;
 		min-width: 50px;
 		min-height: 40px;
 		border-radius: 20px;
+	}
+
+	.loginButton {
+		top: 56px;
+		right: 6px;
 		z-index: 1002;
 	}
 
@@ -150,13 +257,21 @@ body.modal-open {
 
 /* Extra small screens */
 @media (max-width: 360px) {
-	.profileButton,
-	.loginButton {
+	.profileDropdownContainer {
 		top: 54px;
 		right: 4px;
+	}
+
+	.profileButton,
+	.loginButton {
 		padding: 2px 3px;
 		min-width: 46px;
 		min-height: 36px;
+	}
+
+	.loginButton {
+		top: 54px;
+		right: 4px;
 	}
 
 	.loginText {

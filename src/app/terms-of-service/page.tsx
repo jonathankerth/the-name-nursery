@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import PageHeader from "@/components/PageHeader";
 import styles from "./terms-of-service.module.css";
 
 export default function TermsOfServicePage() {
@@ -10,15 +11,7 @@ export default function TermsOfServicePage() {
 	return (
 		<div className={styles.termsContainer}>
 			{/* Header */}
-			<div className={styles.header}>
-				<button
-					className={styles.titleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.mainTitle}>The Name Nursery</h1>
-				</button>
-			</div>
+			<PageHeader />
 
 			{/* Navigation */}
 			<nav className={styles.breadcrumbs}>
@@ -26,7 +19,7 @@ export default function TermsOfServicePage() {
 					onClick={() => router.push("/")}
 					className={styles.breadcrumbLink}
 				>
-					Home
+					← Back to Home
 				</button>
 				<span className={styles.breadcrumbSeparator}>›</span>
 				<span className={styles.breadcrumbCurrent}>Terms of Service</span>

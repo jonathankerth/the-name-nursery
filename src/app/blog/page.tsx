@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import PageHeader from "@/components/PageHeader";
 import {
 	getBlogPosts,
 	initializeBlogPosts,
@@ -14,9 +14,52 @@ import styles from "./blog.module.css";
 
 export default function BlogPage() {
 	const router = useRouter();
-	const { user } = useAuth();
 	const [blogPosts, setBlogPosts] = React.useState<BlogPost[]>([]);
 	const [loading, setLoading] = React.useState(true);
+
+	// Theme initialization
+	React.useEffect(() => {
+		const pageColor = "#d3f3c8"; // Default baby color
+		const darken = (hex: string, amount = 0.22) => {
+			const c = hex.replace("#", "");
+			const r = parseInt(c.substring(0, 2), 16);
+			const g = parseInt(c.substring(2, 4), 16);
+			const b = parseInt(c.substring(4, 6), 16);
+			const dr = Math.max(0, Math.round(r * (1 - amount)));
+			const dg = Math.max(0, Math.round(g * (1 - amount)));
+			const db = Math.max(0, Math.round(b * (1 - amount)));
+			const toHex = (v: number) => v.toString(16).padStart(2, "0");
+			return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
+		};
+
+		const sectionBg = "rgba(255, 255, 255, 0.9)";
+		const sectionBorder = `2px solid ${darken(pageColor, 0.1)}`;
+		const headerColor = darken(pageColor, 0.35);
+
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", pageColor);
+				document.documentElement.style.setProperty(
+					"--section-bg-color",
+					sectionBg
+				);
+				document.documentElement.style.setProperty(
+					"--section-border",
+					sectionBorder
+				);
+				document.documentElement.style.setProperty(
+					"--header-color",
+					headerColor
+				);
+				document.documentElement.style.setProperty(
+					"--header-bg-color",
+					"rgba(255, 255, 255, 0.9)"
+				);
+			}
+		} catch {
+			// noop in non-browser contexts
+		}
+	}, []);
 
 	// Load blog posts from Firebase with fallback
 	React.useEffect(() => {
@@ -35,8 +78,8 @@ export default function BlogPage() {
 
 				setBlogPosts(posts);
 
-				// Check if logged-in user should trigger new post generation
-				if (user && posts.length > 0) {
+				// Check if new post generation is needed
+				if (posts.length > 0) {
 					const shouldGenerate = await shouldGenerateNewPost();
 					if (shouldGenerate) {
 						console.log("Generating new AI post...");
@@ -56,7 +99,7 @@ export default function BlogPage() {
 		};
 
 		loadContent();
-	}, [user]);
+	}, []);
 
 	const formatDate = (dateString: string) => {
 		return new Date(dateString).toLocaleDateString("en-US", {
@@ -69,15 +112,7 @@ export default function BlogPage() {
 	if (loading) {
 		return (
 			<div className={styles.blogContainer}>
-				<div className={styles.header}>
-					<button
-						className={styles.titleButton}
-						onClick={() => router.push("/")}
-						aria-label="Go to home page"
-					>
-						<h1 className={styles.mainTitle}>The Name Nursery</h1>
-					</button>
-				</div>
+				<PageHeader />
 				<div className={styles.loading}>
 					<div className={styles.loadingSpinner}></div>
 					<p>Loading articles...</p>
@@ -89,15 +124,7 @@ export default function BlogPage() {
 	return (
 		<div className={styles.blogContainer}>
 			{/* Header */}
-			<div className={styles.header}>
-				<button
-					className={styles.titleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.mainTitle}>The Name Nursery</h1>
-				</button>
-			</div>
+			<PageHeader />
 
 			{/* Navigation */}
 			<nav className={styles.breadcrumbs}>
@@ -105,7 +132,7 @@ export default function BlogPage() {
 					onClick={() => router.push("/")}
 					className={styles.breadcrumbLink}
 				>
-					Home
+					← Back to Home
 				</button>
 				<span className={styles.breadcrumbSeparator}>›</span>
 				<span className={styles.breadcrumbCurrent}>Blog</span>
@@ -117,8 +144,7 @@ export default function BlogPage() {
 					<h1 className={styles.pageTitle}>Get Inspired</h1>
 					<p className={styles.pageSubtitle}>
 						Discover insights and guidance to help you find the perfect baby
-						name. New AI-powered articles are generated when users log in after
-						3 days!
+						name. New AI-powered articles are generated every 3 days!
 					</p>
 				</div>
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import PageHeader from "@/components/PageHeader";
 import styles from "./contact.module.css";
 
 export default function ContactPage() {
@@ -14,6 +15,50 @@ export default function ContactPage() {
 	});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
+
+	// Theme initialization
+	React.useEffect(() => {
+		const pageColor = "#d3f3c8"; // Default baby color
+		const darken = (hex: string, amount = 0.22) => {
+			const c = hex.replace("#", "");
+			const r = parseInt(c.substring(0, 2), 16);
+			const g = parseInt(c.substring(2, 4), 16);
+			const b = parseInt(c.substring(4, 6), 16);
+			const dr = Math.max(0, Math.round(r * (1 - amount)));
+			const dg = Math.max(0, Math.round(g * (1 - amount)));
+			const db = Math.max(0, Math.round(b * (1 - amount)));
+			const toHex = (v: number) => v.toString(16).padStart(2, "0");
+			return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
+		};
+
+		const sectionBg = "rgba(255, 255, 255, 0.9)";
+		const sectionBorder = `2px solid ${darken(pageColor, 0.1)}`;
+		const headerColor = darken(pageColor, 0.35);
+
+		try {
+			if (document.documentElement) {
+				document.documentElement.style.setProperty("--background", pageColor);
+				document.documentElement.style.setProperty(
+					"--section-bg-color",
+					sectionBg
+				);
+				document.documentElement.style.setProperty(
+					"--section-border",
+					sectionBorder
+				);
+				document.documentElement.style.setProperty(
+					"--header-color",
+					headerColor
+				);
+				document.documentElement.style.setProperty(
+					"--header-bg-color",
+					"rgba(255, 255, 255, 0.9)"
+				);
+			}
+		} catch {
+			// noop in non-browser contexts
+		}
+	}, []);
 
 	const handleChange = (
 		e: React.ChangeEvent<
@@ -30,26 +75,51 @@ export default function ContactPage() {
 		e.preventDefault();
 		setIsSubmitting(true);
 
-		// Simulate form submission (you would implement actual submission logic here)
-		setTimeout(() => {
-			setIsSubmitting(false);
+		try {
+			// Import Firebase at runtime to avoid SSR issues
+			const { db } = await import("@/lib/firebase");
+			const { collection, addDoc, serverTimestamp } = await import(
+				"firebase/firestore"
+			);
+
+			// Save to Firestore first
+			const messageData = {
+				name: formData.name,
+				email: formData.email,
+				subject: formData.subject,
+				message: formData.message,
+				timestamp: serverTimestamp(),
+			};
+
+			const docRef = await addDoc(
+				collection(db, "contact-messages"),
+				messageData
+			);
+			console.log("Contact message saved with ID:", docRef.id);
+
+			// Also notify the server for logging (optional)
+			await fetch("/api/contact", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
 			setIsSubmitted(true);
 			setFormData({ name: "", email: "", subject: "", message: "" });
-		}, 1000);
+		} catch (error) {
+			console.error("Error submitting form:", error);
+			alert("Failed to send message. Please try again later.");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
 		<div className={styles.contactContainer}>
 			{/* Header */}
-			<div className={styles.header}>
-				<button
-					className={styles.titleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.mainTitle}>The Name Nursery</h1>
-				</button>
-			</div>
+			<PageHeader />
 
 			{/* Navigation */}
 			<nav className={styles.breadcrumbs}>
@@ -57,7 +127,7 @@ export default function ContactPage() {
 					onClick={() => router.push("/")}
 					className={styles.breadcrumbLink}
 				>
-					Home
+					← Back to Home
 				</button>
 				<span className={styles.breadcrumbSeparator}>›</span>
 				<span className={styles.breadcrumbCurrent}>Contact</span>
