@@ -74,6 +74,10 @@ export default function RootLayout({
 			<head>
 				<link rel="icon" href="/favicon.ico" sizes="any" />
 				<meta name="google-adsense-account" content="ca-pub-1895631836444724" />
+				<meta
+					name="google-site-verification"
+					content="BHOA515GANMUAP2tKVJadskikxEcZgwrdl9ghPtPW_0"
+				/>
 				<link rel="canonical" href="https://www.thenamenursery.com" />
 				<meta
 					name="viewport"
