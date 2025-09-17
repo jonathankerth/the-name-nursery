@@ -82,29 +82,68 @@ export default function ContactPage() {
 				"firebase/firestore"
 			);
 
-			// Save to Firestore first
-			const messageData = {
-				name: formData.name,
-				email: formData.email,
-				subject: formData.subject,
-				message: formData.message,
+			// Create the document structure for Trigger Email extension
+			// Following the official docs format exactly
+			const emailDocument = {
+				// Required fields for Trigger Email extension (exact format from docs)
+				to: "thenamenursery@outlook.com", // Try string format first
+				message: {
+					subject: `New Contact from The Name Nursery: ${formData.name}`,
+					text: `New contact message from The Name Nursery website:
+
+Name: ${formData.name}
+Email: ${formData.email}
+Subject: ${formData.subject}
+
+Message:
+${formData.message}
+
+Please respond to: ${formData.email}
+
+This message was sent via The Name Nursery contact form on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}.`,
+					html: `
+						<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+							<h2 style="color: #2d3748; border-bottom: 2px solid #4ade80; padding-bottom: 10px;">
+								New Contact Message from The Name Nursery
+							</h2>
+							<div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+								<p><strong>Name:</strong> ${formData.name}</p>
+								<p><strong>Email:</strong> ${formData.email}</p>
+								<p><strong>Subject:</strong> ${formData.subject}</p>
+							</div>
+							<div style="background: white; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+								<h4 style="margin-top: 0; color: #2d3748;">Message:</h4>
+								<p style="line-height: 1.6; color: #4a5568;">${formData.message.replace(/\n/g, '<br>')}</p>
+							</div>
+							<hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
+							<p style="color: #718096; font-size: 14px;">
+								Please respond to: <a href="mailto:${formData.email}" style="color: #4ade80;">${formData.email}</a>
+							</p>
+							<p style="color: #718096; font-size: 12px;">
+								This message was sent via The Name Nursery contact form on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}.
+							</p>
+						</div>
+					`
+				},
+				// Store original details for your records in the same document
+				senderName: formData.name,
+				senderEmail: formData.email,
+				senderSubject: formData.subject,
+				originalMessage: formData.message,
 				timestamp: serverTimestamp(),
+				processed: false, // You can use this to track if you've responded
 			};
 
+			// Save to the 'mail' collection as expected by the Trigger Email extension
 			const docRef = await addDoc(
-				collection(db, "contact-messages"),
-				messageData
+				collection(db, "mail"),
+				emailDocument
 			);
-			console.log("Contact message saved with ID:", docRef.id);
+			console.log("Email queued for delivery via Trigger Email extension with ID:", docRef.id);
 
-			// Also notify the server for logging (optional)
-			await fetch("/api/contact", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			});
+			// The Trigger Email extension will automatically detect this document in the 'mail' collection
+			// and send an email to thenamenursery@outlook.com
+			// You can monitor delivery status in Firebase Console under the 'mail' collection
 
 			setIsSubmitted(true);
 			setFormData({ name: "", email: "", subject: "", message: "" });
