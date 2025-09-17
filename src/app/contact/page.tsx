@@ -113,17 +113,22 @@ This message was sent via The Name Nursery contact form on ${new Date().toLocale
 							</div>
 							<div style="background: white; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
 								<h4 style="margin-top: 0; color: #2d3748;">Message:</h4>
-								<p style="line-height: 1.6; color: #4a5568;">${formData.message.replace(/\n/g, '<br>')}</p>
+								<p style="line-height: 1.6; color: #4a5568;">${formData.message.replace(
+									/\n/g,
+									"<br>"
+								)}</p>
 							</div>
 							<hr style="margin: 30px 0; border: none; border-top: 1px solid #e2e8f0;">
 							<p style="color: #718096; font-size: 14px;">
-								Please respond to: <a href="mailto:${formData.email}" style="color: #4ade80;">${formData.email}</a>
+								Please respond to: <a href="mailto:${formData.email}" style="color: #4ade80;">${
+						formData.email
+					}</a>
 							</p>
 							<p style="color: #718096; font-size: 12px;">
 								This message was sent via The Name Nursery contact form on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}.
 							</p>
 						</div>
-					`
+					`,
 				},
 				// Store original details for your records in the same document
 				senderName: formData.name,
@@ -135,11 +140,11 @@ This message was sent via The Name Nursery contact form on ${new Date().toLocale
 			};
 
 			// Save to the 'mail' collection as expected by the Trigger Email extension
-			const docRef = await addDoc(
-				collection(db, "mail"),
-				emailDocument
+			const docRef = await addDoc(collection(db, "mail"), emailDocument);
+			console.log(
+				"Email queued for delivery via Trigger Email extension with ID:",
+				docRef.id
 			);
-			console.log("Email queued for delivery via Trigger Email extension with ID:", docRef.id);
 
 			// The Trigger Email extension will automatically detect this document in the 'mail' collection
 			// and send an email to thenamenursery@outlook.com
