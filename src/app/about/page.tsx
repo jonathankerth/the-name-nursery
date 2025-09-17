@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 import styles from "./about.module.css";
 
 export default function AboutPage() {
@@ -54,6 +55,14 @@ export default function AboutPage() {
 
 	return (
 		<div className={styles.aboutContainer}>
+			{/* Breadcrumb Schema */}
+			<BreadcrumbSchema
+				items={[
+					{ name: "Home", url: "https://www.thenamenursery.com" },
+					{ name: "About", url: "https://www.thenamenursery.com/about" },
+				]}
+			/>
+
 			{/* Header */}
 			<PageHeader />
 
@@ -249,6 +258,40 @@ export default function AboutPage() {
 						</button>{" "}
 						for complete details.
 					</p>
+				</div>
+
+				<div className={styles.section}>
+					<h2>Explore More Resources</h2>
+					<p>Discover more ways to find the perfect baby name:</p>
+					<ul className={styles.resourcesList}>
+						<li>
+							<button
+								onClick={() => router.push("/blog")}
+								className={styles.inlineLink}
+							>
+								Read our naming blog
+							</button>{" "}
+							for expert tips and cultural insights
+						</li>
+						<li>
+							<button
+								onClick={() => router.push("/explore")}
+								className={styles.inlineLink}
+							>
+								Explore trending names
+							</button>{" "}
+							by browsing our curated collections
+						</li>
+						<li>
+							<button
+								onClick={() => router.push("/contact")}
+								className={styles.inlineLink}
+							>
+								Contact our team
+							</button>{" "}
+							if you need personalized naming assistance
+						</li>
+					</ul>
 				</div>
 
 				<div className={styles.section}>

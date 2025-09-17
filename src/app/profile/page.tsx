@@ -447,10 +447,12 @@ export default function ProfilePage() {
 							<div className={styles.avatarContainer}>
 								<Image
 									src={user.photoURL || "/default-avatar.svg"}
-									alt="Profile"
+									alt={`Profile picture of ${user.displayName || "user"}`}
 									className={styles.profileAvatar}
 									width={120}
 									height={120}
+									loading="eager"
+									priority
 								/>
 								{uploading && (
 									<div className={styles.uploadingOverlay}>Uploading...</div>

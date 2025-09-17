@@ -1,0 +1,19 @@
+{
+	"name": "The Name Nursery - Baby Name Generator",
+	"short_name": "Name Nursery",
+	"description": "Find the perfect baby name with our interactive name generator",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#d3f3c8",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/favicon.ico",
+			"sizes": "32x32",
+			"type": "image/x-icon"
+		}
+	],
+	"categories": ["lifestyle", "utilities"],
+	"lang": "en"
+}

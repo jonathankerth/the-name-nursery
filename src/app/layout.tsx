@@ -75,6 +75,12 @@ export default function RootLayout({
 				<link rel="icon" href="/favicon.ico" sizes="any" />
 				<meta name="google-adsense-account" content="ca-pub-1895631836444724" />
 				<link rel="canonical" href="https://www.thenamenursery.com" />
+				<meta
+					name="viewport"
+					content="width=device-width, initial-scale=1, viewport-fit=cover"
+				/>
+				<meta name="theme-color" content="#d3f3c8" />
+				<link rel="manifest" href="/site.webmanifest" />
 				<link
 					rel="preconnect"
 					href="https://fonts.googleapis.com"
@@ -85,6 +91,8 @@ export default function RootLayout({
 					href="https://fonts.gstatic.com"
 					crossOrigin="anonymous"
 				/>
+				<link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+				<link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
 
 				{/* Google AdSense */}
 				<script
@@ -164,22 +172,77 @@ export default function RootLayout({
 				/>
 				{/* Schema.org structured data */}
 				<Script
-					id="schema-markup"
+					id="schema-organization"
 					type="application/ld+json"
 					strategy="afterInteractive"
 					dangerouslySetInnerHTML={{
-						__html: `{
+						__html: JSON.stringify({
+							"@context": "https://schema.org",
+							"@type": "Organization",
+							"name": "The Name Nursery",
+							"description":
+								"Your trusted companion for discovering perfect baby names. We help expecting parents explore meaningful names from cultures around the world.",
+							"url": "https://www.thenamenursery.com",
+							"logo": "https://www.thenamenursery.com/favicon.ico",
+							"sameAs": [
+								"https://www.linkedin.com/in/jonathankerth/",
+								"https://www.linkedin.com/in/zac-holman/",
+							],
+							"founder": [
+								{
+									"@type": "Person",
+									"name": "Jonathan Gallardo-Kerth",
+									"url": "https://www.linkedin.com/in/jonathankerth/",
+								},
+								{
+									"@type": "Person",
+									"name": "Zac Holman",
+									"url": "https://www.linkedin.com/in/zac-holman/",
+								},
+							],
+							"contactPoint": {
+								"@type": "ContactPoint",
+								"contactType": "Customer Service",
+								"email": "thenamenursery@outlook.com",
+							},
+						}),
+					}}
+				/>
+				<Script
+					id="schema-website"
+					type="application/ld+json"
+					strategy="afterInteractive"
+					dangerouslySetInnerHTML={{
+						__html: JSON.stringify({
 							"@context": "https://schema.org",
 							"@type": "WebSite",
 							"name": "The Name Nursery",
-							"description": "Find the perfect baby name with our interactive name generator. Explore meaningful names from different cultures and get personalized recommendations.",
+							"alternateName": "Name Nursery",
+							"description":
+								"Find the perfect baby name with our interactive name generator. Explore meaningful names from different cultures and get personalized recommendations.",
 							"url": "https://www.thenamenursery.com",
+							"publisher": {
+								"@type": "Organization",
+								"name": "The Name Nursery",
+							},
 							"potentialAction": {
 								"@type": "SearchAction",
-								"target": "https://www.thenamenursery.com/?search={search_term_string}",
-								"query-input": "required name=search_term_string"
-							}
-						}`,
+								"target": {
+									"@type": "EntryPoint",
+									"urlTemplate":
+										"https://www.thenamenursery.com/?search={search_term_string}",
+								},
+								"query-input": "required name=search_term_string",
+							},
+							"mainEntity": {
+								"@type": "WebApplication",
+								"name": "Baby Name Generator",
+								"description":
+									"Interactive baby name generator with AI-powered recommendations",
+								"applicationCategory": "UtilitiesApplication",
+								"operatingSystem": "Web Browser",
+							},
+						}),
 					}}
 				/>
 				{/* Google Analytics */}

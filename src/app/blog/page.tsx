@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
+import BreadcrumbSchema from "@/components/BreadcrumbSchema";
 import {
 	getBlogPosts,
 	initializeBlogPosts,
@@ -123,6 +124,14 @@ export default function BlogPage() {
 
 	return (
 		<div className={styles.blogContainer}>
+			{/* Breadcrumb Schema */}
+			<BreadcrumbSchema
+				items={[
+					{ name: "Home", url: "https://www.thenamenursery.com" },
+					{ name: "Blog", url: "https://www.thenamenursery.com/blog" },
+				]}
+			/>
+
 			{/* Header */}
 			<PageHeader />
 
@@ -224,6 +233,23 @@ export default function BlogPage() {
 							naming. New articles are automatically generated when users log in
 							after 3 days, ensuring fresh content without overwhelming our
 							systems.
+						</p>
+						<p>
+							Ready to put these insights into practice?{" "}
+							<button
+								onClick={() => router.push("/")}
+								className={styles.inlineLink}
+							>
+								Try our interactive name generator
+							</button>{" "}
+							or{" "}
+							<button
+								onClick={() => router.push("/explore")}
+								className={styles.inlineLink}
+							>
+								explore trending names
+							</button>{" "}
+							to discover your perfect baby name.
 						</p>
 						<div className={styles.infoStats}>
 							<div className={styles.stat}>
