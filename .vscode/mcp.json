@@ -1,0 +1,13 @@
+{
+	"servers": {
+		"my-mcp-server-9a676471": {
+			"url": "https://api.githubcopilot.com/mcp/",
+			"type": "http"
+		},
+		"Figma Dev Mode MCP": {
+			"url": "http://127.0.0.1:3845/mcp",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
