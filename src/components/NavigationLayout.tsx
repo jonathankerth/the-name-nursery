@@ -10,6 +10,7 @@ interface NavigationLayoutProps {
 	backLabel?: string;
 	nextLabel?: string;
 	buttonStyle?: React.CSSProperties;
+	nextDisabled?: boolean;
 }
 
 export default function NavigationLayout({
@@ -21,6 +22,7 @@ export default function NavigationLayout({
 	backLabel = "Back",
 	nextLabel = "Next",
 	buttonStyle,
+	nextDisabled = false,
 }: NavigationLayoutProps) {
 	return (
 		<div className={styles.layout}>
@@ -51,8 +53,13 @@ export default function NavigationLayout({
 				<button
 					className={styles.nextButton}
 					onClick={onNext}
-					style={buttonStyle}
+					style={{
+						...buttonStyle,
+						opacity: nextDisabled ? 0.5 : 1,
+						cursor: nextDisabled ? "not-allowed" : "pointer",
+					}}
 					aria-label={nextLabel}
+					disabled={nextDisabled}
 				>
 					<span className={styles.buttonText}>{nextLabel}</span>
 					<svg

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
@@ -27,11 +28,26 @@ export default function Home() {
 		"baby"
 	);
 	const [selectedLetter, setSelectedLetter] = useState("A");
-	const [selectedPersonality, setSelectedPersonality] = useState("strong");
-	const [selectedInspiration, setSelectedInspiration] = useState("nature");
+	const [selectedPersonality, setSelectedPersonality] = useState("");
+	const [selectedInspiration, setSelectedInspiration] = useState("ocean");
 	const [selectedOrigin, setSelectedOrigin] = useState("Celtic");
 	const [recommendedNames, setRecommendedNames] = useState<string[]>([]);
 	const [isAIGenerated, setIsAIGenerated] = useState(false);
+
+	// New state for adjectives - initialize with fallback to prevent map error
+	const [personalityAdjectives, setPersonalityAdjectives] = useState<string[]>([
+		"strong",
+		"gentle",
+		"creative",
+		"brave",
+		"wise",
+		"joyful",
+		"calm",
+		"spirited",
+		"kind",
+	]);
+
+	const [loadingAdjectives, setLoadingAdjectives] = useState(false);
 
 	// Helper function to safely prevent default
 	const safePreventDefault = (e: Event | React.SyntheticEvent) => {
@@ -42,30 +58,16 @@ export default function Home() {
 		}
 	};
 
-	const options = useMemo(
+	const genderOptions = useMemo(
 		() => [
-			{ label: "Baby", value: "baby" },
-			{ label: "Girl", value: "girl" },
-			{ label: "Boy", value: "boy" },
+			{ label: "Baby", value: "baby", icon: "/icons/stroller_icon.png" },
+			{ label: "Girl", value: "girl", icon: "/icons/raddle_icon.png" },
+			{ label: "Boy", value: "boy", icon: "/icons/bear_icon.png" },
 		],
 		[]
 	);
-
 	const alphabet = useMemo(
 		() => Array.from({ length: 26 }).map((_, i) => String.fromCharCode(65 + i)),
-		[]
-	);
-
-	const personalityOptions = useMemo(
-		() => [
-			{ label: "strong", value: "strong" },
-			{ label: "gentle", value: "gentle" },
-			{ label: "modern", value: "modern" },
-			{ label: "classic", value: "classic" },
-			{ label: "unique", value: "unique" },
-			{ label: "elegant", value: "elegant" },
-			{ label: "playful", value: "playful" },
-		],
 		[]
 	);
 
@@ -102,14 +104,6 @@ export default function Home() {
 	const letterWheelRef = useRef<HTMLDivElement | null>(null);
 	const letterDragStartRef = useRef<number | null>(null);
 	const letterIsDraggingRef = useRef<boolean>(false);
-
-	// Personality selection state
-	const [personalityIndex, setPersonalityIndex] = useState(0);
-	const personalityScrollRef = useRef<number>(0);
-	const personalityTouchStartRef = useRef<number | null>(null);
-	const personalityWheelRef = useRef<HTMLDivElement | null>(null);
-	const personalityDragStartRef = useRef<number | null>(null);
-	const personalityIsDraggingRef = useRef<boolean>(false);
 
 	// Inspiration selection state
 	const [inspirationIndex, setInspirationIndex] = useState(0);
@@ -247,6 +241,66 @@ export default function Home() {
 		setRecommendedNames(newNames);
 	}, []);
 
+	// Function to fetch adjectives from AI
+	const fetchAdjectives = useCallback(async () => {
+		console.log("fetchAdjectives called with:", {
+			gender: selectedGender,
+			letter: selectedLetter,
+		});
+		setLoadingAdjectives(true);
+		try {
+			const response = await fetch("/api/generate-adjectives", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					gender: selectedGender,
+					letter: selectedLetter,
+				}),
+			});
+
+			console.log("Response status:", response.status, response.statusText);
+
+			if (!response.ok) {
+				throw new Error(`Failed to fetch adjectives: ${response.status}`);
+			}
+
+			const data = await response.json();
+			console.log("Response data:", data);
+			const adjectives = Array.isArray(data.adjectives) ? data.adjectives : [];
+			console.log("Setting adjectives to:", adjectives);
+			setPersonalityAdjectives(adjectives);
+		} catch (error) {
+			console.error("Error fetching adjectives:", error);
+			// Fallback adjectives
+			const fallbackAdjectives = [
+				"strong",
+				"gentle",
+				"creative",
+				"brave",
+				"wise",
+				"joyful",
+				"calm",
+				"spirited",
+				"kind",
+			];
+			console.log("Setting fallback adjectives:", fallbackAdjectives);
+			setPersonalityAdjectives(fallbackAdjectives);
+		} finally {
+			setLoadingAdjectives(false);
+		}
+	}, [selectedGender, selectedLetter]);
+
+	// Fetch adjectives when entering personality step
+	useEffect(() => {
+		console.log("Personality useEffect - currentStep:", currentStep);
+		if (currentStep === "personality") {
+			console.log("On personality step, fetching new adjectives...");
+			fetchAdjectives();
+		}
+	}, [currentStep, fetchAdjectives]);
+
 	const wheelColor = darken(pageColors[selectedGender] || "#111827", 0.5);
 	const headerColor = darken(pageColors[selectedGender] || "#111827", 0.6);
 
@@ -278,18 +332,23 @@ export default function Home() {
 			if (currentStep === "gender") {
 				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
 					e.preventDefault();
-					const currentIdx = options.findIndex(
+					const currentIdx = genderOptions.findIndex(
 						(opt) => opt.value === selectedGender
 					);
-					const nextIdx = (currentIdx + 1) % options.length;
-					setSelectedGender(options[nextIdx].value as "baby" | "girl" | "boy");
+					const nextIdx = (currentIdx + 1) % genderOptions.length;
+					setSelectedGender(
+						genderOptions[nextIdx].value as "baby" | "girl" | "boy"
+					);
 				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
 					e.preventDefault();
-					const currentIdx = options.findIndex(
+					const currentIdx = genderOptions.findIndex(
 						(opt) => opt.value === selectedGender
 					);
-					const prevIdx = (currentIdx - 1 + options.length) % options.length;
-					setSelectedGender(options[prevIdx].value as "baby" | "girl" | "boy");
+					const prevIdx =
+						(currentIdx - 1 + genderOptions.length) % genderOptions.length;
+					setSelectedGender(
+						genderOptions[prevIdx].value as "baby" | "girl" | "boy"
+					);
 				} else if (e.key === "Enter") {
 					e.preventDefault();
 					setCurrentStep("letter");
@@ -310,16 +369,7 @@ export default function Home() {
 					setCurrentStep("gender");
 				}
 			} else if (currentStep === "personality") {
-				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
-					e.preventDefault();
-					setPersonalityIndex((i) => (i + 1) % personalityOptions.length);
-				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
-					e.preventDefault();
-					setPersonalityIndex(
-						(i) =>
-							(i - 1 + personalityOptions.length) % personalityOptions.length
-					);
-				} else if (e.key === "Enter") {
+				if (e.key === "Enter" && selectedPersonality) {
 					e.preventDefault();
 					trackStepProgression("personality", "inspiration");
 					setCurrentStep("inspiration");
@@ -373,11 +423,11 @@ export default function Home() {
 	}, [
 		currentStep,
 		alphabet.length,
-		personalityOptions.length,
 		inspirationOptions.length,
 		originOptions.length,
-		options,
+		genderOptions,
 		selectedGender,
+		selectedPersonality,
 		fetchNameRecommendations,
 	]);
 
@@ -453,81 +503,7 @@ export default function Home() {
 	};
 
 	// Elevator shaft ref and height calculation
-	const elevatorShaftRef = useRef<HTMLDivElement>(null); // Personality wheel handlers
-	const onPersonalityWheel = (e: React.WheelEvent) => {
-		safePreventDefault(e);
-		const now = Date.now();
-		if (now - personalityScrollRef.current < 120) return;
-		if (Math.abs(e.deltaY) < 5) return;
-		personalityScrollRef.current = now;
-		setPersonalityIndex(
-			(i) =>
-				(i + (e.deltaY > 0 ? 1 : -1) + personalityOptions.length) %
-				personalityOptions.length
-		);
-	};
-
-	const onPersonalityMouseDown = (e: React.MouseEvent) => {
-		personalityDragStartRef.current = e.clientY;
-		personalityIsDraggingRef.current = false;
-		e.preventDefault();
-	};
-
-	const onPersonalityMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (personalityDragStartRef.current === null) return;
-
-			const deltaY = e.clientY - personalityDragStartRef.current;
-			if (Math.abs(deltaY) > 10) {
-				personalityIsDraggingRef.current = true;
-			}
-
-			if (personalityIsDraggingRef.current) {
-				const dragThreshold = 30; // pixels per item
-				const indexChange = Math.round(deltaY / dragThreshold);
-				if (indexChange !== 0) {
-					setPersonalityIndex((i) => {
-						const newIndex =
-							(i - indexChange + personalityOptions.length) %
-							personalityOptions.length;
-						personalityDragStartRef.current = e.clientY; // Reset for continuous dragging
-						return newIndex;
-					});
-				}
-			}
-		},
-		[personalityOptions.length]
-	);
-
-	const onPersonalityMouseUp = useCallback(() => {
-		personalityDragStartRef.current = null;
-		personalityIsDraggingRef.current = false;
-	}, []);
-
-	const onPersonalityTouchStart = (e: React.TouchEvent) => {
-		personalityTouchStartRef.current = e.touches[0].clientY;
-		e.stopPropagation();
-	};
-
-	const onPersonalityTouchMove = (e: React.TouchEvent) => {
-		e.stopPropagation();
-	};
-
-	const onPersonalityTouchEnd = (e: React.TouchEvent) => {
-		if (personalityTouchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - personalityTouchStartRef.current;
-		if (Math.abs(delta) > 20) {
-			setPersonalityIndex(
-				(i) =>
-					(i + (delta > 0 ? -1 : 1) + personalityOptions.length) %
-					personalityOptions.length
-			);
-			safePreventDefault(e);
-		}
-		personalityTouchStartRef.current = null;
-		e.stopPropagation();
-	};
+	const elevatorShaftRef = useRef<HTMLDivElement>(null);
 
 	const onInspirationWheel = (e: React.WheelEvent) => {
 		safePreventDefault(e);
@@ -691,10 +667,6 @@ export default function Home() {
 	}, [letterIndex, alphabet]);
 
 	useEffect(() => {
-		setSelectedPersonality(personalityOptions[personalityIndex].value);
-	}, [personalityIndex, personalityOptions]);
-
-	useEffect(() => {
 		setSelectedInspiration(inspirationOptions[inspirationIndex].value);
 	}, [inspirationIndex, inspirationOptions]);
 
@@ -706,14 +678,12 @@ export default function Home() {
 	useEffect(() => {
 		const handleMouseMove = (e: MouseEvent) => {
 			onLetterMouseMove(e);
-			onPersonalityMouseMove(e);
 			onInspirationMouseMove(e);
 			onOriginMouseMove(e);
 		};
 
 		const handleMouseUp = () => {
 			onLetterMouseUp();
-			onPersonalityMouseUp();
 			onInspirationMouseUp();
 			onOriginMouseUp();
 		};
@@ -751,23 +721,11 @@ export default function Home() {
 	}, [
 		onLetterMouseMove,
 		onLetterMouseUp,
-		onPersonalityMouseMove,
-		onPersonalityMouseUp,
 		onInspirationMouseMove,
 		onInspirationMouseUp,
 		onOriginMouseMove,
 		onOriginMouseUp,
 	]);
-
-	// Personality wheel display
-	const topPersonality =
-		personalityOptions[
-			(personalityIndex - 1 + personalityOptions.length) %
-				personalityOptions.length
-		];
-	const centerPersonality = personalityOptions[personalityIndex];
-	const bottomPersonality =
-		personalityOptions[(personalityIndex + 1) % personalityOptions.length];
 
 	// Inspiration wheel display
 	const topInspiration =
@@ -815,7 +773,7 @@ export default function Home() {
 						<div className={styles.genderElevator}>
 							<div className={styles.elevatorShaft} ref={elevatorShaftRef}>
 								<div className={styles.elevatorFloors}>
-									{options.map((option) => (
+									{genderOptions.map((option) => (
 										<div
 											key={option.value}
 											className={`${styles.genderRow} ${
@@ -840,7 +798,16 @@ export default function Home() {
 													)
 												}
 											>
-												{option.label}
+												<span className={styles.genderButtonContent}>
+													{option.label}
+													<Image
+														src={option.icon}
+														alt={`${option.label} icon`}
+														className={styles.genderIcon}
+														width={34}
+														height={34}
+													/>
+												</span>
 											</button>
 											{selectedGender === option.value && (
 												<span className={styles.elevatorText}>Name</span>
@@ -873,10 +840,7 @@ export default function Home() {
 						<div className={styles.letterSelectionContent}>
 							<div className={styles.phraseContainer}>
 								<span className={styles.phrase}>
-									<span
-										className={styles.firstLine}
-										style={{ whiteSpace: "nowrap" }}
-									>
+									<span className={styles.genderLine}>
 										<span
 											className={styles.selectedType}
 											style={{ color: headerColor }}
@@ -884,11 +848,11 @@ export default function Home() {
 											{selectedGender.charAt(0).toUpperCase() +
 												selectedGender.slice(1)}
 										</span>{" "}
-										names starting with
+										names
 									</span>
+									<span className={styles.startingWithLine}>starting with</span>
 								</span>
-							</div>
-
+							</div>{" "}
 							<div
 								ref={letterWheelRef}
 								className={styles.wheelColumn}
@@ -942,80 +906,104 @@ export default function Home() {
 							setCurrentStep("letter");
 						}}
 						onNext={() => {
-							trackStepProgression("personality", "inspiration");
-							setCurrentStep("inspiration");
+							if (selectedPersonality) {
+								trackStepProgression("personality", "inspiration");
+								setCurrentStep("inspiration");
+							}
 						}}
 						backLabel="Back"
 						nextLabel="Next"
+						nextDisabled={!selectedPersonality}
 						buttonStyle={{
 							borderColor: wheelColor,
 							backgroundColor: pageColors[selectedGender],
 							color: headerColor,
 						}}
 					>
-						<div className={styles.multiStepContent}>
-							<div className={styles.topRow} style={{ color: headerColor }}>
+						<div className={styles.personalityContent}>
+							<div
+								className={styles.personalityTopText}
+								style={{ color: headerColor }}
+							>
 								<span className={styles.selectedType}>
 									{selectedGender.charAt(0).toUpperCase() +
 										selectedGender.slice(1)}
 								</span>{" "}
-								names starting with {selectedLetter} for a baby
+								names starting with {selectedLetter}
 							</div>
 
-							<div className={styles.letterSelectionContent}>
-								<div className={styles.phraseContainer}>
-									<span className={styles.phrase}>
-										<span className={styles.firstLine}>who is</span>
-									</span>
-								</div>
+							<div
+								className={styles.personalityPrompt}
+								style={{ color: headerColor }}
+							>
+								Who is...
+							</div>
 
+							{loadingAdjectives ? (
 								<div
-									ref={personalityWheelRef}
-									className={styles.wheelColumn}
-									tabIndex={0}
-									onWheel={onPersonalityWheel}
-									onMouseDown={onPersonalityMouseDown}
-									onTouchStart={onPersonalityTouchStart}
-									onTouchMove={onPersonalityTouchMove}
-									onTouchEnd={onPersonalityTouchEnd}
-									role="listbox"
-									aria-label="Select a personality trait"
+									className={styles.loadingAdjectives}
+									style={{ color: headerColor }}
 								>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setPersonalityIndex(
-												(personalityIndex - 1 + personalityOptions.length) %
-													personalityOptions.length
-											)
-										}
-										title={`Select ${topPersonality.label}`}
-									>
-										{topPersonality.label}
-									</div>
-									<div
-										className={`${styles.wheelCenter} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() => setPersonalityIndex(personalityIndex)}
-										title={`Select ${centerPersonality.label}`}
-									>
-										{centerPersonality.label}
-									</div>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setPersonalityIndex(
-												(personalityIndex + 1) % personalityOptions.length
-											)
-										}
-										title={`Select ${bottomPersonality.label}`}
-									>
-										{bottomPersonality.label}
-									</div>
+									Loading personality options...
 								</div>
-							</div>
+							) : (
+								<div>
+									{Array.isArray(personalityAdjectives) &&
+									personalityAdjectives.length > 0 ? (
+										<>
+											<div className={styles.adjectiveGrid}>
+												{personalityAdjectives.map((adjective) => (
+													<button
+														key={adjective}
+														type="button"
+														className={`${styles.adjectiveCard} ${
+															selectedPersonality === adjective
+																? styles.selected
+																: ""
+														}`}
+														style={{
+															color: headerColor,
+															borderColor: headerColor,
+														}}
+														onClick={() => setSelectedPersonality(adjective)}
+													>
+														{adjective}
+													</button>
+												))}
+											</div>
+
+											<button
+												type="button"
+												className={styles.moreSuggestionsButton}
+												style={{
+													color: headerColor,
+													borderColor: headerColor,
+												}}
+												onClick={fetchAdjectives}
+											>
+												More Suggestions
+											</button>
+										</>
+									) : (
+										<div
+											className={styles.loadingAdjectives}
+											style={{ color: headerColor }}
+										>
+											<button
+												type="button"
+												className={styles.moreSuggestionsButton}
+												style={{
+													color: headerColor,
+													borderColor: headerColor,
+												}}
+												onClick={fetchAdjectives}
+											>
+												Load Personality Options
+											</button>
+										</div>
+									)}
+								</div>
+							)}
 						</div>
 					</NavigationLayout>
 				)}
@@ -1026,9 +1014,12 @@ export default function Home() {
 							setCurrentStep("personality");
 						}}
 						onNext={() => {
-							trackStepProgression("inspiration", "origin");
-							setCurrentStep("origin");
+							if (selectedInspiration) {
+								trackStepProgression("inspiration", "origin");
+								setCurrentStep("origin");
+							}
 						}}
+						nextDisabled={!selectedInspiration}
 						backLabel="Back"
 						nextLabel="Next"
 						buttonStyle={{
@@ -1037,14 +1028,24 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.multiStepContent}>
-							<div className={styles.topRow} style={{ color: headerColor }}>
+						<div className={styles.personalityContent}>
+							<div
+								className={styles.personalityTopText}
+								style={{ color: headerColor }}
+							>
 								<span className={styles.selectedType}>
 									{selectedGender.charAt(0).toUpperCase() +
 										selectedGender.slice(1)}
 								</span>{" "}
 								names starting with {selectedLetter} for a baby who is{" "}
 								{selectedPersonality}
+							</div>
+
+							<div
+								className={styles.personalityPrompt}
+								style={{ color: headerColor }}
+							>
+								& inspired by...
 							</div>
 
 							<div className={styles.letterSelectionContent}>
