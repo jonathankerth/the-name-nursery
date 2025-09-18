@@ -1041,13 +1041,6 @@ export default function Home() {
 								{selectedPersonality}
 							</div>
 
-							<div
-								className={styles.personalityPrompt}
-								style={{ color: headerColor }}
-							>
-								& inspired by...
-							</div>
-
 							<div className={styles.letterSelectionContent}>
 								<div className={styles.phraseContainer}>
 									<span className={styles.phrase}>
