@@ -224,10 +224,17 @@ export default function Home() {
 	};
 
 	const handleSkipOrigin = useCallback(() => {
-		// Set a default origin (first option) and proceed to generate names
-		setSelectedOrigin(originOptions[0].value);
+		// Clear origin selection and proceed to generate names
+		setSelectedOrigin("");
 		fetchNameRecommendations();
-	}, [originOptions, fetchNameRecommendations]);
+	}, [fetchNameRecommendations]);
+
+	const handleSkipInspiration = useCallback(() => {
+		// Clear inspiration selection and proceed to origin step
+		setSelectedInspiration("");
+		trackStepProgression("inspiration", "origin");
+		setCurrentStep("origin");
+	}, []);
 
 	const handleNamesUpdate = useCallback((newNames: string[]) => {
 		setRecommendedNames(newNames);
@@ -647,7 +654,6 @@ export default function Home() {
 								setCurrentStep("origin");
 							}
 						}}
-						nextDisabled={!selectedInspiration}
 						backLabel="Back"
 						nextLabel="Next"
 						buttonStyle={{
@@ -666,6 +672,7 @@ export default function Home() {
 							loadingInspirations={loadingInspirations}
 							fetchInspirations={fetchInspirations}
 							headerColor={headerColor}
+							onSkip={handleSkipInspiration}
 						/>
 					</NavigationLayout>
 				)}

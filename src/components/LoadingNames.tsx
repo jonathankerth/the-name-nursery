@@ -54,17 +54,20 @@ export default function LoadingNames({
 						names starting with {letter}
 					</div>
 					<div className={styles.secondRow}>
-						for a baby who&apos;s {personality} & inspired by {inspiration}
+						for a baby who&apos;s {personality}
+						{inspiration && ` & inspired by ${inspiration}`}
+						{origin && (
+							<>
+								{inspiration ? ' with ' : ' with '}
+								<span style={{ fontWeight: "normal" }}>
+									{origin} origin
+								</span>
+							</>
+						)}
 					</div>
 				</div>
 			</div>
 			<div className={styles.letterSelectionContent}>
-				<div className={styles.phraseContainer}>
-					<span className={styles.phrase}>
-						<span className={styles.firstLine}>with</span>
-						<span className={styles.secondLine}>{origin} origin</span>
-					</span>
-				</div>
 				<div className={loadingStyles.spinner}>
 					<div className={loadingStyles.spinnerRing}></div>
 				</div>

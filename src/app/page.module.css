@@ -516,12 +516,14 @@
 }
 
 .adjectiveCard {
-	width: 220px;
+	min-width: 120px;
+	width: fit-content;
+	max-width: 200px;
 	height: 50px;
 	border-radius: 4px;
 	border-width: 1px;
 	border-style: solid;
-	padding: 5px;
+	padding: 5px 10px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -590,15 +592,17 @@
 	}
 
 	.adjectiveCard {
-		width: 100%;
-		max-width: 280px;
+		width: fit-content;
+		min-width: 100px;
+		max-width: 200px;
 		height: auto;
 		min-height: 45px;
 		font-size: 21px;
-		padding: 8px 5px;
+		padding: 8px 10px;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 		white-space: normal;
+		margin: 0 auto; /* Center the cards on mobile */
 	}
 
 	.personalityPrompt {
@@ -608,6 +612,10 @@
 	.personalityTopText {
 		font-size: 20px;
 	}
+
+	.personalityContent {
+		padding: 0 10px; /* Add padding to ensure content is centered on mobile */
+	}
 }
 
 @media (max-width: 480px) {
@@ -615,11 +623,14 @@
 		font-size: 18px;
 		height: auto;
 		min-height: 40px;
-		max-width: 250px;
-		padding: 8px 5px;
+		width: fit-content;
+		min-width: 80px;
+		max-width: 160px;
+		padding: 8px 10px;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
 		white-space: normal;
+		margin: 0 auto; /* Center the cards on very small screens */
 	}
 
 	.personalityPrompt {
@@ -628,5 +639,9 @@
 
 	.personalityTopText {
 		font-size: 18px;
+	}
+
+	.personalityContent {
+		padding: 0 5px; /* Reduce padding further on very small screens */
 	}
 }

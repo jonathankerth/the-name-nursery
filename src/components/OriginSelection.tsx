@@ -106,8 +106,8 @@ export default function OriginSelection({
 						names starting with {selectedLetter}
 					</div>
 					<div className={styles.secondRow}>
-						for a baby who&apos;s {selectedPersonality} & inspired by{" "}
-						{selectedInspiration}
+						for a baby who&apos;s {selectedPersonality}
+						{selectedInspiration && ` & inspired by ${selectedInspiration}`}
 					</div>
 				</div>
 			</div>

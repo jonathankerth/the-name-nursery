@@ -15,6 +15,11 @@ export async function POST(request: NextRequest) {
 				"literature",
 				"science",
 				"sports",
+				"animals",
+				"flowers",
+				"colors",
+				"stars",
+				"oceans",
 			];
 			return NextResponse.json({
 				inspirations: fallbackInspirations,
@@ -26,7 +31,7 @@ export async function POST(request: NextRequest) {
 			apiKey: process.env.OPENAI_API_KEY,
 		});
 
-		const prompt = `Generate 7 unique inspiration themes for baby names. These should be concrete themes that commonly inspire baby name choices.
+		const prompt = `Generate 12 unique inspiration themes for baby names. These should be concrete themes that commonly inspire baby name choices.
 
 ${
 	usedInspirations.length > 0
@@ -36,13 +41,13 @@ ${
 		: ""
 }
 
-Return ONLY a JSON array of exactly 7 different inspiration themes. Each theme should be a single word or short phrase (1-2 words max) that represents a category commonly used for baby name inspiration.
+Return ONLY a JSON array of exactly 12 different inspiration themes. Each theme should be a single word or short phrase (1-2 words max) that represents a category commonly used for baby name inspiration.
 
 Focus on themes that are visual, cultural, natural, or aspirational and work well for naming babies. Mix different types of themes for maximum variety: some from nature, some from culture, some from qualities, some from places, etc.
 
 Examples of good themes: "nature", "flowers", "animals", "colors", "gems", "trees", "birds", "oceans", "mountains", "stars", "music", "art", "dance", "books", "sports", "travel", "virtues", "qualities", "seasons", "weather", "food", "spices", "mythology", "history", "countries", "cities", "rivers", "lakes", "forests", "deserts", "islands", "continents", "planets", "constellations", "minerals", "metals", "fabrics", "instruments", "painting", "sculpture", "poetry", "theater", "film", "photography"
 
-Avoid abstract concepts like "elements", "innovation", "dreams", "legacy", "technology", "fantasy". Focus on tangible, name-inspiring categories and ensure high variety across different theme types. Return format: ["theme1", "theme2", "theme3", "theme4", "theme5", "theme6", "theme7"]`;
+Avoid abstract concepts like "elements", "innovation", "dreams", "legacy", "technology", "fantasy". Focus on tangible, name-inspiring categories and ensure high variety across different theme types. Return format: ["theme1", "theme2", "theme3", "theme4", "theme5", "theme6", "theme7", "theme8", "theme9", "theme10", "theme11", "theme12"]`;
 
 		const completion = await openai.chat.completions.create({
 			model: process.env.OPENAI_MODEL || "gpt-4o-mini",
@@ -77,7 +82,7 @@ Avoid abstract concepts like "elements", "innovation", "dreams", "legacy", "tech
 			}
 
 			// Ensure we have an array of strings
-			if (!Array.isArray(inspirations) || inspirations.length !== 7) {
+			if (!Array.isArray(inspirations) || inspirations.length !== 12) {
 				throw new Error("Invalid response format");
 			}
 		} catch {
@@ -90,6 +95,11 @@ Avoid abstract concepts like "elements", "innovation", "dreams", "legacy", "tech
 				"literature",
 				"science",
 				"sports",
+				"animals",
+				"flowers",
+				"colors",
+				"stars",
+				"oceans",
 			];
 		}
 
@@ -107,6 +117,11 @@ Avoid abstract concepts like "elements", "innovation", "dreams", "legacy", "tech
 			"literature",
 			"science",
 			"sports",
+			"animals",
+			"flowers",
+			"colors",
+			"stars",
+			"oceans",
 		];
 
 		return NextResponse.json({

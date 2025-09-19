@@ -258,21 +258,47 @@ export default function NamesResults({
 						}}
 					>
 						{gender.charAt(0).toUpperCase() + gender.slice(1)} names starting
-						with {letter}
+						with {letter}{" "}
 					</h1>
 					<p className={styles.subtitle} style={{ color: headerColor }}>
 						<span className={styles.subtitleSpan}>
 							<span style={{ fontWeight: "normal" }}>For a </span>
-							<span style={{ fontWeight: "bold" }}>{personality}</span>
-							<span style={{ fontWeight: "normal" }}> baby inspired by </span>
-							<span style={{ fontWeight: "bold" }}>{inspiration}</span>
-							<span style={{ fontWeight: "normal" }}> with </span>
-							<span style={{ fontWeight: "bold" }}>{origin}</span>
-							<span style={{ fontWeight: "normal" }}> origin</span>
+							<span style={{ fontWeight: "normal" }}>{personality}</span>
+							{inspiration && (
+								<>
+									<span style={{ fontWeight: "normal" }}>
+										{" "}
+										baby who is inspired by{" "}
+									</span>
+									<span style={{ fontWeight: "normal" }}>{inspiration}</span>
+									{origin ? (
+										<>
+											<span style={{ fontWeight: "normal" }}> with </span>
+											<span style={{ fontWeight: "normal" }}>{origin}</span>
+											<span style={{ fontWeight: "normal" }}> origin.</span>
+										</>
+									) : (
+										<span style={{ fontWeight: "normal" }}>.</span>
+									)}
+								</>
+							)}
+							{!inspiration && (
+								<>
+									<span style={{ fontWeight: "normal" }}> baby</span>
+									{origin && (
+										<>
+											<span style={{ fontWeight: "normal" }}> with </span>
+											<span style={{ fontWeight: "normal" }}>{origin}</span>
+											<span style={{ fontWeight: "normal" }}> origin.</span>
+										</>
+									)}
+									{!origin && <span style={{ fontWeight: "normal" }}>.</span>}
+								</>
+							)}
 						</span>
 					</p>
 					{isAIGenerated && (
-						<p className={styles.subtitle} style={{ color: headerColor }}>
+						<p className={styles.subtitle} style={{ color: headerColor, fontSize: '1rem' }}>
 							<span style={{ fontWeight: "normal" }}>✨ </span>
 							<span style={{ fontWeight: "bold" }}>AI-curated</span>
 							<span style={{ fontWeight: "normal" }}>

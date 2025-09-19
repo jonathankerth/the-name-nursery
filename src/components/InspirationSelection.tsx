@@ -16,6 +16,7 @@ interface InspirationSelectionProps {
 	headerColor: string;
 	loadingInspirations: boolean;
 	fetchInspirations: () => void;
+	onSkip?: () => void;
 }
 
 export default function InspirationSelection({
@@ -28,6 +29,7 @@ export default function InspirationSelection({
 	headerColor,
 	loadingInspirations,
 	fetchInspirations,
+	onSkip,
 }: InspirationSelectionProps) {
 	// Function to get more inspiration suggestions (generate new ones from AI)
 	const getMoreSuggestions = () => {
@@ -83,18 +85,42 @@ export default function InspirationSelection({
 								))}
 							</div>
 
-							<button
-								type="button"
-								className={styles.moreSuggestionsButton}
+							<div
 								style={{
-									color: headerColor,
-									borderColor: headerColor,
+									display: "flex",
+									gap: "0.5rem",
+									alignItems: "center",
+									justifyContent: "center",
+									flexWrap: "wrap",
 								}}
-								onClick={getMoreSuggestions}
-								disabled={loadingInspirations}
 							>
-								{loadingInspirations ? "Generating..." : "More Suggestions"}
-							</button>
+								<button
+									type="button"
+									className={styles.moreSuggestionsButton}
+									style={{
+										color: headerColor,
+										borderColor: headerColor,
+									}}
+									onClick={getMoreSuggestions}
+									disabled={loadingInspirations}
+								>
+									{loadingInspirations ? "Generating..." : "More Suggestions"}
+								</button>
+
+								{onSkip && (
+									<button
+										type="button"
+										className={styles.moreSuggestionsButton}
+										style={{
+											color: headerColor,
+											borderColor: headerColor,
+										}}
+										onClick={onSkip}
+									>
+										Skip
+									</button>
+								)}
+							</div>
 						</>
 					) : (
 						<div
