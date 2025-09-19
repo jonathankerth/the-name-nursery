@@ -14,6 +14,8 @@ interface InspirationSelectionProps {
 	setSelectedInspiration: (inspiration: string) => void;
 	inspirationOptions: InspirationOption[];
 	headerColor: string;
+	loadingInspirations: boolean;
+	fetchInspirations: () => void;
 }
 
 export default function InspirationSelection({
@@ -24,80 +26,86 @@ export default function InspirationSelection({
 	setSelectedInspiration,
 	inspirationOptions,
 	headerColor,
+	loadingInspirations,
+	fetchInspirations,
 }: InspirationSelectionProps) {
-	// Function to get more inspiration suggestions (for now, just cycle through options)
+	// Function to get more inspiration suggestions (generate new ones from AI)
 	const getMoreSuggestions = () => {
-		// Could implement shuffling or cycling through different inspiration sets
-		// For now, just keep the same options
+		fetchInspirations();
+		// Clear current selection to force user to pick again
+		setSelectedInspiration("");
 	};
 
 	return (
 		<div className={styles.personalityContent}>
-			<div
-				className={styles.personalityTopText}
-				style={{ color: headerColor }}
-			>
+			<div className={styles.personalityTopText} style={{ color: headerColor }}>
 				<span className={styles.selectedType}>
-					{selectedGender.charAt(0).toUpperCase() +
-						selectedGender.slice(1)}
+					{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
 				</span>{" "}
 				names starting with {selectedLetter} for a baby who is{" "}
 				{selectedPersonality}
 			</div>
 
-			<div
-				className={styles.personalityPrompt}
-				style={{ color: headerColor }}
-			>
+			<div className={styles.personalityPrompt} style={{ color: headerColor }}>
 				Inspired by...
 			</div>
 
-			<div>
-				{Array.isArray(inspirationOptions) &&
-				inspirationOptions.length > 0 ? (
-					<>
-						<div className={styles.adjectiveGrid}>
-							{inspirationOptions.map((option) => (
-								<button
-									key={option.value}
-									type="button"
-									className={`${styles.adjectiveCard} ${
-										selectedInspiration === option.value
-											? styles.selected
-											: ""
-									}`}
-									style={{
-										color: headerColor,
-										borderColor: headerColor,
-									}}
-									onClick={() => setSelectedInspiration(option.value)}
-								>
-									{option.label}
-								</button>
-							))}
-						</div>
+			{loadingInspirations ? (
+				<div
+					className={styles.loadingAdjectives}
+					style={{ color: headerColor }}
+				>
+					Loading inspiration options...
+				</div>
+			) : (
+				<div>
+					{Array.isArray(inspirationOptions) &&
+					inspirationOptions.length > 0 ? (
+						<>
+							<div className={styles.adjectiveGrid}>
+								{inspirationOptions.map((option) => (
+									<button
+										key={option.value}
+										type="button"
+										className={`${styles.adjectiveCard} ${
+											selectedInspiration === option.value
+												? styles.selected
+												: ""
+										}`}
+										style={{
+											color: headerColor,
+											borderColor: headerColor,
+										}}
+										onClick={() => setSelectedInspiration(option.value)}
+									>
+										{option.label}
+									</button>
+								))}
+							</div>
 
-						<button
-							type="button"
-							className={styles.moreSuggestionsButton}
-							style={{
-								color: headerColor,
-								borderColor: headerColor,
-							}}
-							onClick={getMoreSuggestions}
+							<button
+								type="button"
+								className={styles.moreSuggestionsButton}
+								style={{
+									color: headerColor,
+									borderColor: headerColor,
+								}}
+								onClick={getMoreSuggestions}
+								disabled={loadingInspirations}
+							>
+								{loadingInspirations ? "Generating..." : "More Suggestions"}
+							</button>
+						</>
+					) : (
+						<div
+							className={styles.loadingAdjectives}
+							style={{ color: headerColor }}
 						>
-							More Suggestions
-						</button>
-					</>
-				) : (
-					<div
-						className={styles.loadingAdjectives}
-						style={{ color: headerColor }}
-					>
-						Loading inspiration options...
-					</div>
-				)}
-			</div>
+							Loading inspiration options...
+						</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 }

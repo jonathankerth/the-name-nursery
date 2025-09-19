@@ -117,63 +117,6 @@ export default function RootLayout({
 				suppressHydrationWarning={true}
 			>
 				{/* Firebase Warning Suppression */}
-				<Script
-					id="firebase-warning-suppression"
-					strategy="beforeInteractive"
-					dangerouslySetInnerHTML={{
-						__html: `
-							// Completely suppress Firebase connection warnings in development
-							if (typeof window !== 'undefined' && typeof console !== 'undefined') {
-								const originalWarn = console.warn;
-								const originalError = console.error;
-								const originalLog = console.log;
-								
-								console.warn = function(...args) {
-									const message = args.join(' ');
-									if (
-										message.includes('webchannel') ||
-										message.includes('persistent_stream') ||
-										message.includes('stream_bridge') ||
-										message.includes('Firestore') ||
-										message.includes('backoff') ||
-										message.includes('remote_store') ||
-										message.includes('async_queue') ||
-										message.includes('defaultLogHandler') ||
-										message.includes('__PRIVATE_')
-									) {
-										return; // Don't log Firebase internal warnings
-									}
-									originalWarn.apply(console, args);
-								};
-								
-								console.error = function(...args) {
-									const message = args.join(' ');
-									if (
-										message.includes('webchannel') ||
-										message.includes('persistent_stream') ||
-										message.includes('stream_bridge') ||
-										message.includes('backoff') ||
-										message.includes('remote_store') ||
-										message.includes('__PRIVATE_')
-									) {
-										return; // Don't log Firebase internal errors
-									}
-									originalError.apply(console, args);
-								};
-								
-								console.log = function(...args) {
-									const message = args.join(' ');
-									if (
-										message.includes('Firebase initialized successfully')
-									) {
-										return; // Don't log our Firebase init message
-									}
-									originalLog.apply(console, args);
-								};
-							}
-						`,
-					}}
-				/>
 				{/* Schema.org structured data */}
 				<Script
 					id="schema-organization"

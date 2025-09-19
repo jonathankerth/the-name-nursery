@@ -167,8 +167,7 @@ export const getUserLikedNames = async (
 		}
 
 		return likedNames;
-	} catch (error) {
-		console.error("Error fetching liked names:", error);
+	} catch {
 		return [];
 	}
 };

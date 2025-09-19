@@ -503,7 +503,6 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 		if (error instanceof Error && error.message.includes("permissions")) {
 			return [];
 		}
-		console.error("Error fetching blog posts:", error);
 		return [];
 	}
 }
@@ -518,8 +517,7 @@ export async function addBlogPost(
 			createdAt: Timestamp.now(),
 		});
 		return docRef.id;
-	} catch (error) {
-		console.error("Error adding blog post:", error);
+	} catch {
 		return null;
 	}
 }
@@ -530,7 +528,6 @@ export async function initializeBlogPosts(): Promise<void> {
 		// Check if posts already exist
 		const existingPosts = await getBlogPosts();
 		if (existingPosts.length > 0) {
-			console.log("Blog posts already initialized");
 			return;
 		}
 
@@ -538,14 +535,10 @@ export async function initializeBlogPosts(): Promise<void> {
 		for (const post of initialBlogPosts) {
 			await addBlogPost(post);
 		}
-
-		console.log("Blog posts initialized successfully");
-	} catch (error) {
-		console.error("Error initializing blog posts:", error);
+	} catch {
+		// Silently handle initialization errors
 	}
 }
-
-// Check if it's time to generate a new post (3 days since last post)
 export async function shouldGenerateNewPost(): Promise<boolean> {
 	try {
 		const threeDaysAgo = new Date();
@@ -577,8 +570,7 @@ export async function shouldGenerateNewPost(): Promise<boolean> {
 		const lastPostDate = lastAIPost.data().createdAt.toDate();
 
 		return lastPostDate < threeDaysAgo;
-	} catch (error) {
-		console.error("Error checking if should generate new post:", error);
+	} catch {
 		return false;
 	}
 }
@@ -606,8 +598,7 @@ export async function generateAndSaveNewPost(): Promise<BlogPost | null> {
 		}
 
 		return null;
-	} catch (error) {
-		console.error("Error generating and saving new post:", error);
+	} catch {
 		return null;
 	}
 }

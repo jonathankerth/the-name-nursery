@@ -39,19 +39,10 @@ export const db = getFirestore(app);
 if (typeof window !== "undefined") {
 	// Client-side only configuration to reduce connection warnings
 	try {
-		// Suppress internal Firebase warnings during initialization
-		const originalWarn = console.warn;
-		console.warn = () => {}; // Temporarily suppress warnings
-
 		// Re-enable network if it was disabled (helps with connection stability)
 		enableNetwork(db).catch(() => {
 			// Network might already be enabled, ignore error
 		});
-
-		// Restore console after initialization
-		setTimeout(() => {
-			console.warn = originalWarn;
-		}, 1000);
 	} catch {
 		// Ignore Firebase configuration errors during development
 	}

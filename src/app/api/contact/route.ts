@@ -22,13 +22,6 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Log the contact message (server-side logging)
-		console.log("📧 New contact message received:");
-		console.log("From:", name, `<${email}>`);
-		console.log("Subject:", subject);
-		console.log("Message:", message);
-		console.log("Timestamp:", new Date().toISOString());
-
 		// Return success (client will handle Firestore saving)
 		return NextResponse.json(
 			{
@@ -37,13 +30,11 @@ export async function POST(request: NextRequest) {
 			},
 			{ status: 200 }
 		);
-	} catch (error) {
-		console.error("Error processing contact message:", error);
-
+	} catch {
 		return NextResponse.json(
 			{
 				error: "Failed to process message. Please try again later.",
-				details: error instanceof Error ? error.message : "Unknown error",
+				details: "Unknown error",
 			},
 			{ status: 500 }
 		);

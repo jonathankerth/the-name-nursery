@@ -179,8 +179,7 @@ export async function GET(request: NextRequest) {
 			success: false,
 			error: "Invalid action. Use ?action=generate or ?action=list",
 		});
-	} catch (error) {
-		console.error("Error in generate-article API:", error);
+	} catch {
 		return NextResponse.json(
 			{ success: false, error: "Failed to generate article" },
 			{ status: 500 }
@@ -214,8 +213,7 @@ export async function POST(request: NextRequest) {
 			success: false,
 			error: "Missing required fields",
 		});
-	} catch (error) {
-		console.error("Error in generate-article POST:", error);
+	} catch {
 		return NextResponse.json(
 			{ success: false, error: "Failed to process request" },
 			{ status: 500 }

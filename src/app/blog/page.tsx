@@ -67,15 +67,11 @@ export default function BlogPage() {
 		const loadContent = async () => {
 			setLoading(true);
 			try {
-				console.log("Starting blog initialization...");
-
 				// First try to initialize blog posts in Firebase if needed
 				await initializeBlogPosts();
-				console.log("Blog initialization completed");
 
 				// Then get posts from Firebase
 				const posts = await getBlogPosts();
-				console.log("Retrieved posts from Firebase:", posts.length);
 
 				setBlogPosts(posts);
 
@@ -83,15 +79,13 @@ export default function BlogPage() {
 				if (posts.length > 0) {
 					const shouldGenerate = await shouldGenerateNewPost();
 					if (shouldGenerate) {
-						console.log("Generating new AI post...");
 						const newPost = await generateAndSaveNewPost();
 						if (newPost) {
 							setBlogPosts((prev) => [newPost, ...prev]);
 						}
 					}
 				}
-			} catch (error) {
-				console.error("Error loading blog content:", error);
+			} catch {
 				// Set empty array on error - no fallbacks
 				setBlogPosts([]);
 			} finally {

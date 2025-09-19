@@ -53,6 +53,14 @@ export default function Home() {
 
 	const [loadingAdjectives, setLoadingAdjectives] = useState(false);
 
+	const [loadingInspirations, setLoadingInspirations] = useState(false);
+
+	// Track used adjectives across the session to avoid duplicates
+	const [usedAdjectives, setUsedAdjectives] = useState<string[]>([]);
+
+	// Track used inspirations across the session to avoid duplicates
+	const [usedInspirations, setUsedInspirations] = useState<string[]>([]);
+
 	const genderOptions = useMemo(
 		() => [
 			{
@@ -70,18 +78,15 @@ export default function Home() {
 		[]
 	);
 
-	const inspirationOptions = useMemo(
-		() => [
-			{ label: "nature", value: "nature" },
-			{ label: "virtues", value: "virtues" },
-			{ label: "flowers", value: "flowers" },
-			{ label: "gemstones", value: "gemstones" },
-			{ label: "colors", value: "colors" },
-			{ label: "seasons", value: "seasons" },
-			{ label: "stars", value: "stars" },
-		],
-		[]
-	);
+	const [inspirationOptions, setInspirationOptions] = useState([
+		{ label: "nature", value: "nature" },
+		{ label: "music", value: "music" },
+		{ label: "art", value: "art" },
+		{ label: "dance", value: "dance" },
+		{ label: "literature", value: "literature" },
+		{ label: "science", value: "science" },
+		{ label: "sports", value: "sports" },
+	]);
 
 	const originOptions = useMemo(
 		() => [
@@ -230,10 +235,6 @@ export default function Home() {
 
 	// Function to fetch adjectives from AI
 	const fetchAdjectives = useCallback(async () => {
-		console.log("fetchAdjectives called with:", {
-			gender: selectedGender,
-			letter: selectedLetter,
-		});
 		setLoadingAdjectives(true);
 		try {
 			const response = await fetch("/api/generate-adjectives", {
@@ -242,24 +243,24 @@ export default function Home() {
 					"Content-Type": "application/json",
 				},
 				body: JSON.stringify({
-					gender: selectedGender,
-					letter: selectedLetter,
+					usedAdjectives: usedAdjectives,
 				}),
 			});
-
-			console.log("Response status:", response.status, response.statusText);
 
 			if (!response.ok) {
 				throw new Error(`Failed to fetch adjectives: ${response.status}`);
 			}
 
 			const data = await response.json();
-			console.log("Response data:", data);
 			const adjectives = Array.isArray(data.adjectives) ? data.adjectives : [];
-			console.log("Setting adjectives to:", adjectives);
+			const updatedUsedAdjectives = Array.isArray(data.usedAdjectives)
+				? data.usedAdjectives
+				: [...usedAdjectives, ...adjectives];
 			setPersonalityAdjectives(adjectives);
-		} catch (error) {
-			console.error("Error fetching adjectives:", error);
+
+			// Update the used adjectives list from the API response
+			setUsedAdjectives(updatedUsedAdjectives);
+		} catch {
 			// Fallback adjectives
 			const fallbackAdjectives = [
 				"strong",
@@ -272,21 +273,81 @@ export default function Home() {
 				"spirited",
 				"kind",
 			];
-			console.log("Setting fallback adjectives:", fallbackAdjectives);
 			setPersonalityAdjectives(fallbackAdjectives);
 		} finally {
 			setLoadingAdjectives(false);
 		}
-	}, [selectedGender, selectedLetter]);
+	}, [usedAdjectives]);
+
+	// Function to fetch inspirations from AI
+	const fetchInspirations = useCallback(async () => {
+		setLoadingInspirations(true);
+		try {
+			const response = await fetch("/api/generate-inspirations", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					usedInspirations: usedInspirations,
+				}),
+			});
+
+			if (!response.ok) {
+				throw new Error(`Failed to fetch inspirations: ${response.status}`);
+			}
+
+			const data = await response.json();
+			const inspirations = Array.isArray(data.inspirations)
+				? data.inspirations
+				: [];
+			const updatedUsedInspirations = Array.isArray(data.usedInspirations)
+				? data.usedInspirations
+				: [...usedInspirations, ...inspirations];
+			const inspirationObjects = inspirations.map((insp: string) => ({
+				label: insp,
+				value: insp,
+			}));
+			setInspirationOptions(inspirationObjects);
+
+			// Update the used inspirations list from the API response
+			setUsedInspirations(updatedUsedInspirations);
+		} catch {
+			// Fallback inspirations
+			const fallbackInspirations = [
+				"nature",
+				"music",
+				"art",
+				"dance",
+				"literature",
+				"science",
+				"sports",
+			];
+			const fallbackObjects = fallbackInspirations.map((insp) => ({
+				label: insp,
+				value: insp,
+			}));
+			setInspirationOptions(fallbackObjects);
+		} finally {
+			setLoadingInspirations(false);
+		}
+	}, [usedInspirations]);
 
 	// Fetch adjectives when entering personality step
 	useEffect(() => {
-		console.log("Personality useEffect - currentStep:", currentStep);
 		if (currentStep === "personality") {
-			console.log("On personality step, fetching new adjectives...");
 			fetchAdjectives();
 		}
-	}, [currentStep, fetchAdjectives]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentStep]); // Removed fetchAdjectives from deps to prevent infinite loop
+
+	// Fetch inspirations when entering inspiration step
+	useEffect(() => {
+		if (currentStep === "inspiration") {
+			fetchInspirations();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentStep]); // Removed fetchInspirations from deps to prevent infinite loop
 
 	const wheelColor = darken(pageColors[selectedGender] || "#111827", 0.5);
 	const headerColor = darken(pageColors[selectedGender] || "#111827", 0.6);
@@ -378,7 +439,8 @@ export default function Home() {
 						(opt) => opt.value === selectedInspiration
 					);
 					const prevIdx =
-						(currentIdx - 1 + inspirationOptions.length) % inspirationOptions.length;
+						(currentIdx - 1 + inspirationOptions.length) %
+						inspirationOptions.length;
 					setSelectedInspiration(inspirationOptions[prevIdx].value);
 				} else if (e.key === "Enter") {
 					e.preventDefault();
@@ -601,6 +663,8 @@ export default function Home() {
 							selectedInspiration={selectedInspiration}
 							setSelectedInspiration={setSelectedInspiration}
 							inspirationOptions={inspirationOptions}
+							loadingInspirations={loadingInspirations}
+							fetchInspirations={fetchInspirations}
 							headerColor={headerColor}
 						/>
 					</NavigationLayout>

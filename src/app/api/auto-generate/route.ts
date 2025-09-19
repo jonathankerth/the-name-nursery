@@ -102,8 +102,7 @@ export async function GET(request: NextRequest) {
 			error:
 				"Invalid action. Use ?action=check, ?action=generate, or ?action=reset",
 		});
-	} catch (error) {
-		console.error("Error in auto-generate API:", error);
+	} catch {
 		return NextResponse.json(
 			{ success: false, error: "Failed to process auto-generation request" },
 			{ status: 500 }
@@ -141,8 +140,7 @@ export async function POST(request: NextRequest) {
 			success: false,
 			error: "Invalid request",
 		});
-	} catch (error) {
-		console.error("Error in auto-generate POST:", error);
+	} catch {
 		return NextResponse.json(
 			{ success: false, error: "Failed to process request" },
 			{ status: 500 }

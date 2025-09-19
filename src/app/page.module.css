@@ -529,11 +529,15 @@
 	transition: all 0.2s ease;
 	font-family: "Extra Beige", serif;
 	font-weight: 400;
-	font-size: 32px;
+	font-size: 24px;
 	line-height: 100%;
 	letter-spacing: 0%;
 	background: transparent;
 	text-align: center;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	white-space: normal;
+	min-height: 50px;
 }
 
 .adjectiveCard:hover {
@@ -588,8 +592,13 @@
 	.adjectiveCard {
 		width: 100%;
 		max-width: 280px;
-		height: 45px;
-		font-size: 28px;
+		height: auto;
+		min-height: 45px;
+		font-size: 21px;
+		padding: 8px 5px;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		white-space: normal;
 	}
 
 	.personalityPrompt {
@@ -603,9 +612,14 @@
 
 @media (max-width: 480px) {
 	.adjectiveCard {
-		font-size: 22px;
-		height: 40px;
+		font-size: 18px;
+		height: auto;
+		min-height: 40px;
 		max-width: 250px;
+		padding: 8px 5px;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		white-space: normal;
 	}
 
 	.personalityPrompt {
