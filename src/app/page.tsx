@@ -1,12 +1,16 @@
 "use client";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import Image from "next/image";
 import styles from "./page.module.css";
 import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
 import NamesResults from "../components/NamesResults";
 import NavigationLayout from "../components/NavigationLayout";
 import ProfileButton from "../components/ProfileButton";
+import GenderSelection from "../components/GenderSelection";
+import LetterSelection from "../components/LetterSelection";
+import PersonalitySelection from "../components/PersonalitySelection";
+import InspirationSelection from "../components/InspirationSelection";
+import OriginSelection from "../components/OriginSelection";
 import {
 	trackNameSearch,
 	trackNameView,
@@ -49,20 +53,15 @@ export default function Home() {
 
 	const [loadingAdjectives, setLoadingAdjectives] = useState(false);
 
-	// Helper function to safely prevent default
-	const safePreventDefault = (e: Event | React.SyntheticEvent) => {
-		try {
-			e.preventDefault();
-		} catch {
-			// Ignore passive event listener error on mobile
-		}
-	};
-
 	const genderOptions = useMemo(
 		() => [
-			{ label: "Baby", value: "baby", icon: "/icons/stroller_icon.png" },
-			{ label: "Girl", value: "girl", icon: "/icons/raddle_icon.png" },
-			{ label: "Boy", value: "boy", icon: "/icons/bear_icon.png" },
+			{
+				label: "Baby",
+				value: "baby" as const,
+				icon: "/icons/stroller_icon.png",
+			},
+			{ label: "Girl", value: "girl" as const, icon: "/icons/raddle_icon.png" },
+			{ label: "Boy", value: "boy" as const, icon: "/icons/bear_icon.png" },
 		],
 		[]
 	);
@@ -99,27 +98,9 @@ export default function Home() {
 
 	// Letter selection state
 	const [letterIndex, setLetterIndex] = useState(0);
-	const letterScrollRef = useRef<number>(0);
-	const letterTouchStartRef = useRef<number | null>(null);
-	const letterWheelRef = useRef<HTMLDivElement | null>(null);
-	const letterDragStartRef = useRef<number | null>(null);
-	const letterIsDraggingRef = useRef<boolean>(false);
-
-	// Inspiration selection state
-	const [inspirationIndex, setInspirationIndex] = useState(0);
-	const inspirationScrollRef = useRef<number>(0);
-	const inspirationTouchStartRef = useRef<number | null>(null);
-	const inspirationWheelRef = useRef<HTMLDivElement | null>(null);
-	const inspirationDragStartRef = useRef<number | null>(null);
-	const inspirationIsDraggingRef = useRef<boolean>(false);
 
 	// Origin selection state
 	const [originIndex, setOriginIndex] = useState(0);
-	const originScrollRef = useRef<number>(0);
-	const originTouchStartRef = useRef<number | null>(null);
-	const originWheelRef = useRef<HTMLDivElement | null>(null);
-	const originDragStartRef = useRef<number | null>(null);
-	const originIsDraggingRef = useRef<boolean>(false);
 
 	const pageColors = useMemo(
 		() => ({
@@ -236,6 +217,12 @@ export default function Home() {
 		const toHex = (v: number) => v.toString(16).padStart(2, "0");
 		return `#${toHex(dr)}${toHex(dg)}${toHex(db)}`;
 	};
+
+	const handleSkipOrigin = useCallback(() => {
+		// Set a default origin (first option) and proceed to generate names
+		setSelectedOrigin(originOptions[0].value);
+		fetchNameRecommendations();
+	}, [originOptions, fetchNameRecommendations]);
 
 	const handleNamesUpdate = useCallback((newNames: string[]) => {
 		setRecommendedNames(newNames);
@@ -380,13 +367,19 @@ export default function Home() {
 			} else if (currentStep === "inspiration") {
 				if (e.key === "ArrowDown" || e.key === "ArrowRight") {
 					e.preventDefault();
-					setInspirationIndex((i) => (i + 1) % inspirationOptions.length);
+					const currentIdx = inspirationOptions.findIndex(
+						(opt) => opt.value === selectedInspiration
+					);
+					const nextIdx = (currentIdx + 1) % inspirationOptions.length;
+					setSelectedInspiration(inspirationOptions[nextIdx].value);
 				} else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
 					e.preventDefault();
-					setInspirationIndex(
-						(i) =>
-							(i - 1 + inspirationOptions.length) % inspirationOptions.length
+					const currentIdx = inspirationOptions.findIndex(
+						(opt) => opt.value === selectedInspiration
 					);
+					const prevIdx =
+						(currentIdx - 1 + inspirationOptions.length) % inspirationOptions.length;
+					setSelectedInspiration(inspirationOptions[prevIdx].value);
 				} else if (e.key === "Enter") {
 					e.preventDefault();
 					trackStepProgression("inspiration", "origin");
@@ -423,243 +416,17 @@ export default function Home() {
 	}, [
 		currentStep,
 		alphabet.length,
-		inspirationOptions.length,
+		inspirationOptions,
 		originOptions.length,
 		genderOptions,
 		selectedGender,
 		selectedPersonality,
+		selectedInspiration,
 		fetchNameRecommendations,
 	]);
 
-	// Letter wheel handlers
-	const onLetterWheel = (e: React.WheelEvent) => {
-		safePreventDefault(e);
-		const now = Date.now();
-		if (now - letterScrollRef.current < 120) return;
-		if (Math.abs(e.deltaY) < 5) return;
-		letterScrollRef.current = now;
-		setLetterIndex(
-			(i) => (i + (e.deltaY > 0 ? 1 : -1) + alphabet.length) % alphabet.length
-		);
-	};
-
-	const onLetterMouseDown = (e: React.MouseEvent) => {
-		letterDragStartRef.current = e.clientY;
-		letterIsDraggingRef.current = false;
-		e.preventDefault();
-	};
-
-	const onLetterMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (letterDragStartRef.current === null) return;
-
-			const deltaY = e.clientY - letterDragStartRef.current;
-			if (Math.abs(deltaY) > 10) {
-				letterIsDraggingRef.current = true;
-			}
-
-			if (letterIsDraggingRef.current) {
-				const dragThreshold = 30; // pixels per item
-				const indexChange = Math.round(deltaY / dragThreshold);
-				if (indexChange !== 0) {
-					setLetterIndex((i) => {
-						const newIndex =
-							(i - indexChange + alphabet.length) % alphabet.length;
-						letterDragStartRef.current = e.clientY; // Reset for continuous dragging
-						return newIndex;
-					});
-				}
-			}
-		},
-		[alphabet.length]
-	);
-
-	const onLetterMouseUp = useCallback(() => {
-		letterDragStartRef.current = null;
-		letterIsDraggingRef.current = false;
-	}, []);
-
-	const onLetterTouchStart = (e: React.TouchEvent) => {
-		letterTouchStartRef.current = e.touches[0].clientY;
-		e.stopPropagation();
-	};
-
-	const onLetterTouchMove = (e: React.TouchEvent) => {
-		e.stopPropagation();
-	};
-
-	const onLetterTouchEnd = (e: React.TouchEvent) => {
-		if (letterTouchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - letterTouchStartRef.current;
-		if (Math.abs(delta) > 20) {
-			setLetterIndex(
-				(i) => (i + (delta > 0 ? -1 : 1) + alphabet.length) % alphabet.length
-			);
-			safePreventDefault(e);
-		}
-		letterTouchStartRef.current = null;
-		e.stopPropagation();
-	};
-
 	// Elevator shaft ref and height calculation
 	const elevatorShaftRef = useRef<HTMLDivElement>(null);
-
-	const onInspirationWheel = (e: React.WheelEvent) => {
-		safePreventDefault(e);
-		const now = Date.now();
-		if (now - inspirationScrollRef.current < 120) return;
-		if (Math.abs(e.deltaY) < 5) return;
-		inspirationScrollRef.current = now;
-		setInspirationIndex(
-			(i) =>
-				(i + (e.deltaY > 0 ? 1 : -1) + inspirationOptions.length) %
-				inspirationOptions.length
-		);
-	};
-
-	const onInspirationMouseDown = (e: React.MouseEvent) => {
-		inspirationDragStartRef.current = e.clientY;
-		inspirationIsDraggingRef.current = false;
-		e.preventDefault();
-	};
-
-	const onInspirationMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (inspirationDragStartRef.current === null) return;
-
-			const deltaY = e.clientY - inspirationDragStartRef.current;
-			if (Math.abs(deltaY) > 10) {
-				inspirationIsDraggingRef.current = true;
-			}
-
-			if (inspirationIsDraggingRef.current) {
-				const dragThreshold = 30; // pixels per item
-				const indexChange = Math.round(deltaY / dragThreshold);
-				if (indexChange !== 0) {
-					setInspirationIndex((i) => {
-						const newIndex =
-							(i - indexChange + inspirationOptions.length) %
-							inspirationOptions.length;
-						inspirationDragStartRef.current = e.clientY; // Reset for continuous dragging
-						return newIndex;
-					});
-				}
-			}
-		},
-		[inspirationOptions.length]
-	);
-
-	const onInspirationMouseUp = useCallback(() => {
-		inspirationDragStartRef.current = null;
-		inspirationIsDraggingRef.current = false;
-	}, []);
-
-	const onInspirationTouchStart = (e: React.TouchEvent) => {
-		inspirationTouchStartRef.current = e.touches[0].clientY;
-		e.stopPropagation();
-	};
-
-	const onInspirationTouchMove = (e: React.TouchEvent) => {
-		e.stopPropagation();
-	};
-
-	const onInspirationTouchEnd = (e: React.TouchEvent) => {
-		if (inspirationTouchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - inspirationTouchStartRef.current;
-		if (Math.abs(delta) > 20) {
-			setInspirationIndex(
-				(i) =>
-					(i + (delta > 0 ? -1 : 1) + inspirationOptions.length) %
-					inspirationOptions.length
-			);
-			safePreventDefault(e);
-		}
-		inspirationTouchStartRef.current = null;
-		e.stopPropagation();
-	};
-
-	// Inspiration wheel handlers
-	const onOriginWheel = (e: React.WheelEvent) => {
-		safePreventDefault(e);
-		const now = Date.now();
-		if (now - originScrollRef.current < 120) return;
-		if (Math.abs(e.deltaY) < 5) return;
-		originScrollRef.current = now;
-		setOriginIndex(
-			(i) =>
-				(i + (e.deltaY > 0 ? 1 : -1) + originOptions.length) %
-				originOptions.length
-		);
-	};
-
-	const onOriginMouseDown = (e: React.MouseEvent) => {
-		originDragStartRef.current = e.clientY;
-		originIsDraggingRef.current = false;
-		e.preventDefault();
-	};
-
-	const onOriginMouseMove = useCallback(
-		(e: MouseEvent) => {
-			if (originDragStartRef.current === null) return;
-
-			const deltaY = e.clientY - originDragStartRef.current;
-			if (Math.abs(deltaY) > 10) {
-				originIsDraggingRef.current = true;
-			}
-
-			if (originIsDraggingRef.current) {
-				const dragThreshold = 30; // pixels per item
-				const indexChange = Math.round(deltaY / dragThreshold);
-				if (indexChange !== 0) {
-					setOriginIndex((i) => {
-						const newIndex =
-							(i - indexChange + originOptions.length) % originOptions.length;
-						originDragStartRef.current = e.clientY; // Reset for continuous dragging
-						return newIndex;
-					});
-				}
-			}
-		},
-		[originOptions.length]
-	);
-
-	const onOriginMouseUp = useCallback(() => {
-		originDragStartRef.current = null;
-		originIsDraggingRef.current = false;
-	}, []);
-
-	const onOriginTouchStart = (e: React.TouchEvent) => {
-		originTouchStartRef.current = e.touches[0].clientY;
-		e.stopPropagation();
-	};
-
-	const onOriginTouchMove = (e: React.TouchEvent) => {
-		e.stopPropagation();
-	};
-
-	const onOriginTouchEnd = (e: React.TouchEvent) => {
-		if (originTouchStartRef.current == null) return;
-		const endY = e.changedTouches[0].clientY;
-		const delta = endY - originTouchStartRef.current;
-		if (Math.abs(delta) > 20) {
-			setOriginIndex(
-				(i) =>
-					(i + (delta > 0 ? -1 : 1) + originOptions.length) %
-					originOptions.length
-			);
-			safePreventDefault(e);
-		}
-		originTouchStartRef.current = null;
-		e.stopPropagation();
-	};
-
-	// Letter wheel display
-	const topLetter =
-		alphabet[(letterIndex - 1 + alphabet.length) % alphabet.length];
-	const centerLetter = alphabet[letterIndex];
-	const bottomLetter = alphabet[(letterIndex + 1) % alphabet.length];
 
 	// Update selected values when wheel indices change
 	useEffect(() => {
@@ -667,25 +434,17 @@ export default function Home() {
 	}, [letterIndex, alphabet]);
 
 	useEffect(() => {
-		setSelectedInspiration(inspirationOptions[inspirationIndex].value);
-	}, [inspirationIndex, inspirationOptions]);
-
-	useEffect(() => {
 		setSelectedOrigin(originOptions[originIndex].value);
 	}, [originIndex, originOptions]);
 
 	// Document event listeners for mouse drag
 	useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			onLetterMouseMove(e);
-			onInspirationMouseMove(e);
-			onOriginMouseMove(e);
+		const handleMouseMove = () => {
+			// Wheel handling moved to individual components
 		};
 
 		const handleMouseUp = () => {
-			onLetterMouseUp();
-			onInspirationMouseUp();
-			onOriginMouseUp();
+			// Wheel handling moved to individual components
 		};
 
 		// Global touch event handlers to prevent page scrolling when interacting with wheels
@@ -718,32 +477,7 @@ export default function Home() {
 			document.removeEventListener("touchmove", handleTouchMove);
 			document.removeEventListener("touchstart", handleTouchStart);
 		};
-	}, [
-		onLetterMouseMove,
-		onLetterMouseUp,
-		onInspirationMouseMove,
-		onInspirationMouseUp,
-		onOriginMouseMove,
-		onOriginMouseUp,
-	]);
-
-	// Inspiration wheel display
-	const topInspiration =
-		inspirationOptions[
-			(inspirationIndex - 1 + inspirationOptions.length) %
-				inspirationOptions.length
-		];
-	const centerInspiration = inspirationOptions[inspirationIndex];
-	const bottomInspiration =
-		inspirationOptions[(inspirationIndex + 1) % inspirationOptions.length];
-
-	// Origin wheel display
-	const topOrigin =
-		originOptions[
-			(originIndex - 1 + originOptions.length) % originOptions.length
-		];
-	const centerOrigin = originOptions[originIndex];
-	const bottomOrigin = originOptions[(originIndex + 1) % originOptions.length];
+	}, []);
 
 	return (
 		<div
@@ -770,53 +504,12 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.genderElevator}>
-							<div className={styles.elevatorShaft} ref={elevatorShaftRef}>
-								<div className={styles.elevatorFloors}>
-									{genderOptions.map((option) => (
-										<div
-											key={option.value}
-											className={`${styles.genderRow} ${
-												selectedGender === option.value
-													? styles.genderRowSelected
-													: styles.genderRowUnselected
-											}`}
-										>
-											{selectedGender === option.value && (
-												<span className={styles.elevatorText}>A</span>
-											)}
-											<button
-												type="button"
-												className={`${styles.genderOption} ${
-													selectedGender === option.value
-														? styles.genderOptionSelected
-														: styles.genderOptionUnselected
-												}`}
-												onClick={() =>
-													setSelectedGender(
-														option.value as "baby" | "girl" | "boy"
-													)
-												}
-											>
-												<span className={styles.genderButtonContent}>
-													{option.label}
-													<Image
-														src={option.icon}
-														alt={`${option.label} icon`}
-														className={styles.genderIcon}
-														width={34}
-														height={34}
-													/>
-												</span>
-											</button>
-											{selectedGender === option.value && (
-												<span className={styles.elevatorText}>Name</span>
-											)}
-										</div>
-									))}
-								</div>
-							</div>
-						</div>
+						<GenderSelection
+							genderOptions={genderOptions}
+							selectedGender={selectedGender}
+							setSelectedGender={setSelectedGender}
+							ref={elevatorShaftRef}
+						/>
 					</NavigationLayout>
 				)}{" "}
 				{currentStep === "letter" && (
@@ -837,66 +530,14 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.letterSelectionContent}>
-							<div className={styles.phraseContainer}>
-								<span className={styles.phrase}>
-									<span className={styles.genderLine}>
-										<span
-											className={styles.selectedType}
-											style={{ color: headerColor }}
-										>
-											{selectedGender.charAt(0).toUpperCase() +
-												selectedGender.slice(1)}
-										</span>{" "}
-										names
-									</span>
-									<span className={styles.startingWithLine}>starting with</span>
-								</span>
-							</div>{" "}
-							<div
-								ref={letterWheelRef}
-								className={styles.wheelColumn}
-								tabIndex={0}
-								onWheel={onLetterWheel}
-								onMouseDown={onLetterMouseDown}
-								onTouchStart={onLetterTouchStart}
-								onTouchMove={onLetterTouchMove}
-								onTouchEnd={onLetterTouchEnd}
-								role="listbox"
-								aria-label="Select a starting letter"
-							>
-								<div
-									className={`${styles.wheelFaded} ${styles.wheelItem}`}
-									style={{ color: wheelColor, cursor: "pointer" }}
-									onClick={() =>
-										setLetterIndex(
-											(letterIndex - 1 + alphabet.length) % alphabet.length
-										)
-									}
-									title={`Select ${topLetter}`}
-								>
-									{topLetter}
-								</div>
-								<div
-									className={`${styles.wheelCenter} ${styles.wheelItem}`}
-									style={{ color: wheelColor, cursor: "pointer" }}
-									onClick={() => setLetterIndex(letterIndex)}
-									title={`Select ${centerLetter}`}
-								>
-									{centerLetter}
-								</div>
-								<div
-									className={`${styles.wheelFaded} ${styles.wheelItem}`}
-									style={{ color: wheelColor, cursor: "pointer" }}
-									onClick={() =>
-										setLetterIndex((letterIndex + 1) % alphabet.length)
-									}
-									title={`Select ${bottomLetter}`}
-								>
-									{bottomLetter}
-								</div>
-							</div>
-						</div>
+						<LetterSelection
+							selectedGender={selectedGender}
+							letterIndex={letterIndex}
+							setLetterIndex={setLetterIndex}
+							alphabet={alphabet}
+							headerColor={headerColor}
+							wheelColor={wheelColor}
+						/>
 					</NavigationLayout>
 				)}
 				{currentStep === "personality" && (
@@ -920,91 +561,16 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.personalityContent}>
-							<div
-								className={styles.personalityTopText}
-								style={{ color: headerColor }}
-							>
-								<span className={styles.selectedType}>
-									{selectedGender.charAt(0).toUpperCase() +
-										selectedGender.slice(1)}
-								</span>{" "}
-								names starting with {selectedLetter}
-							</div>
-
-							<div
-								className={styles.personalityPrompt}
-								style={{ color: headerColor }}
-							>
-								Who is...
-							</div>
-
-							{loadingAdjectives ? (
-								<div
-									className={styles.loadingAdjectives}
-									style={{ color: headerColor }}
-								>
-									Loading personality options...
-								</div>
-							) : (
-								<div>
-									{Array.isArray(personalityAdjectives) &&
-									personalityAdjectives.length > 0 ? (
-										<>
-											<div className={styles.adjectiveGrid}>
-												{personalityAdjectives.map((adjective) => (
-													<button
-														key={adjective}
-														type="button"
-														className={`${styles.adjectiveCard} ${
-															selectedPersonality === adjective
-																? styles.selected
-																: ""
-														}`}
-														style={{
-															color: headerColor,
-															borderColor: headerColor,
-														}}
-														onClick={() => setSelectedPersonality(adjective)}
-													>
-														{adjective}
-													</button>
-												))}
-											</div>
-
-											<button
-												type="button"
-												className={styles.moreSuggestionsButton}
-												style={{
-													color: headerColor,
-													borderColor: headerColor,
-												}}
-												onClick={fetchAdjectives}
-											>
-												More Suggestions
-											</button>
-										</>
-									) : (
-										<div
-											className={styles.loadingAdjectives}
-											style={{ color: headerColor }}
-										>
-											<button
-												type="button"
-												className={styles.moreSuggestionsButton}
-												style={{
-													color: headerColor,
-													borderColor: headerColor,
-												}}
-												onClick={fetchAdjectives}
-											>
-												Load Personality Options
-											</button>
-										</div>
-									)}
-								</div>
-							)}
-						</div>
+						<PersonalitySelection
+							selectedGender={selectedGender}
+							selectedLetter={selectedLetter}
+							selectedPersonality={selectedPersonality}
+							setSelectedPersonality={setSelectedPersonality}
+							personalityAdjectives={personalityAdjectives}
+							loadingAdjectives={loadingAdjectives}
+							fetchAdjectives={fetchAdjectives}
+							headerColor={headerColor}
+						/>
 					</NavigationLayout>
 				)}
 				{currentStep === "inspiration" && (
@@ -1028,75 +594,15 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.personalityContent}>
-							<div
-								className={styles.personalityTopText}
-								style={{ color: headerColor }}
-							>
-								<span className={styles.selectedType}>
-									{selectedGender.charAt(0).toUpperCase() +
-										selectedGender.slice(1)}
-								</span>{" "}
-								names starting with {selectedLetter} for a baby who is{" "}
-								{selectedPersonality}
-							</div>
-
-							<div className={styles.letterSelectionContent}>
-								<div className={styles.phraseContainer}>
-									<span className={styles.phrase}>
-										<span className={styles.firstLine}>& inspired</span>
-										<span className={styles.secondLine}>by</span>
-									</span>
-								</div>
-
-								<div
-									ref={inspirationWheelRef}
-									className={styles.wheelColumn}
-									tabIndex={0}
-									onWheel={onInspirationWheel}
-									onMouseDown={onInspirationMouseDown}
-									onTouchStart={onInspirationTouchStart}
-									onTouchMove={onInspirationTouchMove}
-									onTouchEnd={onInspirationTouchEnd}
-									role="listbox"
-									aria-label="Select an inspiration source"
-								>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setInspirationIndex(
-												(inspirationIndex - 1 + inspirationOptions.length) %
-													inspirationOptions.length
-											)
-										}
-										title={`Select ${topInspiration.label}`}
-									>
-										{topInspiration.label}
-									</div>
-									<div
-										className={`${styles.wheelCenter} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() => setInspirationIndex(inspirationIndex)}
-										title={`Select ${centerInspiration.label}`}
-									>
-										{centerInspiration.label}
-									</div>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setInspirationIndex(
-												(inspirationIndex + 1) % inspirationOptions.length
-											)
-										}
-										title={`Select ${bottomInspiration.label}`}
-									>
-										{bottomInspiration.label}
-									</div>
-								</div>
-							</div>
-						</div>
+						<InspirationSelection
+							selectedGender={selectedGender}
+							selectedLetter={selectedLetter}
+							selectedPersonality={selectedPersonality}
+							selectedInspiration={selectedInspiration}
+							setSelectedInspiration={setSelectedInspiration}
+							inspirationOptions={inspirationOptions}
+							headerColor={headerColor}
+						/>
 					</NavigationLayout>
 				)}
 				{currentStep === "origin" && (
@@ -1114,81 +620,18 @@ export default function Home() {
 							color: headerColor,
 						}}
 					>
-						<div className={styles.multiStepContent}>
-							<div className={styles.topRow} style={{ color: headerColor }}>
-								<div className={styles.twoRowText}>
-									<div className={styles.firstRow}>
-										<span className={styles.selectedType}>
-											{selectedGender.charAt(0).toUpperCase() +
-												selectedGender.slice(1)}
-										</span>{" "}
-										names starting with {selectedLetter}
-									</div>
-									<div className={styles.secondRow}>
-										for a baby who&apos;s {selectedPersonality} & inspired by{" "}
-										{selectedInspiration}
-									</div>
-								</div>
-							</div>
-
-							<div className={styles.letterSelectionContent}>
-								<div className={styles.phraseContainer}>
-									<span className={styles.phrase}>
-										<span className={styles.firstLine}>with</span>
-									</span>
-								</div>
-
-								<div
-									ref={originWheelRef}
-									className={styles.wheelColumn}
-									tabIndex={0}
-									onWheel={onOriginWheel}
-									onMouseDown={onOriginMouseDown}
-									onTouchStart={onOriginTouchStart}
-									onTouchMove={onOriginTouchMove}
-									onTouchEnd={onOriginTouchEnd}
-									role="listbox"
-									aria-label="Select an origin source"
-								>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setOriginIndex(
-												(originIndex - 1 + originOptions.length) %
-													originOptions.length
-											)
-										}
-										title={`Select ${topOrigin.label}`}
-									>
-										{topOrigin.label}
-									</div>
-									<div
-										className={`${styles.wheelCenter} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() => setOriginIndex(originIndex)}
-										title={`Select ${centerOrigin.label}`}
-									>
-										{centerOrigin.label}
-									</div>
-									<div
-										className={`${styles.wheelFaded} ${styles.wheelItem}`}
-										style={{ color: wheelColor, cursor: "pointer" }}
-										onClick={() =>
-											setOriginIndex((originIndex + 1) % originOptions.length)
-										}
-										title={`Select ${bottomOrigin.label}`}
-									>
-										{bottomOrigin.label}
-									</div>
-								</div>
-								<div className={styles.phraseContainer}>
-									<span className={styles.phrase}>
-										<span className={styles.secondLine}>origin</span>
-									</span>
-								</div>
-							</div>
-						</div>
+						<OriginSelection
+							selectedGender={selectedGender}
+							selectedLetter={selectedLetter}
+							selectedPersonality={selectedPersonality}
+							selectedInspiration={selectedInspiration}
+							originIndex={originIndex}
+							setOriginIndex={setOriginIndex}
+							originOptions={originOptions}
+							headerColor={headerColor}
+							wheelColor={wheelColor}
+							onSkip={handleSkipOrigin}
+						/>
 					</NavigationLayout>
 				)}
 				{currentStep === "loading" && (
