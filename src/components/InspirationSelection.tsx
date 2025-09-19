@@ -43,7 +43,7 @@ export default function InspirationSelection({
 					{selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)}
 				</span>{" "}
 				names starting with {selectedLetter} for a baby who is{" "}
-				{selectedPersonality}
+				{selectedPersonality} and
 			</div>
 
 			<div className={styles.personalityPrompt} style={{ color: headerColor }}>
