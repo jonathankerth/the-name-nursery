@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
 					onClick={() => router.push("/")}
 					className={styles.breadcrumbLink}
 				>
-					← Back to Home
+					← Home
 				</button>
 				<span className={styles.breadcrumbSeparator}>›</span>
 				<span className={styles.breadcrumbCurrent}>Privacy Policy</span>
@@ -27,7 +27,25 @@ export default function PrivacyPolicyPage() {
 
 			{/* Main Content */}
 			<div className={styles.content}>
-				<h1 className={styles.pageTitle}>Privacy Policy</h1>
+				<h1 className={styles.pageTitle}>
+					<span>Privacy Policy</span>
+					<svg
+						className={styles.trustBadge}
+						viewBox="0 0 32 32"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-label="Trust badge"
+					>
+						<circle cx="16" cy="16" r="16" fill="#22c55e" />
+						<path
+							d="M10 17.5l4 4 8-8"
+							stroke="#fff"
+							strokeWidth="2.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</svg>
+				</h1>
 
 				<div className={styles.lastUpdated}>
 					<p suppressHydrationWarning>

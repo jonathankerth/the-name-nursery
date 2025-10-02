@@ -58,10 +58,8 @@ export default function LoadingNames({
 						{inspiration && ` & inspired by ${inspiration}`}
 						{origin && (
 							<>
-								{inspiration ? ' with ' : ' with '}
-								<span style={{ fontWeight: "normal" }}>
-									{origin} origin
-								</span>
+								{inspiration ? " with " : " with "}
+								<span style={{ fontWeight: "normal" }}>{origin} origin</span>
 							</>
 						)}
 					</div>

@@ -298,7 +298,10 @@ export default function NamesResults({
 						</span>
 					</p>
 					{isAIGenerated && (
-						<p className={styles.subtitle} style={{ color: headerColor, fontSize: '1rem' }}>
+						<p
+							className={styles.subtitle}
+							style={{ color: headerColor, fontSize: "1rem" }}
+						>
 							<span style={{ fontWeight: "normal" }}>✨ </span>
 							<span style={{ fontWeight: "bold" }}>AI-curated</span>
 							<span style={{ fontWeight: "normal" }}>

@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import LoadingNames from "../components/LoadingNames";
 import NamesResults from "../components/NamesResults";
 import NavigationLayout from "../components/NavigationLayout";
+import AdSenseSlot from "../components/AdSenseSlot";
 import ProfileButton from "../components/ProfileButton";
 import GenderSelection from "../components/GenderSelection";
 import LetterSelection from "../components/LetterSelection";
@@ -728,6 +729,8 @@ export default function Home() {
 					/>
 				)}
 			</main>
+			{/* AdSense ad slot below main content, above footer */}
+			<AdSenseSlot />
 		</div>
 	);
 }

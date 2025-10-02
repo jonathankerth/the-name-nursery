@@ -19,7 +19,7 @@ export default function TermsOfServicePage() {
 					onClick={() => router.push("/")}
 					className={styles.breadcrumbLink}
 				>
-					← Back to Home
+					← Home
 				</button>
 				<span className={styles.breadcrumbSeparator}>›</span>
 				<span className={styles.breadcrumbCurrent}>Terms of Service</span>
@@ -27,7 +27,25 @@ export default function TermsOfServicePage() {
 
 			{/* Main Content */}
 			<div className={styles.content}>
-				<h1 className={styles.pageTitle}>Terms of Service</h1>
+				<h1 className={styles.pageTitle}>
+					<span>Terms of Service</span>
+					<svg
+						className={styles.trustBadge}
+						viewBox="0 0 32 32"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-label="Trust badge"
+					>
+						<circle cx="16" cy="16" r="16" fill="#22c55e" />
+						<path
+							d="M10 17.5l4 4 8-8"
+							stroke="#fff"
+							strokeWidth="2.2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</svg>
+				</h1>
 
 				<div className={styles.lastUpdated}>
 					<p suppressHydrationWarning>
