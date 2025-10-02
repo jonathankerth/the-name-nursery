@@ -283,16 +283,6 @@ export default function ArticlePage() {
 				backButtonText="← Back to Blog"
 				backButtonPath="/blog"
 			/>
-			{/* Header */}
-			<div className={styles.header}>
-				<button
-					className={styles.titleButton}
-					onClick={() => router.push("/")}
-					aria-label="Go to home page"
-				>
-					<h1 className={styles.mainTitle}>The Name Nursery</h1>
-				</button>
-			</div>
 
 			{/* Navigation */}
 			<nav className={styles.breadcrumbs}>
