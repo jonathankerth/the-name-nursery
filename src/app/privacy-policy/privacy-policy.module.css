@@ -1,9 +1,10 @@
-html, body {
+html,
+body {
 	background: #fff !important;
 }
 .privacyContainer {
 	min-height: 100vh;
-		background: #d3f3c8 !important;
+	background: #d3f3c8 !important;
 	color: var(--foreground, #000000);
 	font-family: var(--font-crimson-text), var(--font-inter), -apple-system,
 		BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -75,7 +76,6 @@ html, body {
 	transform: translateY(-1px);
 	box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
 }
-
 
 .breadcrumbSeparator {
 	color: var(--primary-green-dark, #22c55e);
