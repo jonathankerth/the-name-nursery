@@ -232,18 +232,20 @@ export default function BlogPage() {
 							Ready to put these insights into practice?{" "}
 							<button
 								onClick={() => router.push("/")}
-								className={styles.inlineLink}
+								className={styles.ctaButton}
+								type="button"
 							>
 								Try our interactive name generator
-							</button>{" "}
-							or{" "}
+							</button>
+							{" or "}
 							<button
 								onClick={() => router.push("/explore")}
-								className={styles.inlineLink}
+								className={styles.ctaButton}
+								type="button"
 							>
 								explore trending names
-							</button>{" "}
-							to discover your perfect baby name.
+							</button>
+							{" to discover your perfect baby name."}
 						</p>
 						<div className={styles.infoStats}>
 							<div className={styles.stat}>

@@ -729,8 +729,8 @@ export default function Home() {
 					/>
 				)}
 			</main>
-			{/* AdSense ad slot below main content, above footer */}
-			<AdSenseSlot />
+			{/* Only show AdSense ad slot on content-rich results page */}
+			{currentStep === "results" && <AdSenseSlot />}
 		</div>
 	);
 }

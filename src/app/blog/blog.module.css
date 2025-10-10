@@ -1,3 +1,26 @@
+/* CTA Buttons for Info Section */
+.ctaButton {
+	display: inline-block;
+	background: linear-gradient(90deg, #a8e6a0 0%, #68d391 100%);
+	color: #1a202c;
+	font-weight: 600;
+	font-size: 1rem;
+	padding: 0.6em 1em;
+	border-radius: 999px;
+	border: none;
+	text-decoration: none;
+	box-shadow: 0 2px 8px rgba(104, 211, 145, 0.1);
+	transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+	margin: 0 0.4em 0.5em 0;
+	cursor: pointer;
+}
+.ctaButton:hover,
+.ctaButton:focus {
+	background: linear-gradient(90deg, #68d391 0%, #a8e6a0 100%);
+	color: #22543d;
+	box-shadow: 0 4px 16px rgba(104, 211, 145, 0.18);
+	outline: none;
+}
 /* Blog page styles */
 .blogContainer {
 	min-height: 100vh;

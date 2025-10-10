@@ -1,3 +1,10 @@
+// Fetch a single blog post by slug
+export async function getBlogPostBySlug(
+	slug: string
+): Promise<BlogPost | null> {
+	const posts = await getBlogPosts();
+	return posts.find((post) => post.slug === slug) || null;
+}
 import {
 	collection,
 	getDocs,
