@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBlogPostBySlug } from "@/lib/blogService";
 
-
 function isPromise<T>(value: unknown): value is Promise<T> {
 	return (
 		typeof value === "object" &&
