@@ -1,11 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBlogPostBySlug } from "@/lib/blogService";
 
+
+function isPromise<T>(value: unknown): value is Promise<T> {
+	return (
+		typeof value === "object" &&
+		value !== null &&
+		typeof (value as Promise<T>).then === "function"
+	);
+}
+
 export async function GET(
 	req: NextRequest,
-	{ params }: { params: { slug: string } }
+	context: { params: { slug: string } } | { params: Promise<{ slug: string }> }
 ) {
-	const { slug } = params;
+	let slug: string | undefined;
+	if ("params" in context) {
+		const params = context.params;
+		if (isPromise<{ slug: string }>(params)) {
+			const resolved = await params;
+			slug = resolved.slug;
+		} else {
+			slug = params.slug;
+		}
+	}
 	if (!slug) {
 		return NextResponse.json({ error: "Missing slug" }, { status: 400 });
 	}
