@@ -52,7 +52,7 @@ const AdSenseSlot = () => {
 				className="adsbygoogle"
 				style={{ display: adLoaded ? "block" : "none", width: "100%" }}
 				data-ad-client="ca-pub-1895631836444724"
-				data-ad-slot="YOUR_SLOT_ID" // TODO: Replace with your AdSense slot ID
+				data-ad-slot="5642689047"
 				data-ad-format="auto"
 				data-full-width-responsive="true"
 			></ins>
